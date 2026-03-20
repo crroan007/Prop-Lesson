@@ -1,0 +1,723 @@
+0:00
+Hi there, my name is Max and today I'm
+0:01
+going to be talking about the DA42
+0:04
+NG6 propeller system. Uh, this is a
+0:07
+system that's tightly coupled with the
+0:08
+engine, the gearbox, and the ECUs. We're
+0:11
+really going to focus on the propeller
+0:12
+today and a bit of the gearbox. Um, I'm
+0:14
+going to start with a bit of background
+0:16
+on fixed pitch versus variable pitch
+0:17
+propellers. Um, this may come as review
+0:19
+to a lot of you, so feel free to skip,
+0:21
+but I think it's useful context. The
+Fixed vs Variable Pitch
+0:23
+DA42 has variable pitch propellers. And
+0:26
+if you're coming from 172, you almost
+0:28
+certainly flew fixed pitch propeller
+0:30
+airplanes. The simplest way I think to
+0:33
+explain this and kind of visualize it is
+0:36
+if you've ever ridden a bike um or
+0:39
+driven a manual car, imagine only being
+0:42
+stuck in third gear. That's what a fixed
+0:44
+bridge propeller is like. So when you
+0:46
+ride a bike and you're in third gear,
+0:48
+you know, starting off, it's actually
+0:49
+kind of difficult. you feel like you're
+0:50
+pushing really hard, not going that
+0:52
+fast, but then as you get up to like 10
+0:54
+miles per hour, it's actually like the
+0:55
+perfect gear for that speed. And if you
+0:58
+try to go past 10 miles per hour on the
+0:59
+bike and you're still in third gear, you
+1:01
+feel like you're pedaling a bunch, but
+1:02
+you're not actually going much faster.
+1:04
+That's a fixed pitch propeller. A
+1:05
+variable pitch propeller is like a bike
+1:07
+with multiple gears. So, when you're
+1:08
+down low and you're just starting uh to
+1:11
+get going, uh you can drop down to first
+1:12
+gear and it feels like you can start
+1:14
+gaining momentum. Then you go up to
+1:16
+second and third. And then when you want
+1:17
+to go up to 20 miles per hour, you can
+1:19
+go up to fourth and fifth gear. And it
+1:21
+feels like when you pedal, you're
+1:22
+actually getting the distance for the
+1:24
+amount of effort you're putting in.
+1:25
+Think about the finer pitch as a lower
+1:27
+gear, something you'd want when you're,
+1:29
+you know, taking off and building up
+1:30
+speed. And a more coarse pitch as
+1:33
+something you want when you're going
+1:34
+faster. You want to take a bigger chunk
+1:35
+of the air. That's a higher gear,
+1:37
+something you'd use at cruise. Now, just
+1:39
+briefly, we mentioned we have feathering
+1:41
+propellers. And what this means is that
+1:43
+in the event of an engine failure, we
+1:45
+want the propellers to be in the most
+1:46
+aerodynamic position um that reduce
+1:49
+drag. And that's a pitch angle that's
+1:51
+parallel to the oncoming air flow. Now,
+FADEC and Propeller Set Point
+1:54
+in a conventional variable pitch
+1:56
+propeller airplane, you've seen those
+1:57
+blue levers that allow the pilot to
+2:00
+control the RPM. In the DA42, we have
+2:03
+FADC and the ECUs make all the decisions
+2:05
+for us. and the propeller governor or
+2:07
+the propeller regulating system will
+2:08
+actually take care of setting the pitch
+2:10
+angle of the blade so that we hit that
+2:12
+RPM at that power setting. In other
+2:16
+words, it's like an automatic
+2:17
+transmission car. We don't need to worry
+2:19
+about what gear we're in. We set the
+2:21
+power lever setting as a percentage and
+2:23
+the ECUs figure out the rest similar to
+2:25
+setting a certain depth of the gas pedal
+2:27
+towards the ground. So, Diamond actually
+2:29
+publishes a propeller set point curve
+2:31
+which we can see here. And if we look at
+2:32
+the EIS on the left side, we see we set
+2:35
+a 60% load setting and we're hitting
+2:37
+1980 on the RPM and that matches up with
+2:40
+the propeller set point curve. So we
+mt-Propeller
+2:42
+have empty propeller propellers. They're
+2:44
+threebladed. They're wood composite
+2:46
+construction with reinforced plastic
+2:48
+coating. The leading edges are stainless
+2:51
+steel and we actually have a rubber
+2:53
+strip if you have deic that guides the
+2:55
+de ice fluid out to the leading edges of
+2:57
+the prop. And the other thing we have is
+3:00
+a aluminum spinner. Now, if we want to
+3:02
+move the plane, we can actually push the
+3:04
+prop. We should not push the spinner.
+3:07
+Now, there may be a difference of
+3:08
+opinion on pre-flight. I personally like
+3:10
+to move my hand along the leading edge
+3:12
+of the prop. Some people say, "Don't do
+3:13
+that. You could cut your hand." My view
+3:15
+is I'd rather cut my hand and know
+3:16
+something's there than not know. This is
+3:19
+an example of damage to the leading edge
+3:20
+of an empty propeller. You can actually
+3:22
+see a chip in that coating as well. The
+3:24
+AFM cautions against high RPM on the
+3:27
+ground because you could suck up a stone
+3:28
+or something and damage those leading
+Conventional Twin
+3:30
+edges. Now, we'll talk more about it in
+3:31
+the engine video, but this is a
+3:33
+conventional twin because we have the
+3:34
+same engine mounted the same way on both
+3:37
+sides. And this means the propellers
+3:38
+rotate the same way, which is clockwise
+3:41
+from the pilot's perspective. It also
+3:43
+means the left engine is the critical
+3:45
+engine. The critical engine is the
+3:47
+engine that most adversely affects
+3:49
+aircraft performance when it becomes
+3:50
+inoperative. And this is determined by
+3:53
+four factors using the acronym past
+3:55
+which is P factor, accelerated
+3:57
+slipstream, spiraling spiraling
+3:59
+slipstream, and torque. We're not going
+4:01
+to cover these all here, but there's
+4:02
+something you should learn as part of
+4:04
+your multi- training. I want to pause
+4:05
+quickly and just check in. We started
+4:07
+off talking about the difference between
+4:08
+fixed pitch propellers versus variable
+4:10
+pitch like we have. And then we talked
+4:12
+about how we have a fadeex system and
+4:14
+the power set by the pilot translates to
+4:17
+an RPM on a propeller set point curve
+4:19
+and how the prop governor is in charge
+4:20
+of actually making sure we hit that RPM.
+4:23
+Then we transition to talking about the
+4:24
+MT propeller, how it's constructed and
+4:26
+what it looks like and how you should
+4:27
+pre-flight it. Now we're going to go
+4:29
+under the cowling and talk about how the
+4:30
+system actually works. So let's talk
+Propeller Control System
+4:32
+about how the system actually works. Uh
+4:34
+you can kind of think of the ECUs as the
+4:36
+brain of the system. They're the ones
+4:38
+who know the power setting and know the
+4:40
+associated RPM we need to hit. And they
+4:42
+inform the prop governor. We have an MT
+4:45
+propeller governor valve um as to what
+4:47
+RPM we need to hit. And the governor is
+4:50
+kind of like the muscle. It says great
+4:52
+based on this RPM number. I'm going to
+4:54
+adjust the pitch angle of the blades to
+4:57
+ensure we hit that. The propeller
+4:58
+governor is able to affect change on the
+5:00
+pitch angle of the propeller blades by
+5:02
+pumping oil into the propeller hub. More
+5:05
+oil and higher pressure leads to a finer
+5:07
+pitch, something we've used for takeoff.
+5:09
+And removing pressure from the propeller
+5:11
+hub or decreasing pressure leads to a
+5:13
+more coarse pitch. And ultimately, if we
+5:15
+decrease it completely to a feathered
+5:17
+pitch. So, we primarily change the pitch
+5:20
+angle of the blades with hydraulic or
+5:22
+gearbox oil pressure. But there's two
+5:24
+other mechanisms for changing the pitch
+5:26
+angle that we need to be aware of. The
+5:28
+first one is counterweights. And this is
+5:30
+because if we were to just spin these
+5:31
+propellers around and around and around,
+5:33
+well, the centrifugal force is naturally
+5:36
+going to want to force the propeller
+5:37
+into a low pitch angle. Think about it.
+5:38
+It's aerodynamic most when you have a
+5:41
+low pitch angle or a flat angle to going
+5:44
+around in the wind. But that's most
+5:45
+adverse to flight for us. That's the
+5:47
+opposite of feathered. So, we have
+5:48
+counterwes on each of the bases of the
+5:50
+blades to counteract and force the
+5:53
+blades into a more coarse or feathered
+5:55
+pitch naturally. You'll notice that when
+5:57
+we shut down, the propellers don't fully
+5:59
+feather, and that's because of the low
+6:00
+pitch stop pins, which prevent the
+6:02
+propeller from feathering under 1300
+6:04
+RPM. Now, trust me, there's a lot to
+6:06
+discuss when talking about the gearbox.
+6:08
+The things we need to know with respect
+6:09
+to the propeller are really two things.
+6:11
+One is the gearbox is responsible for
+6:13
+derating the engine speed to the
+6:15
+propeller by a ratio of 1.69. The other
+6:18
+thing is that the prop governor uses the
+6:20
+gearbox oil to change the pitch angle of
+6:24
+the blades. So, when we're doing that
+6:25
+check in the pre-flight to see if we see
+6:27
+the gearbox oil is full through the
+6:29
+sight glass, that's especially
+6:30
+important. The other thing to note is
+6:32
+that the RPM we see in our EIS, that's
+6:35
+actually the propeller RPM, not the
+6:37
+engine RPM. The pressure accumulator is
+6:40
+also known as the unfeathering
+6:42
+accumulator, and it stores a small
+6:44
+quantity of pressurized gearbox oil in a
+6:47
+nitrogen charged metal cylinder. And
+6:49
+when we turn the engine master on, this
+6:51
+causes the accumulator to release the
+6:53
+gearbox oil to push the propeller out of
+6:56
+the feathered position. Flip side. If we
+6:58
+want to feather, we want to pull the
+6:59
+power lever all the way back to idle
+7:01
+before turning the engine master switch
+7:03
+into the off position. This will open
+7:06
+the electric governor valve and all of
+7:07
+the oil will flow back from the
+7:09
+propeller hub, allowing the blades to
+7:11
+move into that feathered position. At
+7:13
+the same time, the electric valve at the
+7:15
+pressure accumulator closes and all the
+7:17
+oil pressures are stored in the
+Emergency Procedures
+7:18
+accumulator. Like my other system
+7:20
+videos, I want to close out talking
+7:21
+about emergency procedures that involve
+7:23
+this system. And with the propeller,
+7:25
+there's really one defective propeller
+7:27
+RPM regulating system, which is a fancy
+7:29
+way of saying the RPM isn't doing what
+7:30
+we expect it to do. This problem set is
+7:32
+broken out into three subsections. And
+7:34
+the first one is oscillating RPM. If the
+7:36
+RPM is oscillating, we want to check the
+7:38
+power and change it. Potentially at a
+7:40
+different power setting, the RPM may be
+7:42
+steady. If that doesn't work, we want to
+7:43
+check and see if there's an ECU failure
+7:45
+for that side, either A or B. And if
+7:47
+there is, then we want to switch the ECU
+7:49
+to the other ECU. Um, and if that
+7:52
+doesn't work, then we want to go back to
+7:53
+auto and land at the nearest
+7:55
+airfield. The next subsection is
+7:58
+propeller over speed. And we know from
+7:59
+our power plant limitations that the
+8:01
+maximum over speed is 2500 RPM for a
+8:04
+maximum of 20 seconds. So, if we find
+8:06
+ourselves in this situation, we want to
+8:08
+go to section B of the checklist. And
+8:11
+the first item will be to reduce the
+8:13
+power. Hopefully reducing the power, the
+8:15
+RPM will also decrease along the power
+8:18
+curve. But if it doesn't, we want to go
+8:20
+check and see if there's a left and
+8:21
+right ECU failure. And if it's a failure
+8:24
+on either A, switch it to B. And if it's
+8:26
+a failure on B, switch it to A. If that
+8:28
+doesn't resolve itself, again, we want
+8:30
+to land at the nearest suitable
+8:31
+airfield. Finally, the last subsection
+8:33
+of this problem is a fixed RPM, meaning
+8:35
+that we adjust the power setting, but
+8:37
+the RPM remains the same. In this
+8:39
+situation, we follow almost exactly the
+8:41
+same checklist. And if we can't resolve
+8:43
+the issue by switching the ECU, we want
+8:45
+to get to the nearest suitable airfield
+8:47
+and terminate the flight. It's very
+8:48
+likely I cover this again in the engine
+8:50
+video, but for the sake of someone
+8:52
+seeing just this video, I want to talk
+8:53
+about engine failures and how the prop
+8:55
+plays a role. Uh, long story short, if
+8:58
+we're under 3,000 ft or this is a
+9:00
+critical phase of flight, we don't have
+9:01
+time to troubleshoot. We want to secure
+9:03
+the engine. So, we want to get it to
+9:05
+feathered, get it to the most
+9:06
+aerodynamic position, declare an
+9:07
+emergency, and come back and land. So,
+9:09
+you should know these memory items.
+9:10
+We're going to go power lever max,
+9:13
+maintain directional control, air speed
+9:15
+to VSC, gear up, get rid of that drag,
+9:18
+then flaps up, and then secure the
+9:20
+engine. Now, I like to use the identify,
+9:24
+verify, fix, secure pattern. So, we
+9:27
+identify dead foot, dead engine, verify
+9:29
+by pulling the throttle back on that
+9:31
+engine. Fix by turning the engine master
+9:34
+off, which should feather the propeller.
+9:37
+And then secure, we go to alternator for
+9:40
+the affected engine. Turn that off. The
+9:42
+fuel pump, check that that's off. And
+9:43
+then finally, the fuel selector for that
+9:46
+affected engine. We want to pull back to
+9:48
+the off position past the red safety
+9:50
+guard. Now, let's say you're above 3,000
+9:52
+ft. Uh you've had an engine failure.
+9:54
+you've stabilized the situation and you
+9:57
+want to attempt to restart the engine.
+9:59
+Well, we have two situations that we
+10:00
+need to prepare for in terms of engine
+10:02
+restarts. The first one is restarting
+10:04
+the engine with the starter and the
+10:06
+second one is restarting the engine by
+10:08
+windmilling. There's really two
+10:10
+conditions for restarting with the
+10:11
+starter. The first is altitude. If it's
+10:14
+an immediate restart, we can be up to
+10:15
+18,000 ft. But if it's going to be in
+10:17
+the range of 2 minutes, we need to be
+10:18
+under 10,000 ft. The second condition is
+10:21
+the air speed. We really want to be
+10:23
+under 100 knots indicated air speed,
+10:25
+preferably lower, um, so that we don't
+10:27
+put so much stress on the starter.
+10:30
+Assuming those two conditions are met,
+10:32
+we can attempt to restart the engine.
+10:34
+We're going to make sure the power lever
+10:35
+is to idle. The fuel selector should be
+10:36
+out of the off position and into the on
+10:38
+position. Alternate air as required.
+10:41
+Alternator will come on. Engine master
+10:43
+will come on. This should unfather the
+10:45
+propeller. And then finally, we'll turn
+10:47
+the starter on for the affected engine.
+10:50
+This should start and we will check the
+10:52
+circuit breakers to make sure everything
+10:53
+is correct and reset anything if
+10:56
+necessary. Now with a windmilling start,
+10:58
+we also have the same altitude
+11:00
+restrictions. The biggest difference
+11:01
+with a windmilling start is our minimum
+11:03
+and maximum restart air speeds. Our
+11:06
+minimum restart air speed is 125
+11:08
+indicated and our maximum restart air
+11:10
+speed is 145 indicated. Now assuming
+11:12
+those two conditions are met, we will
+11:14
+check that our power levers are at idle.
+11:16
+We will check the fuel selectors. They
+11:18
+should be on if they were in the off
+11:20
+position before. The alternate air will
+11:22
+set as required. The alternators will
+11:24
+turn on and then the engine master
+11:26
+switch finally will turn on. The
+11:28
+propeller should unfather and restart by
+Closing
+11:31
+windmilling. Fantastic. So that is the
+11:33
+DA42 NG6 propeller system or at least a
+11:38
+a cursory overview. I highly recommend
+11:40
+checking out the Emory Riddle uh
+11:42
+propeller diagrams, animations. They do
+11:44
+an incredible job of visualizing a lot
+11:46
+of what we talked about today. Um, if
+11:48
+I've learned anything new, I will leave
+11:50
+it in the video description or in the
+11:52
+comments. If you have any questions,
+11:53
+feel free to leave those below.
