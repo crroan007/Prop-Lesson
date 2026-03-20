@@ -3,725 +3,360 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DA42 Propeller System — Interactive Lesson</title>
-<meta name="description" content="Interactive lesson on the DA42 NG/VI Propeller System with quizzes, animations, and audio narration.">
-<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<title>DA42 Propeller System — Ground School</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{
-  --bg:#060a0f;--surface:#0b1018;--card:#0d1520;--border:#1a3040;
-  --text:#d4e0e8;--muted:#5a7a8a;--accent:#e8a020;--accent2:#20e8a0;
-  --success:#20e8a0;--warning:#e8a020;--danger:#e84040;
-  --glow:rgba(232,160,32,0.25);--glow2:rgba(32,232,160,0.2);
-  --hud-amber:rgba(232,160,32,0.12);--hud-green:rgba(32,232,160,0.08);
-}
+:root{--sky:#1a73e8;--sky-light:#e8f0fe;--navy:#1b2a4a;--green:#1e8e3e;--green-bg:#e6f4ea;--red:#d93025;--red-bg:#fce8e6;--amber:#f9ab00;--amber-bg:#fef7e0;--bg:#f8f9fa;--white:#fff;--text:#202124;--text2:#5f6368;--border:#dadce0;--card-shadow:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.06);--hover-shadow:0 4px 12px rgba(0,0,0,.1)}
 html{scroll-behavior:smooth}
-body{font-family:'Rajdhani',sans-serif;background:var(--bg);color:var(--text);line-height:1.7;overflow-x:hidden;position:relative}
-body::after{content:'';position:fixed;top:0;left:0;width:100%;height:100%;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(32,232,160,0.015) 2px,rgba(32,232,160,0.015) 4px);pointer-events:none;z-index:9999}
-
-/* Progress Bar */
-#progress-bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));z-index:1000;transition:width .4s ease;box-shadow:0 0 16px var(--glow),0 0 4px var(--accent)}
-
-/* Top Nav */
-#top-nav{position:fixed;top:3px;left:0;right:0;z-index:999;background:rgba(6,10,15,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:8px 24px;display:flex;align-items:center;justify-content:space-between}
-#top-nav .nav-title{font-family:'Orbitron',sans-serif;font-size:13px;font-weight:700;letter-spacing:3px;color:var(--accent);text-shadow:0 0 12px var(--glow)}
-#top-nav .nav-progress{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--accent2);letter-spacing:1px;text-shadow:0 0 8px var(--glow2)}
-#top-nav .nav-btns{display:flex;gap:8px}
-.nav-btn{background:transparent;border:1px solid var(--border);color:var(--text);padding:6px 16px;border-radius:2px;cursor:pointer;font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;transition:all .2s;clip-path:polygon(8px 0,100% 0,calc(100% - 8px) 100%,0 100%)}
-.nav-btn:hover{background:var(--hud-amber);border-color:var(--accent);color:var(--accent);text-shadow:0 0 8px var(--glow)}
-.nav-btn:disabled{opacity:.25;cursor:not-allowed}
-.nav-btn.speak-btn{background:var(--hud-amber);border:1px solid var(--accent);color:var(--accent)}
-.nav-btn.speak-btn:hover{background:rgba(232,160,32,.25);box-shadow:0 0 20px var(--glow)}
-
-/* Sections */
-.lesson-section{min-height:100vh;padding:80px 24px 60px;max-width:820px;margin:0 auto;opacity:0;transform:translateY(30px);transition:all .6s ease}
-.lesson-section.visible{opacity:1;transform:translateY(0)}
-.section-badge{display:inline-flex;align-items:center;gap:6px;background:transparent;border:1px solid var(--accent);color:var(--accent);padding:4px 16px;border-radius:0;font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;margin-bottom:16px;clip-path:polygon(6px 0,100% 0,calc(100% - 6px) 100%,0 100%)}
-.section-badge .badge-icon{font-size:14px}
-h2{font-family:'Orbitron',sans-serif;font-size:clamp(22px,4.5vw,32px);font-weight:800;color:var(--accent);text-shadow:0 0 20px var(--glow);margin-bottom:20px;letter-spacing:2px;background:none;-webkit-background-clip:unset;-webkit-text-fill-color:unset}
-.section-intro{font-size:17px;color:var(--muted);margin-bottom:32px;border-left:2px solid var(--accent);padding-left:16px}
-
-/* Content Cards */
-.content-card{background:var(--card);border:1px solid var(--border);border-radius:2px;padding:24px;margin-bottom:20px;transition:all .3s;position:relative}
-.content-card::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:var(--accent);opacity:.4}
-.content-card:hover{border-color:var(--accent);box-shadow:0 0 30px rgba(232,160,32,.08);transform:translateY(-2px)}
-.content-card:hover::before{opacity:1;box-shadow:0 0 8px var(--glow)}
-.content-card h3{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px;color:var(--text);letter-spacing:.5px}
-.content-card p{color:var(--muted);font-size:15px}
-
-/* Analogy Cards */
-.analogy-card{background:var(--hud-green);border:1px solid rgba(32,232,160,.3);border-radius:2px;padding:24px;margin:20px 0;position:relative;overflow:hidden;border-left:3px solid var(--accent2)}
-.analogy-card::before{content:'▸ ANALOGY';position:absolute;top:8px;right:12px;font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:2px;color:var(--accent2);opacity:.5}
-.analogy-card h4{color:var(--accent2);font-family:'Orbitron',sans-serif;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:2px;margin-bottom:10px}
-.analogy-card p{font-size:16px;color:var(--text)}
-
-/* Key Fact */
-.key-fact{background:var(--hud-amber);border:1px solid rgba(232,160,32,.3);border-radius:2px;padding:16px 20px;margin:16px 0;display:flex;align-items:flex-start;gap:12px;border-left:3px solid var(--accent)}
-.key-fact .fact-icon{font-size:20px;flex-shrink:0;margin-top:2px}
-.key-fact p{font-size:14px;color:var(--text)}
-.key-fact strong{color:var(--accent)}
-
-/* Warning */
-.warning-card{background:rgba(232,64,64,.06);border:1px solid rgba(232,64,64,.3);border-radius:2px;padding:16px 20px;margin:16px 0;display:flex;align-items:flex-start;gap:12px;border-left:3px solid var(--danger);position:relative}
-.warning-card::after{content:'⚠ CAUTION';position:absolute;top:8px;right:12px;font-family:'Orbitron',sans-serif;font-size:8px;letter-spacing:2px;color:var(--danger);opacity:.6}
-.warning-card .warn-icon{font-size:20px;flex-shrink:0}
-
-/* Images */
-.lesson-img{width:100%;border-radius:2px;border:1px solid var(--border);margin:16px 0;transition:all .3s;filter:saturate(.85) contrast(1.05)}
-.lesson-img:hover{border-color:var(--accent);box-shadow:0 0 30px rgba(232,160,32,.15)}
-.img-caption{text-align:center;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--muted);margin-top:-10px;margin-bottom:16px;letter-spacing:1px;text-transform:uppercase}
-
-/* Quiz */
-.quiz-container{background:var(--surface);border:1px solid var(--accent);border-radius:2px;padding:28px;margin:32px 0;position:relative;overflow:hidden}
-.quiz-container::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--accent),var(--accent2),transparent)}
-.quiz-container::after{content:'COMM CHECK';position:absolute;top:10px;right:16px;font-family:'Orbitron',sans-serif;font-size:8px;letter-spacing:3px;color:var(--accent);opacity:.35}
-.quiz-header{display:flex;align-items:center;gap:10px;margin-bottom:20px}
-.quiz-header .quiz-icon{font-size:24px;animation:quizPulse 2s infinite}
-@keyframes quizPulse{0%,100%{opacity:1;text-shadow:none}50%{opacity:.7;text-shadow:0 0 12px var(--glow)}}
-.quiz-header h3{font-family:'Orbitron',sans-serif;font-size:14px;font-weight:700;color:var(--accent);letter-spacing:2px;text-transform:uppercase}
-.quiz-q{font-size:16px;font-weight:600;margin-bottom:16px;color:var(--text)}
-.quiz-options{display:flex;flex-direction:column;gap:10px}
-.quiz-opt{background:var(--card);border:1px solid var(--border);border-radius:2px;padding:14px 18px;cursor:pointer;font-size:14px;transition:all .2s;display:flex;align-items:center;gap:10px;border-left:3px solid transparent}
-.quiz-opt:hover{border-color:var(--accent);border-left-color:var(--accent);background:var(--hud-amber);transform:translateX(4px)}
-.quiz-opt.correct{border-color:var(--success);border-left-color:var(--success);background:var(--hud-green);animation:correctPop .4s ease}
-.quiz-opt.incorrect{border-color:var(--danger);border-left-color:var(--danger);background:rgba(232,64,64,.06);animation:shake .4s ease}
-.quiz-opt .opt-letter{width:28px;height:28px;border-radius:2px;background:var(--border);display:flex;align-items:center;justify-content:center;font-family:'Orbitron',sans-serif;font-weight:700;font-size:11px;flex-shrink:0}
-.quiz-opt.correct .opt-letter{background:var(--success);color:var(--bg)}
-.quiz-opt.incorrect .opt-letter{background:var(--danger);color:#fff}
-.quiz-feedback{margin-top:16px;padding:14px;border-radius:2px;font-size:14px;display:none}
-.quiz-feedback.show{display:block;animation:fadeIn .3s ease}
-.quiz-feedback.correct-fb{background:var(--hud-green);border:1px solid rgba(32,232,160,.3);color:var(--success)}
-.quiz-feedback.incorrect-fb{background:rgba(232,64,64,.06);border:1px solid rgba(232,64,64,.3);color:var(--danger)}
-@keyframes correctPop{0%{transform:scale(1)}50%{transform:scale(1.02)}100%{transform:scale(1)}}
-@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
-@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-
-/* Animated Diagrams */
-.diagram-container{background:var(--surface);border:1px solid var(--border);border-radius:2px;padding:24px;margin:20px 0;text-align:center;position:relative}
-.diagram-container::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent2),transparent)}
-.prop-animation{width:200px;height:200px;margin:0 auto 16px;position:relative}
-.prop-blade{position:absolute;width:8px;height:80px;background:linear-gradient(180deg,var(--accent2),transparent);border-radius:2px;bottom:50%;left:50%;transform-origin:bottom center;transform:translateX(-50%)}
-.prop-hub{position:absolute;width:24px;height:24px;background:var(--accent);border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%);z-index:2;box-shadow:0 0 15px var(--glow)}
-.spinning .prop-blade{animation:spin 1s linear infinite}
-@keyframes spin{from{transform:translateX(-50%) rotate(0deg)}to{transform:translateX(-50%) rotate(360deg)}}
-.prop-label{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--muted);margin-top:8px;text-transform:uppercase;letter-spacing:1px}
-
-/* Gear Indicator */
-.gear-indicator{display:flex;justify-content:center;gap:12px;margin:20px 0}
-.gear-box{width:48px;height:48px;border-radius:2px;display:flex;align-items:center;justify-content:center;font-family:'Orbitron',sans-serif;font-weight:700;font-size:16px;border:1px solid var(--border);color:var(--muted);transition:all .3s;cursor:pointer}
-.gear-box.active{background:var(--hud-amber);border-color:var(--accent);color:var(--accent);box-shadow:0 0 20px var(--glow);transform:scale(1.05);text-shadow:0 0 8px var(--glow)}
-.gear-box:hover{border-color:var(--accent);color:var(--accent)}
-
-/* Checklist */
-.memory-checklist{list-style:none;padding:0}
-.memory-checklist li{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--card);border:1px solid var(--border);border-radius:2px;margin-bottom:6px;font-size:14px;cursor:pointer;transition:all .2s;border-left:3px solid transparent}
-.memory-checklist li:hover{border-left-color:var(--accent);border-color:var(--accent)}
-.memory-checklist li.checked{border-left-color:var(--success);border-color:rgba(32,232,160,.3);background:var(--hud-green)}
-.memory-checklist li .check-box{width:22px;height:22px;border-radius:2px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;font-size:12px;font-weight:700}
-.memory-checklist li.checked .check-box{background:var(--success);border-color:var(--success);color:var(--bg)}
-
-/* Score Board */
-#score-board{position:fixed;bottom:20px;right:20px;background:rgba(13,21,32,.95);border:1px solid var(--border);border-radius:2px;padding:10px 18px;z-index:998;display:flex;align-items:center;gap:10px;font-family:'Share Tech Mono',monospace;font-size:12px;font-weight:400;backdrop-filter:blur(12px);box-shadow:0 4px 20px rgba(0,0,0,.6);color:var(--accent2);letter-spacing:1px}
-#score-board .score-emoji{font-size:18px}
-
-/* Confetti */
-.confetti{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:10000}
-.confetti-piece{position:absolute;width:10px;height:10px;top:-10px;animation:confettiFall 3s ease-in forwards}
-@keyframes confettiFall{to{top:110vh;transform:rotate(720deg) translateX(100px)}}
-
-/* Responsive */
-@media(max-width:600px){.lesson-section{padding:70px 16px 40px}.content-card{padding:18px}.quiz-container{padding:20px}}
-
-/* TTS Status */
-.tts-status{position:fixed;bottom:70px;right:20px;background:rgba(232,160,32,.9);color:var(--bg);padding:8px 16px;border-radius:2px;font-family:'Share Tech Mono',monospace;font-size:11px;font-weight:400;display:none;z-index:999;letter-spacing:1px;text-transform:uppercase}
-.tts-status.active{display:flex;align-items:center;gap:8px}
-.tts-dot{width:8px;height:8px;border-radius:50%;background:var(--bg);animation:pulse 1s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-
-/* Slide-in animation for cards */
-.slide-in{opacity:0;transform:translateY(20px);transition:all .5s ease}
-.slide-in.visible{opacity:1;transform:translateY(0)}
-
-/* HUD Corner Marks on sections */
-.lesson-section::before,.lesson-section::after{content:'';position:absolute;width:20px;height:20px;border-color:var(--accent);border-style:solid;opacity:.15;pointer-events:none}
-.lesson-section{position:relative}
-.lesson-section::before{top:60px;left:8px;border-width:1px 0 0 1px}
-.lesson-section::after{bottom:20px;right:8px;border-width:0 1px 1px 0}
+body{font-family:'DM Sans','Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.7}
+#progress-bar{position:fixed;top:0;left:0;height:3px;background:var(--sky);z-index:1000;transition:width .3s}
+header{position:fixed;top:3px;left:0;right:0;z-index:999;background:var(--white);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:56px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:15px;color:var(--navy)}
+.logo svg{width:28px;height:28px}
+.nav-center{font-size:13px;color:var(--text2);font-weight:500}
+.nav-center strong{color:var(--text)}
+.nav-btns{display:flex;gap:8px}
+.btn{padding:8px 18px;border-radius:6px;border:1px solid var(--border);background:var(--white);color:var(--text);font:600 13px 'DM Sans',sans-serif;cursor:pointer;transition:all .15s}
+.btn:hover{background:var(--sky-light);border-color:var(--sky);color:var(--sky)}
+.btn:disabled{opacity:.3;cursor:default}
+.btn-primary{background:var(--sky);color:#fff;border-color:var(--sky)}
+.btn-primary:hover{background:#1557b0;box-shadow:var(--hover-shadow)}
+main{max-width:760px;margin:0 auto;padding:76px 20px 60px}
+.module{margin-bottom:48px;animation:fadeUp .5s ease both}
+.module:nth-child(2){animation-delay:.05s}.module:nth-child(3){animation-delay:.1s}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.module-label{display:inline-flex;align-items:center;gap:6px;background:var(--sky-light);color:var(--sky);padding:3px 10px;border-radius:4px;font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px}
+.module h2{font-family:'Inter',sans-serif;font-size:24px;font-weight:800;color:var(--navy);margin-bottom:6px}
+.module .subtitle{font-size:15px;color:var(--text2);margin-bottom:24px}
+.card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:16px;box-shadow:var(--card-shadow);transition:box-shadow .2s}
+.card:hover{box-shadow:var(--hover-shadow)}
+.card h3{font-size:16px;font-weight:700;margin-bottom:8px;color:var(--navy)}
+.card p,.card li{font-size:14px;color:var(--text2);line-height:1.75}
+.card strong{color:var(--text)}
+.analogy{background:var(--sky-light);border:1px solid #c5d9f2;border-left:4px solid var(--sky);border-radius:8px;padding:16px 20px;margin:16px 0}
+.analogy .label{font-size:11px;font-weight:700;color:var(--sky);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.keyfact{background:var(--green-bg);border:1px solid #a8dab5;border-left:4px solid var(--green);border-radius:8px;padding:14px 18px;margin:16px 0;font-size:14px}
+.keyfact strong{color:var(--green)}
+.warning{background:var(--red-bg);border:1px solid #f5b7b1;border-left:4px solid var(--red);border-radius:8px;padding:14px 18px;margin:16px 0;font-size:14px}
+.warning strong{color:var(--red)}
+.note{background:var(--amber-bg);border:1px solid #f5d98e;border-left:4px solid var(--amber);border-radius:8px;padding:14px 18px;margin:16px 0;font-size:14px}
+.quiz{background:var(--white);border:2px solid var(--sky);border-radius:12px;padding:24px;margin:24px 0;box-shadow:var(--card-shadow)}
+.quiz-tag{display:inline-flex;align-items:center;gap:4px;background:var(--sky);color:#fff;padding:3px 10px;border-radius:4px;font-size:11px;font-weight:700;letter-spacing:.5px;margin-bottom:12px}
+.quiz .q{font-size:15px;font-weight:600;margin-bottom:14px;color:var(--navy)}
+.quiz .opts{display:flex;flex-direction:column;gap:8px}
+.opt{display:flex;align-items:center;gap:10px;padding:12px 16px;border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:14px;transition:all .15s}
+.opt:hover{border-color:var(--sky);background:var(--sky-light)}
+.opt .letter{width:26px;height:26px;border-radius:50%;background:var(--bg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;flex-shrink:0}
+.opt.correct{border-color:var(--green);background:var(--green-bg)}
+.opt.correct .letter{background:var(--green);color:#fff;border-color:var(--green)}
+.opt.wrong{border-color:var(--red);background:var(--red-bg)}
+.opt.wrong .letter{background:var(--red);color:#fff;border-color:var(--red)}
+.feedback{margin-top:12px;padding:12px 16px;border-radius:8px;font-size:13px;display:none}
+.feedback.show{display:block;animation:fadeUp .2s ease}
+.feedback.pass{background:var(--green-bg);border:1px solid #a8dab5;color:var(--green)}
+.feedback.fail{background:var(--red-bg);border:1px solid #f5b7b1;color:var(--red)}
+.img-wrap{margin:16px 0;border-radius:10px;overflow:hidden;border:1px solid var(--border);box-shadow:var(--card-shadow)}
+.img-wrap img{width:100%;display:block}
+.img-wrap .cap{padding:8px 14px;background:var(--bg);font-size:12px;color:var(--text2);text-align:center}
+.flow{display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:center;margin:16px 0}
+.flow-box{background:var(--white);border:1px solid var(--border);border-radius:8px;padding:12px 16px;text-align:center;font-size:13px;box-shadow:var(--card-shadow);min-width:120px}
+.flow-box .fl-title{font-weight:700;font-size:14px;color:var(--navy);margin-bottom:2px}
+.flow-box .fl-sub{color:var(--text2);font-size:12px}
+.flow-arrow{color:var(--sky);font-size:20px;font-weight:700}
+.checklist{list-style:none;padding:0}
+.checklist li{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--white);border:1px solid var(--border);border-radius:8px;margin-bottom:6px;font-size:14px;cursor:pointer;transition:all .15s}
+.checklist li:hover{border-color:var(--sky)}
+.checklist li.done{border-color:var(--green);background:var(--green-bg)}
+.checklist .ck{width:20px;height:20px;border-radius:4px;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:11px;font-weight:700;transition:all .15s}
+.checklist li.done .ck{background:var(--green);border-color:var(--green);color:#fff}
+#scorebar{position:fixed;bottom:16px;right:16px;background:var(--white);border:1px solid var(--border);border-radius:8px;padding:8px 16px;box-shadow:var(--hover-shadow);font-size:13px;font-weight:600;z-index:998;display:flex;align-items:center;gap:8px}
+.tts-bar{position:fixed;bottom:60px;right:16px;background:var(--sky);color:#fff;padding:6px 14px;border-radius:6px;font-size:12px;font-weight:600;display:none;z-index:999}
+.tts-bar.on{display:flex;align-items:center;gap:8px}
+.section-divider{height:1px;background:var(--border);margin:40px 0}
+.steps{counter-reset:step}
+.steps li{counter-increment:step;padding-left:36px;position:relative;margin-bottom:12px;font-size:14px;color:var(--text2);line-height:1.7}
+.steps li::before{content:counter(step);position:absolute;left:0;top:2px;width:24px;height:24px;background:var(--sky);color:#fff;border-radius:50%;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center}
+@media(max-width:600px){main{padding:64px 14px 40px}.card{padding:18px}.quiz{padding:18px}}
 </style>
 </head>
 <body>
-
-<!-- Progress Bar -->
 <div id="progress-bar" style="width:0%"></div>
-
-<!-- Top Navigation -->
-<nav id="top-nav">
-  <div class="nav-title">✈️ DA42 PROPELLER SYSTEM</div>
-  <div class="nav-progress" id="nav-progress">Section 1 / 7</div>
+<header>
+  <div class="logo">
+    <svg viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="13" stroke="#1a73e8" stroke-width="2"/><path d="M8 18L14 8l6 10" stroke="#1a73e8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="14" cy="16" r="2" fill="#1a73e8"/></svg>
+    DA42 Ground School
+  </div>
+  <div class="nav-center" id="nav-center">Module <strong>1</strong> of 9</div>
   <div class="nav-btns">
-    <button class="nav-btn" id="btn-prev" onclick="navSection(-1)" disabled>← Back</button>
-    <button class="nav-btn speak-btn" id="btn-speak" onclick="speakCurrentSection()">🔊 Read Aloud</button>
-    <button class="nav-btn" id="btn-next" onclick="navSection(1)">Next →</button>
+    <button class="btn" id="bp" onclick="go(-1)" disabled>← Previous</button>
+    <button class="btn btn-primary" id="bs" onclick="speak()">🔊 Narrate</button>
+    <button class="btn" id="bn" onclick="go(1)">Next →</button>
   </div>
-</nav>
+</header>
 
-<!-- TTS Status -->
-<div class="tts-status" id="tts-status"><div class="tts-dot"></div><span>Captain Kirk is speaking...</span></div>
-
-<!-- Score Board -->
-<div id="score-board"><span class="score-emoji">⭐</span><span id="score-text">0 / 0 correct</span></div>
-
-<!-- ==================== SECTION 1: Welcome ==================== -->
-<section class="lesson-section" id="section-1" data-speak="Welcome aboard, cadet. Today, we're going to master the DA42 propeller system. This is knowledge that could save your life. Pay attention. We'll cover fixed versus variable pitch, FADEC, the MT propeller, the control system, and emergency procedures. Let's begin.">
-  <div class="section-badge"><span class="badge-icon">🚀</span> WELCOME</div>
-  <h2>DA42 Propeller System</h2>
-  <p class="section-intro">Welcome to your interactive lesson on the DA42 NG/VI Propeller System. This lesson is broken into bite-sized chunks with quizzes to keep you sharp.</p>
-  
-  <div class="content-card">
-    <h3>📋 What You'll Learn</h3>
-    <ul class="memory-checklist" id="learning-objectives">
-      <li onclick="toggleCheck(this)"><span class="check-box"></span>Fixed vs Variable Pitch Propellers</li>
-      <li onclick="toggleCheck(this)"><span class="check-box"></span>FADEC & Propeller Set Point</li>
-      <li onclick="toggleCheck(this)"><span class="check-box"></span>MT Propeller Construction</li>
-      <li onclick="toggleCheck(this)"><span class="check-box"></span>Propeller Control System (Governor, Oil, Counterweights)</li>
-      <li onclick="toggleCheck(this)"><span class="check-box"></span>Emergency Procedures</li>
-      <li onclick="toggleCheck(this)"><span class="check-box"></span>Engine Failure & Restart Procedures</li>
-    </ul>
-  </div>
-
-  <div class="content-card">
-    <h3>🎯 How This Works</h3>
-    <p>Each section has <strong style="color:var(--accent2)">visuals</strong>, <strong style="color:var(--accent)">analogies</strong>, and a <strong style="color:var(--warning)">quiz</strong> you must pass before moving on. Hit <strong>🔊 Read Aloud</strong> to hear Captain Kirk narrate each section.</p>
-  </div>
-
-  <img class="lesson-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Diamond_DA42_Twin_Star_%28VH-YEW%29_at_Wagga_Wagga_Airport.jpg/1280px-Diamond_DA42_Twin_Star_%28VH-YEW%29_at_Wagga_Wagga_Airport.jpg" alt="DA42 Twin Star" loading="lazy">
-  <div class="img-caption">Diamond DA42 Twin Star — Your aircraft</div>
-</section>
-
-<!-- ==================== SECTION 2: Fixed vs Variable Pitch ==================== -->
-<section class="lesson-section" id="section-2" data-speak="Think of a fixed pitch propeller like being stuck in third gear on a bicycle. Starting off is hard, cruising is okay, but going fast? You're pedaling like crazy and getting nowhere. A variable pitch propeller is like having multiple gears. Low gear for takeoff, high gear for cruise. The DA42 has variable pitch, feathering propellers. Feathering means the blades align with the airflow to minimize drag during an engine failure.">
-  <div class="section-badge"><span class="badge-icon">⚙️</span> SECTION 1</div>
-  <h2>Fixed vs Variable Pitch</h2>
-  <p class="section-intro">The DA42 uses <strong>variable pitch propellers</strong> — and understanding WHY is the foundation of everything else.</p>
-
-  <div class="analogy-card">
-    <h4>🚲 The Bicycle Analogy</h4>
-    <p><strong>Fixed pitch</strong> = stuck in 3rd gear forever. Starting is brutal, cruising is okay, going fast is impossible.<br><br>
-    <strong>Variable pitch</strong> = a bike with gears. Low gear to start, high gear to cruise. You always have the right gear for the job.</p>
-  </div>
-
-  <!-- Gear Animation -->
-  <div class="diagram-container">
-    <p style="font-weight:700;margin-bottom:12px;color:var(--accent2)">🎮 Click a gear to see the difference!</p>
-    <div class="gear-indicator">
-      <div class="gear-box active" onclick="setGear(this,1)">1</div>
-      <div class="gear-box" onclick="setGear(this,2)">2</div>
-      <div class="gear-box" onclick="setGear(this,3)">3</div>
-      <div class="gear-box" onclick="setGear(this,4)">4</div>
-      <div class="gear-box" onclick="setGear(this,5)">5</div>
-    </div>
-    <div id="gear-desc" style="color:var(--muted);font-size:14px;margin-top:12px">Gear 1: Fine pitch — great for takeoff, lots of RPM, small bite of air</div>
-  </div>
-
-  <div class="content-card">
-    <h3>🪶 What About Feathering?</h3>
-    <p>In an engine failure, we want <strong style="color:var(--accent2)">minimum drag</strong>. Feathering aligns the blade parallel to airflow — like turning a knife edge-on into the wind.</p>
-  </div>
-
-  <div class="key-fact">
-    <span class="fact-icon">✈️</span>
-    <p><strong>Fine pitch</strong> = low gear = takeoff. <strong>Coarse pitch</strong> = high gear = cruise. <strong>Feathered</strong> = blades parallel to air = minimum drag.</p>
-  </div>
-
-  <img class="lesson-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Propeller_Pitch.svg/800px-Propeller_Pitch.svg.png" alt="Propeller pitch angles" loading="lazy" onerror="this.outerHTML='<div class=diagram-container style=text-align:center;padding:40px><div style=font-size:64px>🔄</div><p style=color:var(--muted);margin-top:12px>Fine Pitch ← → Coarse Pitch ← → Feathered</p></div>'">
-  <div class="img-caption">Propeller blade angles: fine pitch, coarse pitch, and feathered</div>
-
-  <!-- QUIZ 1 -->
-  <div class="quiz-container" id="quiz-1">
-    <div class="quiz-header"><span class="quiz-icon">🧠</span><h3>Quick Check!</h3></div>
-    <p class="quiz-q">A fixed pitch propeller is like a bicycle stuck in ___ gear.</p>
-    <div class="quiz-options">
-      <div class="quiz-opt" onclick="checkAnswer(this,'quiz-1',false)"><span class="opt-letter">A</span>First gear — always easy to pedal</div>
-      <div class="quiz-opt" onclick="checkAnswer(this,'quiz-1',true)"><span class="opt-letter">B</span>Third gear — okay at mid speed, bad at extremes</div>
-      <div class="quiz-opt" onclick="checkAnswer(this,'quiz-1',false)"><span class="opt-letter">C</span>Fifth gear — always fast</div>
-    </div>
-    <div class="quiz-feedback" id="quiz-1-feedback"></div>
-  </div>
-</section>
-
-<!-- ==================== SECTION 3: FADEC ==================== -->
-<section class="lesson-section" id="section-3" data-speak="In a conventional twin, the pilot controls RPM with blue levers. But the DA42 has FADEC. Full Authority Digital Engine Control. Think of it as an automatic transmission. You set a power percentage, and the ECUs figure out the RPM. Diamond publishes a propeller set point curve. At 60% power, you get 1980 RPM. The system handles the rest.">
-  <div class="section-badge"><span class="badge-icon">🤖</span> SECTION 2</div>
-  <h2>FADEC & Set Point Curve</h2>
-  <p class="section-intro">The DA42 doesn't have blue RPM levers. Instead, <strong>FADEC</strong> handles everything automatically.</p>
-
-  <div class="analogy-card">
-    <h4>🚗 The Automatic Transmission</h4>
-    <p>FADEC is like driving an automatic car. You push the gas pedal (power lever) and the car (ECU) figures out what gear you need. No manual shifting required!</p>
-  </div>
-
-  <div class="content-card">
-    <h3>📊 How It Works</h3>
-    <p><strong style="color:var(--accent2)">You set:</strong> Power lever position (% load)<br>
-    <strong style="color:var(--accent)">ECU determines:</strong> Target RPM from the set point curve<br>
-    <strong style="color:var(--success)">Governor executes:</strong> Adjusts blade pitch to hit that RPM</p>
-  </div>
-
-  <div class="key-fact">
-    <span class="fact-icon">📈</span>
-    <p>At <strong>60% load</strong>, the propeller set point curve shows <strong>1980 RPM</strong>. The pilot sets power, and the system delivers the correct RPM automatically.</p>
-  </div>
-
-  <div class="diagram-container" style="text-align:center">
-    <p style="font-weight:700;margin-bottom:16px;color:var(--accent2)">FADEC Flow</p>
-    <div style="display:flex;justify-content:center;align-items:center;gap:20px;flex-wrap:wrap;font-size:15px">
-      <div style="background:var(--card);padding:14px 20px;border-radius:12px;border:1px solid var(--accent)">🎛️ Power Lever<br><small style="color:var(--muted)">Pilot sets %</small></div>
-      <div style="font-size:24px;color:var(--accent2)">→</div>
-      <div style="background:var(--card);padding:14px 20px;border-radius:12px;border:1px solid var(--accent2)">🤖 ECU<br><small style="color:var(--muted)">Calculates RPM</small></div>
-      <div style="font-size:24px;color:var(--accent2)">→</div>
-      <div style="background:var(--card);padding:14px 20px;border-radius:12px;border:1px solid var(--success)">⚙️ Governor<br><small style="color:var(--muted)">Sets blade pitch</small></div>
-    </div>
-  </div>
-
-  <!-- QUIZ 2 -->
-  <div class="quiz-container" id="quiz-2">
-    <div class="quiz-header"><span class="quiz-icon">🧠</span><h3>Quick Check!</h3></div>
-    <p class="quiz-q">What does FADEC replace in the DA42?</p>
-    <div class="quiz-options">
-      <div class="quiz-opt" onclick="checkAnswer(this,'quiz-2',false)"><span class="opt-letter">A</span>The throttle lever entirely</div>
-      <div class="quiz-opt" onclick="checkAnswer(this,'quiz-2',true)"><span class="opt-letter">B</span>The blue RPM control levers — no manual RPM control needed</div>
-      <div class="quiz-opt" onclick="checkAnswer(this,'quiz-2',false)"><span class="opt-letter">C</span>The fuel pump system</div>
-    </div>
-    <div class="quiz-feedback" id="quiz-2-feedback"></div>
-  </div>
-</section>
-
-<!-- ==================== SECTION 4: MT Propeller ==================== -->
-<section class="lesson-section" id="section-4" data-speak="The MT propeller is three-bladed, wood composite with reinforced plastic coating. The leading edges are stainless steel. If you have deice, there's a rubber strip that guides fluid to the leading edges. There's an aluminum spinner. Push the prop to move the aircraft, never push the spinner. During preflight, run your hand along the leading edge to check for damage. The AFM warns against high RPM on the ground because you could suck up a stone and damage the blades.">
-  <div class="section-badge"><span class="badge-icon">🔧</span> SECTION 3</div>
-  <h2>MT Propeller Construction</h2>
-  <p class="section-intro">Know what your propeller is made of — and how to preflight it properly.</p>
-
-  <div class="content-card">
-    <h3>🏗️ What It's Made Of</h3>
-    <p>
-      <strong style="color:var(--accent2)">Blades:</strong> 3-bladed, wood composite + reinforced plastic coating<br>
-      <strong style="color:var(--accent2)">Leading edges:</strong> Stainless steel<br>
-      <strong style="color:var(--accent2)">De-ice:</strong> Rubber strip guides fluid to leading edges<br>
-      <strong style="color:var(--accent2)">Spinner:</strong> Aluminum — <strong style="color:var(--danger)">NEVER push the spinner!</strong>
-    </p>
-  </div>
-
-  <div class="warning-card">
-    <span class="warn-icon">⚠️</span>
-    <p><strong style="color:var(--danger)">AFM Warning:</strong> Avoid high RPM on the ground — stones and debris can damage the leading edges!</p>
-  </div>
-
-  <div class="content-card">
-    <h3>👋 Preflight Tip</h3>
-    <p>Run your hand along the <strong>leading edge</strong> during preflight. Yes, you might cut your hand — but it's better to find damage on the ground than in the air.</p>
-  </div>
-
-  <img class="lesson-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/DA42_MPP_Airborne_2.JPG/1280px-DA42_MPP_Airborne_2.JPG" alt="DA42 in flight" loading="lazy" onerror="this.outerHTML='<div class=diagram-container style=text-align:center;padding:40px><div style=font-size:64px>✈️🔧</div><p style=color:var(--muted);margin-top:12px>MT Propeller: 3-bladed, wood composite, stainless steel leading edges</p></div>'">
-  <div class="img-caption">DA42 with MT propellers — 3-bladed composite construction</div>
-
-  <!-- Conventional Twin -->
-  <div class="content-card">
-    <h3>✈️ Conventional Twin</h3>
-    <p>Both engines rotate <strong style="color:var(--accent2)">clockwise</strong> (from pilot's view). Same engine, same mount = <strong>conventional twin</strong>.<br><br>
-    This means the <strong style="color:var(--danger)">left engine is the critical engine</strong> (PAST: P-factor, Accelerated slipstream, Spiraling slipstream, Torque).</p>
-  </div>
-
-  <!-- QUIZ 3 -->
-  <div class="quiz-container" id="quiz-3">
-    <div class="quiz-header"><span class="quiz-icon">🧠</span><h3>Quick Check!</h3></div>
-    <p class="quiz-q">Which engine is the critical engine on the DA42?</p>
-    <div class="quiz-options">
-      <div class="quiz-opt" onclick="checkAnswer(this,'quiz-3',true)"><span class="opt-letter">A</span>Left engine — because both props rotate the same way (clockwise)</div>
-      <div class="quiz-opt" onclick="checkAnswer(this,'quiz-3',false)"><span class="opt-letter">B</span>Right engine — it's farther from center</div>
-      <div class="quiz-opt" onclick="checkAnswer(this,'quiz-3',false)"><span class="opt-letter">C</span>Neither — the DA42 has counter-rotating props</div>
-    </div>
-    <div class="quiz-feedback" id="quiz-3-feedback"></div>
-  </div>
-</section>
-
-<!-- ==================== SECTION 5: Control System ==================== -->
-<section class="lesson-section" id="section-5" data-speak="The ECU is the brain. It knows the power setting and target RPM. The governor is the muscle. It pumps gearbox oil into the propeller hub. More oil pressure equals finer pitch for takeoff. Less pressure equals coarser pitch for cruise. Zero pressure equals feathered. But there are counterweights on each blade that naturally push toward coarse or feathered. And low pitch stop pins prevent feathering below 1300 RPM. The gearbox derates engine speed by a ratio of 1.69 to one. The RPM on your EIS is propeller RPM, not engine RPM.">
-  <div class="section-badge"><span class="badge-icon">🛠️</span> SECTION 4</div>
-  <h2>Propeller Control System</h2>
-  <p class="section-intro">Under the cowling — how the system <em>actually</em> changes blade pitch.</p>
-
-  <div class="analogy-card">
-    <h4>🧠 Brain & Muscle</h4>
-    <p><strong>ECU = Brain:</strong> Knows the power setting, calculates target RPM.<br>
-    <strong>Governor = Muscle:</strong> Pumps oil to change blade pitch to hit that RPM.</p>
-  </div>
-
-  <!-- Propeller Animation -->
-  <div class="diagram-container">
-    <p style="font-weight:700;margin-bottom:16px;color:var(--accent2)">How Oil Pressure Controls Pitch</p>
-    <div style="display:flex;justify-content:center;gap:40px;flex-wrap:wrap">
-      <div style="text-align:center">
-        <div style="font-size:48px;margin-bottom:8px">⬆️</div>
-        <div style="font-weight:700;color:var(--accent2)">More Oil</div>
-        <div style="color:var(--muted);font-size:13px">= Finer Pitch</div>
-        <div style="color:var(--muted);font-size:13px">= Takeoff</div>
-      </div>
-      <div style="text-align:center">
-        <div style="font-size:48px;margin-bottom:8px">⬇️</div>
-        <div style="font-weight:700;color:var(--accent)">Less Oil</div>
-        <div style="color:var(--muted);font-size:13px">= Coarser Pitch</div>
-        <div style="color:var(--muted);font-size:13px">= Cruise</div>
-      </div>
-      <div style="text-align:center">
-        <div style="font-size:48px;margin-bottom:8px">🚫</div>
-        <div style="font-weight:700;color:var(--danger)">No Oil</div>
-        <div style="color:var(--muted);font-size:13px">= Feathered</div>
-        <div style="color:var(--muted);font-size:13px">= Engine Failure</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="content-card">
-    <h3>⚖️ Counterweights</h3>
-    <p>Centrifugal force naturally pushes blades to <strong style="color:var(--danger)">low pitch</strong> (flat, lots of drag — bad!). Counterweights on each blade base push them toward <strong style="color:var(--success)">coarse/feathered</strong> (the safe direction).</p>
-  </div>
-
-  <div class="key-fact">
-    <span class="fact-icon">🔒</span>
-    <p><strong>Low Pitch Stop Pins</strong> prevent feathering below <strong>1,300 RPM</strong>. That's why props don't fully feather on shutdown.</p>
-  </div>
-
-  <div class="content-card">
-    <h3>⚙️ Gearbox Facts</h3>
-    <p>• Derates engine speed to prop speed by <strong style="color:var(--accent2)">1.69:1</strong> ratio<br>
-    • Governor uses <strong>gearbox oil</strong> to change pitch<br>
-    • Check gearbox oil through the <strong>sight glass</strong> during preflight<br>
-    • EIS shows <strong>propeller RPM</strong>, NOT engine RPM</p>
-  </div>
-
-  <!-- QUIZ 4 -->
-  <div class="quiz-container" id="quiz-4">
-    <div class="quiz-header"><span class="quiz-icon">🧠</span><h3>Quick Check!</h3></div>
-    <p class="quiz-q">More oil pressure in the propeller hub leads to…</p>
-    <div class="quiz-options">
-      <div class="quiz-opt" onclick="checkAnswer(this,'quiz-4',true)"><span class="opt-letter">A</span>Finer pitch — used for takeoff</div>
-      <div class="quiz-opt" onclick="checkAnswer(this,'quiz-4',false)"><span class="opt-letter">B</span>Coarser pitch — used for cruise</div>
-      <div class="quiz-opt" onclick="checkAnswer(this,'quiz-4',false)"><span class="opt-letter">C</span>Feathered position — engine failure</div>
-    </div>
-    <div class="quiz-feedback" id="quiz-4-feedback"></div>
-  </div>
-</section>
-
-<!-- ==================== SECTION 6: Accumulator & Feathering ==================== -->
-<section class="lesson-section" id="section-6" data-speak="The pressure accumulator stores pressurized gearbox oil in a nitrogen-charged cylinder. When you turn the engine master ON, the accumulator releases oil to push the prop OUT of feather. To feather: pull the power lever to idle, then turn the engine master OFF. The electric governor valve opens, oil flows back from the hub, blades move to feathered. The accumulator closes and stores oil for next time.">
-  <div class="section-badge"><span class="badge-icon">💨</span> SECTION 5</div>
-  <h2>Accumulator & Feathering</h2>
-  <p class="section-intro">How the propeller transitions between feathered and unfeathered — and why the accumulator matters.</p>
-
-  <div class="content-card">
-    <h3>🔋 Pressure Accumulator</h3>
-    <p>Also called the <strong style="color:var(--accent2)">unfeathering accumulator</strong>. It stores pressurized gearbox oil in a <strong>nitrogen-charged metal cylinder</strong>.</p>
-  </div>
-
-  <div class="diagram-container">
-    <p style="font-weight:700;margin-bottom:16px;color:var(--accent2)">Feather / Unfeather Sequence</p>
-    <div style="display:flex;flex-direction:column;gap:16px;text-align:left;max-width:400px;margin:0 auto">
-      <div style="display:flex;align-items:center;gap:12px"><span style="font-size:24px">🟢</span><div><strong>Unfeather:</strong> Engine Master ON → accumulator releases oil → prop moves out of feather</div></div>
-      <div style="display:flex;align-items:center;gap:12px"><span style="font-size:24px">🔴</span><div><strong>Feather:</strong> Power lever to IDLE → Engine Master OFF → oil drains back → blades feather → accumulator stores oil</div></div>
-    </div>
-  </div>
-
-  <div class="warning-card">
-    <span class="warn-icon">⚠️</span>
-    <p><strong>Critical sequence:</strong> Power lever to IDLE <strong>FIRST</strong>, then Engine Master OFF. This is how you feather the prop.</p>
-  </div>
-
-  <!-- QUIZ 5 -->
-  <div class="quiz-container" id="quiz-5">
-    <div class="quiz-header"><span class="quiz-icon">🧠</span><h3>Quick Check!</h3></div>
-    <p class="quiz-q">To feather the propeller, the correct sequence is:</p>
-    <div class="quiz-options">
-      <div class="quiz-opt" onclick="checkAnswer(this,'quiz-5',false)"><span class="opt-letter">A</span>Engine Master OFF, then power lever to idle</div>
-      <div class="quiz-opt" onclick="checkAnswer(this,'quiz-5',true)"><span class="opt-letter">B</span>Power lever to IDLE first, then Engine Master OFF</div>
-      <div class="quiz-opt" onclick="checkAnswer(this,'quiz-5',false)"><span class="opt-letter">C</span>Fuel selector OFF, then alternator OFF</div>
-    </div>
-    <div class="quiz-feedback" id="quiz-5-feedback"></div>
-  </div>
-</section>
-
-<!-- ==================== SECTION 7: Emergency Procedures ==================== -->
-<section class="lesson-section" id="section-7" data-speak="Emergency procedures. Three situations. One: oscillating RPM. Change power, check for ECU failure, switch ECU if needed, land at nearest airfield. Two: propeller overspeed. Maximum 2500 RPM for 20 seconds. Reduce power, check ECUs, switch if needed, land. Three: fixed RPM that won't change with power. Same drill. For engine failure below 3000 feet: memory items. Power lever max, maintain directional control, airspeed to V-S-C, gear up, flaps up, secure the engine. Identify dead foot dead engine. Verify. Fix by turning engine master off. Secure alternator, fuel pump, fuel selector off.">
-  <div class="section-badge"><span class="badge-icon">🚨</span> SECTION 6</div>
-  <h2>Emergency Procedures</h2>
-  <p class="section-intro">The procedures that could save your life. Know these cold.</p>
-
-  <div class="content-card" style="border-color:var(--danger)">
-    <h3>🔄 Oscillating RPM</h3>
-    <p>1️⃣ Change power setting<br>2️⃣ Check for ECU failure (A or B)<br>3️⃣ Switch to other ECU<br>4️⃣ If unresolved → land at nearest airfield</p>
-  </div>
-
-  <div class="content-card" style="border-color:var(--danger)">
-    <h3>⚡ Propeller Overspeed</h3>
-    <p><strong style="color:var(--danger)">Max: 2,500 RPM for 20 seconds!</strong><br>1️⃣ Reduce power<br>2️⃣ Check ECU failure<br>3️⃣ Switch ECU<br>4️⃣ Land at nearest suitable airfield</p>
-  </div>
-
-  <div class="content-card" style="border-color:var(--danger)">
-    <h3>🔒 Fixed RPM (Won't Change)</h3>
-    <p>Same checklist as above. If ECU switch doesn't resolve → <strong>terminate the flight</strong>.</p>
-  </div>
-
-  <div class="content-card" style="border-color:var(--warning);background:rgba(253,203,110,.06)">
-    <h3>💀 Engine Failure Below 3,000 ft (MEMORY ITEMS)</h3>
-    <ul class="memory-checklist" id="memory-items">
-      <li onclick="toggleCheck(this)"><span class="check-box"></span>Power lever — MAX</li>
-      <li onclick="toggleCheck(this)"><span class="check-box"></span>Maintain directional control</li>
-      <li onclick="toggleCheck(this)"><span class="check-box"></span>Airspeed — VSC</li>
-      <li onclick="toggleCheck(this)"><span class="check-box"></span>Gear — UP</li>
-      <li onclick="toggleCheck(this)"><span class="check-box"></span>Flaps — UP</li>
-      <li onclick="toggleCheck(this)"><span class="check-box"></span>SECURE the engine</li>
-    </ul>
-    <div class="key-fact" style="margin-top:16px">
-      <span class="fact-icon">🦶</span>
-      <p><strong>Identify:</strong> Dead foot = dead engine. <strong>Verify:</strong> Pull throttle back. <strong>Fix:</strong> Engine master OFF (feathers prop). <strong>Secure:</strong> Alternator OFF, fuel pump OFF, fuel selector OFF.</p>
-    </div>
-  </div>
-
-  <div class="content-card">
-    <h3>🔄 Engine Restart — With Starter</h3>
-    <p><strong>Conditions:</strong> Under 18,000 ft (immediate) or 10,000 ft (2 min), under 100 KIAS<br><br>
-    Power IDLE → Fuel ON → Alt air as required → Alternator ON → Engine Master ON (unfeathers) → Starter ON → Check circuit breakers</p>
-  </div>
-
-  <div class="content-card">
-    <h3>💨 Engine Restart — Windmilling</h3>
-    <p><strong>Airspeed:</strong> 125 – 145 KIAS (must be in this window!)<br><br>
-    Power IDLE → Fuel ON → Alt air → Alternator ON → Engine Master ON → Prop unfeathers & restarts by windmilling</p>
-  </div>
-
-  <!-- QUIZ 6 -->
-  <div class="quiz-container" id="quiz-6">
-    <div class="quiz-header"><span class="quiz-icon">🧠</span><h3>Final Challenge!</h3></div>
-    <p class="quiz-q">What is the maximum propeller overspeed RPM, and for how long?</p>
-    <div class="quiz-options">
-      <div class="quiz-opt" onclick="checkAnswer(this,'quiz-6',false)"><span class="opt-letter">A</span>2,000 RPM for 30 seconds</div>
-      <div class="quiz-opt" onclick="checkAnswer(this,'quiz-6',true)"><span class="opt-letter">B</span>2,500 RPM for 20 seconds</div>
-      <div class="quiz-opt" onclick="checkAnswer(this,'quiz-6',false)"><span class="opt-letter">C</span>3,000 RPM for 10 seconds</div>
-    </div>
-    <div class="quiz-feedback" id="quiz-6-feedback"></div>
-  </div>
-
-  <!-- QUIZ 7 -->
-  <div class="quiz-container" id="quiz-7">
-    <div class="quiz-header"><span class="quiz-icon">🧠</span><h3>Bonus Round!</h3></div>
-    <p class="quiz-q">For a windmilling restart, the airspeed must be between:</p>
-    <div class="quiz-options">
-      <div class="quiz-opt" onclick="checkAnswer(this,'quiz-7',false)"><span class="opt-letter">A</span>80 – 100 KIAS</div>
-      <div class="quiz-opt" onclick="checkAnswer(this,'quiz-7',false)"><span class="opt-letter">B</span>100 – 120 KIAS</div>
-      <div class="quiz-opt" onclick="checkAnswer(this,'quiz-7',true)"><span class="opt-letter">C</span>125 – 145 KIAS</div>
-    </div>
-    <div class="quiz-feedback" id="quiz-7-feedback"></div>
-  </div>
-</section>
-
-<!-- ==================== SECTION 8: Completion ==================== -->
-<section class="lesson-section" id="section-8" data-speak="Outstanding work, cadet! You have completed the DA42 propeller system lesson. You now understand fixed versus variable pitch, FADEC, the MT propeller, the control system, the accumulator, and all emergency procedures. Go review the Embry-Riddle propeller diagrams for extra visual reinforcement. Well done. Kirk out.">
-  <div class="section-badge"><span class="badge-icon">🏆</span> COMPLETE</div>
-  <h2>Mission Complete!</h2>
-  <p class="section-intro">Outstanding work. You've covered the entire DA42 propeller system.</p>
-
-  <div class="content-card" style="border-color:var(--success);text-align:center">
-    <div style="font-size:64px;margin-bottom:16px">🎖️</div>
-    <h3 style="color:var(--success);font-size:24px">Your Final Score</h3>
-    <p id="final-score" style="font-size:48px;font-weight:900;color:var(--accent2);margin:16px 0">0 / 7</p>
-    <p>Review any sections you missed by scrolling back up or using the ← Back button.</p>
-  </div>
-
-  <div class="content-card">
-    <h3>📚 Next Steps</h3>
-    <p>• Review the <strong>Embry-Riddle propeller diagrams</strong> for visual reinforcement<br>
-    • Practice the <strong>memory items</strong> until you can recite them eyes-closed<br>
-    • Watch the <a href="https://www.youtube.com/watch?v=YjscP5juA5c" target="_blank" style="color:var(--accent2)">original video</a> for additional context</p>
-  </div>
-</section>
+<div id="scorebar">✓ <span id="sc">0 / 0</span></div>
+<div class="tts-bar" id="tts">🔊 Narrating...</div>
+<main id="main">
+<!-- CONTENT INJECTED BY JS -->
+</main>
 
 <script>
-// ─── State ───
-let currentSection = 1;
-const totalSections = 8;
-let score = 0, totalAnswered = 0;
-const answeredQuizzes = new Set();
-let isSpeaking = false;
-let currentAudio = null;
+const MODULES=[
+// ---- MODULE 1: Welcome ----
+{title:"Welcome Aboard",sub:"Course overview and objectives",label:"START",speak:"Welcome to the DA42 propeller system course. This lesson will take you through everything you need to understand about how the propeller works on the DA42 twin. We'll build from the basics up to emergency procedures. Let's get started.",html:`
+<div class="card"><h3>What You'll Master</h3>
+<ul class="checklist" id="obj">
+<li onclick="ck(this)"><span class="ck"></span>What pitch means and why it matters</li>
+<li onclick="ck(this)"><span class="ck"></span>How FADEC controls RPM automatically</li>
+<li onclick="ck(this)"><span class="ck"></span>MT propeller construction & preflight</li>
+<li onclick="ck(this)"><span class="ck"></span>The oil-based pitch control system</li>
+<li onclick="ck(this)"><span class="ck"></span>Emergency: oscillating RPM, overspeed, fixed RPM</li>
+<li onclick="ck(this)"><span class="ck"></span>Engine failure memory items & restarts</li>
+</ul></div>
+<div class="card"><h3>How This Course Works</h3>
+<p>Each module covers <strong>one concept</strong>. You'll get an <strong>analogy</strong> first to build intuition, then the technical detail, then a <strong>knowledge check</strong> to lock it in. Use the 🔊 <strong>Narrate</strong> button to hear each section read aloud.</p>
+<p style="margin-top:8px">This course is designed for learners who learn best with multiple approaches — reading, listening, visuals, and active recall.</p></div>
+<div class="img-wrap"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Diamond_DA42_Twin_Star_%28VH-YEW%29_at_Wagga_Wagga_Airport.jpg/1280px-Diamond_DA42_Twin_Star_%28VH-YEW%29_at_Wagga_Wagga_Airport.jpg" alt="DA42"><div class="cap">Diamond DA42 Twin Star — the aircraft you're learning about</div></div>`},
 
-// ─── Section Navigation ───
-function navSection(dir) {
-  const next = currentSection + dir;
-  if (next < 1 || next > totalSections) return;
-  currentSection = next;
-  const el = document.getElementById('section-' + currentSection);
-  if (el) el.scrollIntoView({ behavior: 'smooth' });
-  updateNav();
+// ---- MODULE 2: What Is Pitch? ----
+{title:"What Is Propeller Pitch?",sub:"The angle of the blade — and why it changes everything",label:"CONCEPT",speak:"Propeller pitch is the angle of the blade relative to the plane of rotation. Think of it like scooping water with your hand. A flat hand slicing through water feels easy but moves little water. Cup your hand and you grab a lot of water but it takes more effort. That is pitch. A fine pitch blade takes a small bite of air at high RPM. A coarse pitch blade takes a big bite at lower RPM.",html:`
+<div class="analogy"><div class="label">Analogy — Scooping Water</div>
+<p>Hold your hand flat and drag it through water. Easy, right? Now cup your hand — you grab way more water, but it's harder. That's <strong>pitch</strong>.</p>
+<p style="margin-top:8px"><strong>Flat hand</strong> = fine pitch = small bite, high RPM, great for takeoff.<br><strong>Cupped hand</strong> = coarse pitch = big bite, lower RPM, efficient for cruise.</p></div>
+<div class="card"><h3>Technical Definition</h3>
+<p><strong>Pitch</strong> is the angle between the blade's chord line and the plane of rotation. The DA42's pitch varies from about <strong>12° (fine)</strong> to <strong>90° (feathered)</strong>.</p></div>
+<div class="keyfact">💡 <strong>Fine pitch</strong> = small angle = small bite of air = high RPM.<br><strong>Coarse pitch</strong> = big angle = big bite of air = lower RPM.</div>
+<div class="quiz" id="q1"><div class="quiz-tag">✓ Knowledge Check</div>
+<p class="q">A propeller blade at fine pitch takes a _____ bite of air and spins at _____ RPM.</p>
+<div class="opts">
+<div class="opt" onclick="ans(this,'q1',0)"><span class="letter">A</span>Large bite, low RPM</div>
+<div class="opt" onclick="ans(this,'q1',1)"><span class="letter">B</span>Small bite, high RPM</div>
+<div class="opt" onclick="ans(this,'q1',0)"><span class="letter">C</span>Large bite, high RPM</div>
+</div><div class="feedback" id="q1f"></div></div>`},
+
+// ---- MODULE 3: Fixed vs Variable ----
+{title:"Fixed vs Variable Pitch",sub:"Why the DA42 uses variable pitch propellers",label:"CONCEPT",speak:"If you have ever ridden a bicycle, you understand fixed versus variable pitch. A fixed pitch propeller is like a bike stuck in one gear. In third gear, starting from a stop is exhausting. Cruising at ten miles per hour feels right. But trying to go twenty? You are pedaling furiously and barely accelerating. A variable pitch propeller is like having a full set of gears. First gear to start, third to climb, fifth to cruise. The DA42 has variable pitch so the blade angle adjusts for every phase of flight.",html:`
+<div class="analogy"><div class="label">Analogy — The Bicycle</div>
+<p>Imagine a bike with <strong>only one gear — third</strong>.</p>
+<p style="margin-top:6px">🚲 <strong>Starting from a stop:</strong> Brutal. You're pushing hard and barely moving.<br>
+🚲 <strong>At 10 mph:</strong> Feels perfect — this gear was made for this speed.<br>
+🚲 <strong>Going 20 mph:</strong> Your legs are spinning like crazy but you're barely going faster.</p>
+<p style="margin-top:8px">That's a <strong>fixed pitch</strong> propeller — great at one speed, terrible at the rest.</p>
+<p style="margin-top:8px">Now imagine a <strong>21-speed bike</strong>. Low gear to start, shift up as you go. You always have the right gear. That's <strong>variable pitch</strong>.</p></div>
+<div class="card"><h3>Why Variable Pitch Matters</h3>
+<p><strong>Takeoff:</strong> Fine pitch (low gear) — small bite, high RPM, maximum thrust to accelerate.<br>
+<strong>Climb:</strong> Medium pitch — balancing RPM and thrust.<br>
+<strong>Cruise:</strong> Coarse pitch (high gear) — big bite, efficient fuel burn at lower RPM.</p></div>
+<div class="keyfact">💡 The DA42 has <strong>variable pitch, feathering propellers</strong>. The blade angle adjusts automatically for every phase of flight.</div>
+<div class="quiz" id="q2"><div class="quiz-tag">✓ Knowledge Check</div>
+<p class="q">A fixed pitch propeller is like a bicycle stuck in one gear. What is the main disadvantage?</p>
+<div class="opts">
+<div class="opt" onclick="ans(this,'q2',1)"><span class="letter">A</span>It's only efficient at one airspeed — poor performance everywhere else</div>
+<div class="opt" onclick="ans(this,'q2',0)"><span class="letter">B</span>It weighs more than a variable pitch propeller</div>
+<div class="opt" onclick="ans(this,'q2',0)"><span class="letter">C</span>It cannot generate thrust at high altitude</div>
+</div><div class="feedback" id="q2f"></div></div>`},
+
+// ---- MODULE 4: Feathering ----
+{title:"What Is Feathering?",sub:"The emergency position that saves your life",label:"CONCEPT",speak:"Feathering means turning the blade edge-on to the wind, like a knife cutting through the air. In an engine failure, a windmilling propeller creates enormous drag. Feathering eliminates that drag. Think of holding a playing card out a car window. Flat to the wind, it jerks your hand back. Turn it edge-on and it slices through. That is the difference between a windmilling prop and a feathered one.",html:`
+<div class="analogy"><div class="label">Analogy — Playing Card Out a Car Window</div>
+<p>Hold a <strong>playing card flat</strong> out a car window at 60 mph. The wind tears at it — massive drag.</p>
+<p style="margin-top:6px">Now <strong>turn it edge-on</strong>. It slices through the air like nothing.</p>
+<p style="margin-top:6px">A <strong>windmilling prop</strong> = card flat = enormous drag pulling you toward the dead engine.<br>A <strong>feathered prop</strong> = card edge-on = almost no drag.</p></div>
+<div class="card"><h3>When Do We Feather?</h3>
+<p>Whenever an engine fails or must be shut down in flight. Feathering puts the blade at approximately <strong>90°</strong> — parallel to the oncoming airflow. This dramatically reduces drag and allows you to maintain control on the remaining engine.</p></div>
+<div class="warning">⚠️ <strong>Critical:</strong> Failure to feather an inoperative engine's propeller can make the aircraft uncontrollable. This is not optional — it's a survival action.</div>
+<div class="quiz" id="q3"><div class="quiz-tag">✓ Knowledge Check</div>
+<p class="q">What does feathering a propeller do?</p>
+<div class="opts">
+<div class="opt" onclick="ans(this,'q3',0)"><span class="letter">A</span>Increases thrust on the failed engine</div>
+<div class="opt" onclick="ans(this,'q3',0)"><span class="letter">B</span>Locks the propeller from spinning</div>
+<div class="opt" onclick="ans(this,'q3',1)"><span class="letter">C</span>Aligns the blade edge-on to airflow, minimizing drag</div>
+</div><div class="feedback" id="q3f"></div></div>`},
+
+// ---- MODULE 5: FADEC ----
+{title:"FADEC — Your Automatic Transmission",sub:"How the DA42 eliminates manual RPM control",label:"SYSTEM",speak:"In most twin engine airplanes, the pilot uses blue levers to manually set RPM. The DA42 does not have blue levers. Instead it has FADEC — Full Authority Digital Engine Control. Think of driving an automatic transmission car. You press the gas pedal to a certain depth and the car figures out what gear to be in. Same thing here. You set the power lever to a percentage and the ECU calculates the correct RPM from a set point curve. At sixty percent power, the target is 1980 RPM.",html:`
+<div class="analogy"><div class="label">Analogy — Automatic vs Manual Car</div>
+<p>Most twins = <strong>manual transmission</strong>. The pilot picks the gear (RPM) with blue levers.</p>
+<p style="margin-top:6px">The DA42 = <strong>automatic transmission</strong>. You push the gas pedal (power lever) and the car (ECU) picks the perfect gear for you.</p></div>
+<div class="card"><h3>How FADEC Works</h3>
+<div class="flow">
+<div class="flow-box"><div class="fl-title">You Set</div><div class="fl-sub">Power lever %</div></div>
+<div class="flow-arrow">→</div>
+<div class="flow-box"><div class="fl-title">ECU Calculates</div><div class="fl-sub">Target RPM</div></div>
+<div class="flow-arrow">→</div>
+<div class="flow-box"><div class="fl-title">Governor Adjusts</div><div class="fl-sub">Blade pitch</div></div>
+</div>
+<p style="margin-top:12px">Diamond publishes a <strong>propeller set point curve</strong>. At <strong>60% power</strong>, the target is <strong>1,980 RPM</strong>. The system adjusts blade pitch automatically to maintain that RPM.</p></div>
+<div class="keyfact">💡 <strong>No blue levers.</strong> The pilot only sets power lever position. The ECU + governor handle RPM automatically.</div>
+<div class="quiz" id="q4"><div class="quiz-tag">✓ Knowledge Check</div>
+<p class="q">In the DA42, who controls the RPM?</p>
+<div class="opts">
+<div class="opt" onclick="ans(this,'q4',0)"><span class="letter">A</span>The pilot, using blue RPM levers</div>
+<div class="opt" onclick="ans(this,'q4',1)"><span class="letter">B</span>The ECU, based on the power lever position</div>
+<div class="opt" onclick="ans(this,'q4',0)"><span class="letter">C</span>The copilot, using a separate RPM control</div>
+</div><div class="feedback" id="q4f"></div></div>`},
+
+// ---- MODULE 6: MT Propeller ----
+{title:"The MT Propeller — Construction & Preflight",sub:"What it's made of and how to inspect it",label:"HARDWARE",speak:"The MT propeller is three bladed, made of wood composite with reinforced plastic coating. The leading edges are stainless steel for durability. There is a rubber strip for deice fluid. The spinner is aluminum. Important: push the prop blades to move the aircraft, never push the spinner. During preflight, run your hand along the leading edge to feel for nicks or damage. The AFM warns against high RPM on the ground because debris can damage the blades. Both engines rotate clockwise from the pilot's perspective, making this a conventional twin with the left engine as the critical engine.",html:`
+<div class="card"><h3>Construction</h3>
+<p>• <strong>3 blades</strong> — wood composite core with reinforced plastic coating<br>
+• <strong>Leading edges:</strong> stainless steel (durable against erosion)<br>
+• <strong>De-ice:</strong> rubber strip channels TKS fluid to the leading edges<br>
+• <strong>Spinner:</strong> aluminum — <strong>never push the spinner</strong> to move the aircraft</p></div>
+<div class="analogy"><div class="label">Preflight Mindset</div>
+<p>Run your hand along each leading edge during preflight. Yes, a nick might cut you. But it is far better to <strong>find damage on the ground</strong> than to discover it in flight. Think of it as shaking hands with your propeller — you want to know it's healthy before you trust it with your life.</p></div>
+<div class="warning">⚠️ <strong>AFM Caution:</strong> Avoid high RPM on the ground. Stones and debris can be sucked up and damage the leading edges.</div>
+<div class="card"><h3>Conventional Twin</h3>
+<p>Both engines rotate <strong>clockwise</strong> (from the pilot's seat). Same engine, same direction = <strong>conventional twin</strong>.</p>
+<p style="margin-top:6px">This means the <strong>left engine is the critical engine</strong> — the one whose failure most affects controllability. Remember <strong>PAST</strong>: P-factor, Accelerated slipstream, Spiraling slipstream, Torque.</p></div>
+<div class="quiz" id="q5"><div class="quiz-tag">✓ Knowledge Check</div>
+<p class="q">Why is the left engine the critical engine on the DA42?</p>
+<div class="opts">
+<div class="opt" onclick="ans(this,'q5',1)"><span class="letter">A</span>Both propellers rotate clockwise — losing the left engine has the greatest adverse effect</div>
+<div class="opt" onclick="ans(this,'q5',0)"><span class="letter">B</span>The left engine produces more power</div>
+<div class="opt" onclick="ans(this,'q5',0)"><span class="letter">C</span>The propellers counter-rotate, and the left has more P-factor</div>
+</div><div class="feedback" id="q5f"></div></div>`},
+
+// ---- MODULE 7: Control System ----
+{title:"How Pitch Is Controlled",sub:"The brain, the muscle, and the backup systems",label:"SYSTEM",speak:"Think of the system as a body. The ECU is the brain — it knows the target RPM. The governor is the muscle — it pumps gearbox oil into the propeller hub. More oil pressure pushes blades to fine pitch for takeoff. Less oil pressure lets blades move to coarse pitch for cruise. No oil at all means feathered. Counterweights on each blade naturally push toward coarse or feathered, which is the safe direction. Low pitch stop pins prevent feathering below 1300 RPM. The gearbox derates engine speed by 1.69 to 1. And the RPM on your EIS is propeller RPM, not engine RPM.",html:`
+<div class="analogy"><div class="label">Analogy — Brain and Muscle</div>
+<p><strong>ECU = Brain.</strong> It knows what power you've set and calculates the target RPM.<br>
+<strong>Governor = Muscle.</strong> It physically pumps oil to move the blades to the right angle.</p></div>
+<div class="card"><h3>Oil Pressure Controls Everything</h3>
+<div class="flow">
+<div class="flow-box" style="border-color:var(--sky)"><div class="fl-title">⬆ More Oil</div><div class="fl-sub">Fine pitch → Takeoff</div></div>
+<div class="flow-box" style="border-color:var(--amber)"><div class="fl-title">⬇ Less Oil</div><div class="fl-sub">Coarse pitch → Cruise</div></div>
+<div class="flow-box" style="border-color:var(--red)"><div class="fl-title">🚫 No Oil</div><div class="fl-sub">Feathered → Engine out</div></div>
+</div></div>
+<div class="card"><h3>Safety Backup: Counterweights</h3>
+<p>Centrifugal force naturally pushes spinning blades toward <strong>flat (fine pitch)</strong> — the worst position in an engine failure (max drag).</p>
+<p style="margin-top:6px">To counteract this, each blade has a <strong>counterweight</strong> at its base that pushes toward <strong>coarse/feathered</strong> — the safe direction.</p></div>
+<div class="keyfact">💡 <strong>Low pitch stop pins</strong> prevent feathering below <strong>1,300 RPM</strong>. That's why the props don't fully feather when you shut down on the ground.</div>
+<div class="card"><h3>Gearbox Quick Facts</h3>
+<p>• Derates engine speed to prop speed: <strong>1.69 : 1</strong> ratio<br>
+• Governor uses <strong>gearbox oil</strong> (check through sight glass on preflight)<br>
+• Your EIS displays <strong>propeller RPM</strong>, not engine RPM</p></div>
+<div class="quiz" id="q6"><div class="quiz-tag">✓ Knowledge Check</div>
+<p class="q">What happens when oil pressure in the propeller hub increases?</p>
+<div class="opts">
+<div class="opt" onclick="ans(this,'q6',1)"><span class="letter">A</span>Blades go to fine pitch (takeoff setting)</div>
+<div class="opt" onclick="ans(this,'q6',0)"><span class="letter">B</span>Blades go to coarse pitch (cruise setting)</div>
+<div class="opt" onclick="ans(this,'q6',0)"><span class="letter">C</span>Blades feather</div>
+</div><div class="feedback" id="q6f"></div></div>
+<div class="quiz" id="q7"><div class="quiz-tag">✓ Knowledge Check</div>
+<p class="q">Why don't the propellers fully feather when you shut down on the ground?</p>
+<div class="opts">
+<div class="opt" onclick="ans(this,'q7',0)"><span class="letter">A</span>The counterweights prevent it</div>
+<div class="opt" onclick="ans(this,'q7',1)"><span class="letter">B</span>Low pitch stop pins engage below 1,300 RPM</div>
+<div class="opt" onclick="ans(this,'q7',0)"><span class="letter">C</span>The accumulator holds pressure</div>
+</div><div class="feedback" id="q7f"></div></div>`},
+
+// ---- MODULE 8: Accumulator ----
+{title:"The Pressure Accumulator",sub:"How the prop feathers and unfeathers",label:"SYSTEM",speak:"The pressure accumulator, also called the unfeathering accumulator, stores pressurized gearbox oil in a nitrogen-charged cylinder. When you turn the engine master ON, the accumulator releases oil to push the prop out of feather. To feather, pull the power lever to idle first, then turn the engine master OFF. The electric governor valve opens, oil drains from the hub, counterweights push the blades to feathered, and the accumulator stores oil for next time. Order matters: idle first, then master off.",html:`
+<div class="analogy"><div class="label">Analogy — A Pressurized Fire Extinguisher</div>
+<p>The accumulator is like a small fire extinguisher pre-charged with nitrogen. Squeeze the handle (engine master ON) and it releases pressurized oil to push the prop out of feather. Release the handle (engine master OFF), and the system recharges for next time.</p></div>
+<div class="card"><h3>Feather / Unfeather Sequence</h3>
+<p><strong style="color:var(--green)">To UNFEATHER</strong> (engine master ON):</p>
+<ol class="steps"><li>Turn Engine Master ON</li><li>Accumulator releases pressurized oil into prop hub</li><li>Oil pressure pushes blades out of feather</li></ol>
+<p style="margin-top:16px"><strong style="color:var(--red)">To FEATHER</strong> (shutting down):</p>
+<ol class="steps"><li>Pull power lever to <strong>IDLE</strong> first</li><li>Turn Engine Master <strong>OFF</strong></li><li>Electric governor valve opens → oil drains from hub</li><li>Counterweights push blades to feathered position</li><li>Accumulator closes and stores oil</li></ol></div>
+<div class="warning">⚠️ <strong>Order matters!</strong> Power lever to IDLE <strong>first</strong>, then Engine Master OFF. Get this backwards and the prop may not feather properly.</div>
+<div class="quiz" id="q8"><div class="quiz-tag">✓ Knowledge Check</div>
+<p class="q">To feather the propeller during shutdown, the correct sequence is:</p>
+<div class="opts">
+<div class="opt" onclick="ans(this,'q8',0)"><span class="letter">A</span>Engine Master OFF, then power lever to idle</div>
+<div class="opt" onclick="ans(this,'q8',1)"><span class="letter">B</span>Power lever to IDLE first, then Engine Master OFF</div>
+<div class="opt" onclick="ans(this,'q8',0)"><span class="letter">C</span>Fuel selector OFF, then alternator OFF</div>
+</div><div class="feedback" id="q8f"></div></div>`},
+
+// ---- MODULE 9: Emergency Procedures ----
+{title:"Emergency Procedures",sub:"Defective RPM, engine failure, and restarts",label:"EMERGENCY",speak:"Three propeller emergencies. Oscillating RPM: change power, check ECU failure, switch ECU, land. Propeller overspeed: maximum 2500 RPM for 20 seconds. Reduce power, check and switch ECU, land. Fixed RPM: same drill. For engine failure below 3000 feet, these are memory items. Power lever max. Maintain directional control. Airspeed to VSC. Gear up. Flaps up. Secure the engine. Identify dead foot dead engine. Verify by pulling throttle back. Fix by turning engine master off which feathers the prop. Secure alternator off, fuel pump off, fuel selector off.",html:`
+<div class="card" style="border-left:4px solid var(--red)"><h3>🔄 Oscillating RPM</h3>
+<ol class="steps"><li>Change power setting — RPM may stabilize at a different setting</li><li>Check for ECU failure indication (A or B)</li><li>Switch to the other ECU if failure detected</li><li>If unresolved → <strong>land at nearest suitable airfield</strong></li></ol></div>
+<div class="card" style="border-left:4px solid var(--red)"><h3>⚡ Propeller Overspeed</h3>
+<div class="warning">⚠️ <strong>Limit: 2,500 RPM maximum for 20 seconds</strong></div>
+<ol class="steps"><li>Reduce power immediately</li><li>Check for ECU failure</li><li>Switch ECU (A↔B)</li><li>If unresolved → <strong>land immediately</strong></li></ol></div>
+<div class="card" style="border-left:4px solid var(--red)"><h3>🔒 Fixed RPM (Won't Change With Power)</h3>
+<p>Follow the same checklist. If switching the ECU doesn't resolve it → <strong>terminate the flight</strong>.</p></div>
+<div class="section-divider"></div>
+<div class="card" style="border-left:4px solid var(--amber);background:var(--amber-bg)"><h3>💀 Engine Failure Below 3,000 ft — MEMORY ITEMS</h3>
+<ul class="checklist" id="mem">
+<li onclick="ck(this)"><span class="ck"></span><strong>Power lever — MAX</strong></li>
+<li onclick="ck(this)"><span class="ck"></span><strong>Maintain directional control</strong></li>
+<li onclick="ck(this)"><span class="ck"></span><strong>Airspeed — V<sub>SC</sub></strong></li>
+<li onclick="ck(this)"><span class="ck"></span><strong>Gear — UP</strong></li>
+<li onclick="ck(this)"><span class="ck"></span><strong>Flaps — UP</strong></li>
+<li onclick="ck(this)"><span class="ck"></span><strong>SECURE the engine</strong></li>
+</ul>
+<div class="keyfact" style="margin-top:14px">🦶 <strong>Identify:</strong> Dead foot = dead engine → <strong>Verify:</strong> Pull throttle back → <strong>Fix:</strong> Engine master OFF (feathers prop) → <strong>Secure:</strong> Alternator OFF, fuel pump OFF, fuel selector OFF</div></div>
+<div class="card"><h3>🔄 Restart With Starter</h3>
+<p><strong>Altitude:</strong> ≤18,000 ft (immediate) or ≤10,000 ft (within 2 min)<br><strong>Airspeed:</strong> Below <strong>100 KIAS</strong></p>
+<ol class="steps"><li>Power lever — IDLE</li><li>Fuel selector — ON</li><li>Alternate air — as required</li><li>Alternator — ON</li><li>Engine Master — ON (unfeathers prop)</li><li>Starter — ON</li><li>Check circuit breakers</li></ol></div>
+<div class="card"><h3>💨 Windmilling Restart</h3>
+<p><strong>Airspeed window: 125 – 145 KIAS</strong> (must be in this range)</p>
+<ol class="steps"><li>Power lever — IDLE</li><li>Fuel selector — ON</li><li>Alternate air — as required</li><li>Alternator — ON</li><li>Engine Master — ON → prop unfeathers and restarts by windmilling</li></ol></div>
+<div class="quiz" id="q9"><div class="quiz-tag">✓ Knowledge Check</div>
+<p class="q">What is the maximum propeller overspeed RPM and duration?</p>
+<div class="opts">
+<div class="opt" onclick="ans(this,'q9',0)"><span class="letter">A</span>2,000 RPM for 30 seconds</div>
+<div class="opt" onclick="ans(this,'q9',1)"><span class="letter">B</span>2,500 RPM for 20 seconds</div>
+<div class="opt" onclick="ans(this,'q9',0)"><span class="letter">C</span>3,000 RPM for 10 seconds</div>
+</div><div class="feedback" id="q9f"></div></div>
+<div class="quiz" id="q10"><div class="quiz-tag">✓ Knowledge Check</div>
+<p class="q">For a windmilling restart, airspeed must be between:</p>
+<div class="opts">
+<div class="opt" onclick="ans(this,'q10',0)"><span class="letter">A</span>80 – 100 KIAS</div>
+<div class="opt" onclick="ans(this,'q10',0)"><span class="letter">B</span>100 – 120 KIAS</div>
+<div class="opt" onclick="ans(this,'q10',1)"><span class="letter">C</span>125 – 145 KIAS</div>
+</div><div class="feedback" id="q10f"></div></div>
+<div class="section-divider"></div>
+<div class="card" style="text-align:center;border-color:var(--green)">
+<div style="font-size:48px;margin-bottom:12px">🎖️</div>
+<h3 style="color:var(--green);font-size:20px">Course Complete</h3>
+<p id="final" style="font-size:32px;font-weight:800;color:var(--navy);margin:12px 0">0 / 10</p>
+<p>Review any modules you want to revisit using the ← Previous button. Then go watch the <a href="https://www.youtube.com/watch?v=YjscP5juA5c" target="_blank" style="color:var(--sky)">original video</a> and review the Embry-Riddle propeller diagrams.</p></div>`}
+];
+
+let cur=0,score=0,total=0;const done=new Set();
+function render(){
+  const m=MODULES[cur];
+  let h=`<div class="module"><div class="module-label">${m.label}</div><h2>${m.title}</h2><p class="subtitle">${m.sub}</p>${m.html}</div>`;
+  document.getElementById('main').innerHTML=h;
+  document.getElementById('nav-center').innerHTML=`Module <strong>${cur+1}</strong> of ${MODULES.length}`;
+  document.getElementById('bp').disabled=cur<=0;
+  document.getElementById('bn').disabled=cur>=MODULES.length-1;
+  document.getElementById('progress-bar').style.width=(cur/(MODULES.length-1)*100)+'%';
+  window.scrollTo({top:0,behavior:'smooth'});
 }
-
-function updateNav() {
-  document.getElementById('nav-progress').textContent = `Section ${currentSection} / ${totalSections}`;
-  document.getElementById('btn-prev').disabled = currentSection <= 1;
-  document.getElementById('btn-next').disabled = currentSection >= totalSections;
-  const pct = ((currentSection - 1) / (totalSections - 1)) * 100;
-  document.getElementById('progress-bar').style.width = pct + '%';
+function go(d){const n=cur+d;if(n>=0&&n<MODULES.length){cur=n;render();}}
+function ck(li){li.classList.toggle('done');li.querySelector('.ck').textContent=li.classList.contains('done')?'✓':'';}
+const ANSWERS={q1:'Fine pitch = small bite, high RPM. Like a flat hand in water — easy to move but grabs little.',q2:'Fixed pitch is optimized for one speed. At all other speeds, efficiency drops dramatically.',q3:'Feathered = blade edge-on to wind = minimum drag. Critical after engine failure.',q4:'FADEC means the ECU reads the power lever position and sets RPM via the governor. No pilot input on RPM.',q5:'Both props rotate clockwise. PAST factors (P-factor, Accelerated slipstream, Spiraling slipstream, Torque) cause the left engine failure to have the greatest adverse yawing effect.',q6:'More oil pressure pushes blades toward fine pitch — small bite, high RPM, used for takeoff.',q7:'Low pitch stop pins engage below 1,300 RPM, physically preventing the blades from feathering during ground shutdown.',q8:'IDLE first, then Master OFF. This sequence allows oil to drain from the hub so counterweights can push blades to feathered.',q9:'2,500 RPM max for 20 seconds — this is a power plant limitation from the AFM.',q10:'125–145 KIAS. Too slow and the prop won\'t windmill. Too fast and structural limits may be exceeded.'};
+function ans(el,qid,correct){
+  if(done.has(qid))return;done.add(qid);total++;
+  const fb=document.getElementById(qid+'f');
+  const opts=el.parentElement.querySelectorAll('.opt');
+  if(correct){score++;el.classList.add('correct');fb.className='feedback show pass';fb.innerHTML='✅ <strong>Correct!</strong> '+ANSWERS[qid];}
+  else{el.classList.add('wrong');opts.forEach(o=>{if(o.getAttribute('onclick').includes(',1)')){o.classList.add('correct');}});fb.className='feedback show fail';fb.innerHTML='❌ <strong>Not quite.</strong> '+ANSWERS[qid];}
+  opts.forEach(o=>o.style.pointerEvents='none');
+  document.getElementById('sc').textContent=score+' / '+total;
+  if(document.getElementById('final'))document.getElementById('final').textContent=score+' / 10';
 }
-
-// ─── Scroll Observer ───
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(e => {
-    if (e.isIntersecting) {
-      e.target.classList.add('visible');
-      const id = parseInt(e.target.id.split('-')[1]);
-      if (id) { currentSection = id; updateNav(); }
-    }
-  });
-}, { threshold: 0.3 });
-
-document.querySelectorAll('.lesson-section').forEach(s => observer.observe(s));
-
-// ─── Slide-in Observer ───
-const slideObserver = new IntersectionObserver((entries) => {
-  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
-}, { threshold: 0.2 });
-document.querySelectorAll('.content-card, .analogy-card, .quiz-container, .diagram-container, .key-fact, .warning-card').forEach(el => {
-  el.classList.add('slide-in');
-  slideObserver.observe(el);
-});
-
-// ─── Quiz System ───
-function checkAnswer(opt, quizId, isCorrect) {
-  if (answeredQuizzes.has(quizId)) return;
-  answeredQuizzes.add(quizId);
-  totalAnswered++;
-  
-  const fb = document.getElementById(quizId + '-feedback');
-  const opts = opt.parentElement.querySelectorAll('.quiz-opt');
-  
-  if (isCorrect) {
-    score++;
-    opt.classList.add('correct');
-    fb.className = 'quiz-feedback show correct-fb';
-    fb.innerHTML = '✅ <strong>Correct!</strong> Great job, keep it up!';
-    celebrateCorrect();
-  } else {
-    opt.classList.add('incorrect');
-    opts.forEach(o => { if (o !== opt && o.onclick.toString().includes('true')) o.classList.add('correct'); });
-    fb.className = 'quiz-feedback show incorrect-fb';
-    fb.innerHTML = '❌ <strong>Not quite.</strong> The correct answer is highlighted in green. Review the section above!';
-  }
-  
-  opts.forEach(o => o.style.pointerEvents = 'none');
-  updateScore();
+let speaking=false,audio=null;
+async function speak(){
+  const t=MODULES[cur].speak;if(!t)return;
+  if(speaking&&audio){audio.pause();audio=null;speaking=false;document.getElementById('tts').classList.remove('on');document.getElementById('bs').textContent='🔊 Narrate';return;}
+  speaking=true;document.getElementById('tts').classList.add('on');document.getElementById('bs').textContent='⏹ Stop';
+  try{
+    const r=await fetch('http://localhost:8100/v1/audio/speech',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'chatterbox',voice:'kirk',input:t,response_format:'mp3'})});
+    if(!r.ok)throw new Error('TTS error');
+    const b=await r.blob(),u=URL.createObjectURL(b);audio=new Audio(u);
+    audio.onended=()=>{URL.revokeObjectURL(u);speaking=false;audio=null;document.getElementById('tts').classList.remove('on');document.getElementById('bs').textContent='🔊 Narrate';};
+    await audio.play();
+  }catch(e){speaking=false;document.getElementById('tts').classList.remove('on');document.getElementById('bs').textContent='🔊 Narrate';const u=new SpeechSynthesisUtterance(t);u.rate=.9;u.pitch=.8;u.onend=()=>{document.getElementById('bs').textContent='🔊 Narrate';};speechSynthesis.speak(u);document.getElementById('bs').textContent='⏹ Stop';}
 }
-
-function updateScore() {
-  document.getElementById('score-text').textContent = `${score} / ${totalAnswered} correct`;
-  document.getElementById('final-score').textContent = `${score} / 7`;
-}
-
-function celebrateCorrect() {
-  const container = document.createElement('div');
-  container.className = 'confetti';
-  const colors = ['#6c5ce7','#00cec9','#fdcb6e','#e17055','#00b894','#a29bfe'];
-  for (let i = 0; i < 30; i++) {
-    const piece = document.createElement('div');
-    piece.className = 'confetti-piece';
-    piece.style.left = Math.random() * 100 + '%';
-    piece.style.background = colors[Math.floor(Math.random() * colors.length)];
-    piece.style.animationDelay = Math.random() * 0.5 + 's';
-    piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
-    container.appendChild(piece);
-  }
-  document.body.appendChild(container);
-  setTimeout(() => container.remove(), 3500);
-}
-
-// ─── Checklist ───
-function toggleCheck(li) {
-  li.classList.toggle('checked');
-  const box = li.querySelector('.check-box');
-  box.textContent = li.classList.contains('checked') ? '✓' : '';
-}
-
-// ─── Gear Animation ───
-const gearDescs = {
-  1: 'Gear 1: Fine pitch — great for takeoff, lots of RPM, small bite of air',
-  2: 'Gear 2: Building speed — moderate bite, gaining momentum',
-  3: 'Gear 3: Mid-range — balanced pitch, good for climb',
-  4: 'Gear 4: Coarser pitch — efficient at higher speeds',
-  5: 'Gear 5: Coarsest pitch — big bite of air, best for cruise'
-};
-function setGear(el, gear) {
-  document.querySelectorAll('.gear-box').forEach(g => g.classList.remove('active'));
-  el.classList.add('active');
-  document.getElementById('gear-desc').textContent = gearDescs[gear];
-}
-
-// ─── TTS (Shatner Voice) ───
-async function speakCurrentSection() {
-  const section = document.getElementById('section-' + currentSection);
-  if (!section) return;
-  const text = section.getAttribute('data-speak');
-  if (!text) return;
-  
-  if (isSpeaking && currentAudio) {
-    currentAudio.pause(); currentAudio = null;
-    isSpeaking = false;
-    document.getElementById('tts-status').classList.remove('active');
-    document.getElementById('btn-speak').textContent = '🔊 Read Aloud';
-    return;
-  }
-  
-  isSpeaking = true;
-  document.getElementById('tts-status').classList.add('active');
-  document.getElementById('btn-speak').textContent = '⏹ Stop';
-  
-  try {
-    const res = await fetch('http://localhost:8100/v1/audio/speech', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model: 'chatterbox', voice: 'kirk', input: text, response_format: 'mp3' })
-    });
-    if (!res.ok) throw new Error('TTS server error');
-    const blob = await res.blob();
-    const url = URL.createObjectURL(blob);
-    currentAudio = new Audio(url);
-    currentAudio.onended = () => {
-      URL.revokeObjectURL(url); isSpeaking = false; currentAudio = null;
-      document.getElementById('tts-status').classList.remove('active');
-      document.getElementById('btn-speak').textContent = '🔊 Read Aloud';
-    };
-    await currentAudio.play();
-  } catch (e) {
-    console.warn('TTS unavailable, using browser speech:', e);
-    isSpeaking = false;
-    document.getElementById('tts-status').classList.remove('active');
-    document.getElementById('btn-speak').textContent = '🔊 Read Aloud';
-    // Fallback to browser TTS
-    const utter = new SpeechSynthesisUtterance(text);
-    utter.rate = 0.9; utter.pitch = 0.8;
-    utter.onend = () => { document.getElementById('btn-speak').textContent = '🔊 Read Aloud'; };
-    speechSynthesis.speak(utter);
-    document.getElementById('btn-speak').textContent = '⏹ Stop';
-  }
-}
-
-// ─── Init ───
-updateNav();
-document.getElementById('section-1').classList.add('visible');
-
-// Keyboard navigation
-document.addEventListener('keydown', e => {
-  if (e.key === 'ArrowRight') navSection(1);
-  if (e.key === 'ArrowLeft') navSection(-1);
-  if (e.key === 's' || e.key === 'S') speakCurrentSection();
-});
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')go(1);if(e.key==='ArrowLeft')go(-1);if(e.key==='s'||e.key==='S')speak();});
+render();
 </script>
 </body>
 </html>
