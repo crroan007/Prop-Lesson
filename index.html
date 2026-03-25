@@ -3,645 +3,91 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DA42 Landing Gear System — Ground School</title>
+<title>DA42 Ground School</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--sky:#1a73e8;--sky-light:#e8f0fe;--navy:#1b2a4a;--green:#1e8e3e;--green-bg:#e6f4ea;--red:#d93025;--red-bg:#fce8e6;--amber:#f9ab00;--amber-bg:#fef7e0;--bg:#f8f9fa;--white:#fff;--text:#202124;--text2:#5f6368;--border:#dadce0;--card-shadow:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.06);--hover-shadow:0 4px 12px rgba(0,0,0,.1)}
+:root{--sky:#1a73e8;--sky-light:#e8f0fe;--navy:#1b2a4a;--green:#1e8e3e;--green-bg:#e6f4ea;--bg:#f8f9fa;--white:#fff;--text:#202124;--text2:#5f6368;--border:#dadce0;--card-shadow:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.06);--hover-shadow:0 8px 24px rgba(0,0,0,.12)}
 html{scroll-behavior:smooth}
-body{font-family:'DM Sans','Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.7}
-#progress-bar{position:fixed;top:0;left:0;height:3px;background:var(--sky);z-index:1000;transition:width .3s}
-header{position:fixed;top:3px;left:0;right:0;z-index:999;background:var(--white);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:56px}
-.logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:15px;color:var(--navy)}
-.logo svg{width:28px;height:28px}
-.nav-center{font-size:13px;color:var(--text2);font-weight:500}
-.nav-center strong{color:var(--text)}
-.nav-btns{display:flex;gap:8px;align-items:center}
-.btn{padding:8px 18px;border-radius:6px;border:1px solid var(--border);background:var(--white);color:var(--text);font:600 13px 'DM Sans',sans-serif;cursor:pointer;transition:all .15s}
-.btn:hover:not(:disabled){background:var(--sky-light);border-color:var(--sky);color:var(--sky)}
-.btn:disabled{opacity:.3;cursor:default}
-.btn-primary{background:var(--sky);color:#fff;border-color:var(--sky)}
-.btn-primary:hover:not(:disabled){background:#1557b0;box-shadow:var(--hover-shadow)}
-main{max-width:760px;margin:0 auto;padding:76px 20px 60px}
-.module{margin-bottom:48px;animation:fadeUp .5s ease both}
-.module:nth-child(2){animation-delay:.05s}.module:nth-child(3){animation-delay:.1s}
-@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-.module-label{display:inline-flex;align-items:center;gap:6px;background:var(--sky-light);color:var(--sky);padding:3px 10px;border-radius:4px;font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px}
-.module h2{font-family:'Inter',sans-serif;font-size:24px;font-weight:800;color:var(--navy);margin-bottom:6px}
-.module .subtitle{font-size:15px;color:var(--text2);margin-bottom:24px}
-.card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:16px;box-shadow:var(--card-shadow);transition:box-shadow .2s}
-.card:hover{box-shadow:var(--hover-shadow)}
-.card h3{font-size:16px;font-weight:700;margin-bottom:8px;color:var(--navy)}
-.card p,.card li{font-size:14px;color:var(--text2);line-height:1.75}
-.card strong{color:var(--text)}
-.analogy{background:var(--sky-light);border:1px solid #c5d9f2;border-left:4px solid var(--sky);border-radius:8px;padding:16px 20px;margin:16px 0}
-.analogy .label{font-size:11px;font-weight:700;color:var(--sky);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
-.keyfact{background:var(--green-bg);border:1px solid #a8dab5;border-left:4px solid var(--green);border-radius:8px;padding:14px 18px;margin:16px 0;font-size:14px}
-.keyfact strong{color:var(--green)}
-.warning{background:var(--red-bg);border:1px solid #f5b7b1;border-left:4px solid var(--red);border-radius:8px;padding:14px 18px;margin:16px 0;font-size:14px}
-.warning strong{color:var(--red)}
-.note{background:var(--amber-bg);border:1px solid #f5d98e;border-left:4px solid var(--amber);border-radius:8px;padding:14px 18px;margin:16px 0;font-size:14px}
-.quiz{background:var(--white);border:2px solid var(--sky);border-radius:12px;padding:24px;margin:24px 0;box-shadow:var(--card-shadow)}
-.quiz-tag{display:inline-flex;align-items:center;gap:4px;background:var(--sky);color:#fff;padding:3px 10px;border-radius:4px;font-size:11px;font-weight:700;letter-spacing:.5px;margin-bottom:12px}
-.quiz .q{font-size:15px;font-weight:600;margin-bottom:14px;color:var(--navy)}
-.quiz .opts{display:flex;flex-direction:column;gap:8px}
-.opt{display:flex;align-items:center;gap:10px;padding:12px 16px;border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:14px;transition:all .15s}
-.opt:hover{border-color:var(--sky);background:var(--sky-light)}
-.opt .letter{width:26px;height:26px;border-radius:50%;background:var(--bg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;flex-shrink:0}
-.opt.correct{border-color:var(--green);background:var(--green-bg)}
-.opt.correct .letter{background:var(--green);color:#fff;border-color:var(--green)}
-.opt.wrong{border-color:var(--red);background:var(--red-bg)}
-.opt.wrong .letter{background:var(--red);color:#fff;border-color:var(--red)}
-.feedback{margin-top:12px;padding:12px 16px;border-radius:8px;font-size:13px;display:none}
-.feedback.show{display:block;animation:fadeUp .2s ease}
-.feedback.pass{background:var(--green-bg);border:1px solid #a8dab5;color:var(--green)}
-.feedback.fail{background:var(--red-bg);border:1px solid #f5b7b1;color:var(--red)}
-.img-wrap{margin:16px 0;border-radius:10px;overflow:hidden;border:1px solid var(--border);box-shadow:var(--card-shadow)}
-.img-wrap img{width:100%;display:block}
-.img-wrap .cap{padding:8px 14px;background:var(--bg);font-size:12px;color:var(--text2);text-align:center}
-.flow{display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:center;margin:16px 0}
-.flow-box{background:var(--white);border:1px solid var(--border);border-radius:8px;padding:12px 16px;text-align:center;font-size:13px;box-shadow:var(--card-shadow);min-width:120px}
-.flow-box .fl-title{font-weight:700;font-size:14px;color:var(--navy);margin-bottom:2px}
-.flow-box .fl-sub{color:var(--text2);font-size:12px}
-.flow-arrow{color:var(--sky);font-size:20px;font-weight:700}
-.checklist{list-style:none;padding:0}
-.checklist li{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--white);border:1px solid var(--border);border-radius:8px;margin-bottom:6px;font-size:14px;cursor:pointer;transition:all .15s}
-.checklist li:hover{border-color:var(--sky)}
-.checklist li.done{border-color:var(--green);background:var(--green-bg)}
-.checklist .ck{width:20px;height:20px;border-radius:4px;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:11px;font-weight:700;transition:all .15s}
-.checklist li.done .ck{background:var(--green);border-color:var(--green);color:#fff}
-#scorebar{position:fixed;bottom:16px;right:16px;background:var(--white);border:1px solid var(--border);border-radius:8px;padding:8px 16px;box-shadow:var(--hover-shadow);font-size:13px;font-weight:600;z-index:998;display:flex;align-items:center;gap:8px}
-.tts-bar{position:fixed;bottom:60px;right:16px;background:var(--sky);color:#fff;padding:6px 14px;border-radius:6px;font-size:12px;font-weight:600;display:none;z-index:999}
-.tts-bar.on{display:flex;align-items:center;gap:8px}
-.section-divider{height:1px;background:var(--border);margin:40px 0}
-.steps{counter-reset:step}
-.steps li{counter-increment:step;padding-left:36px;position:relative;margin-bottom:12px;font-size:14px;color:var(--text2);line-height:1.7}
-.steps li::before{content:counter(step);position:absolute;left:0;top:2px;width:24px;height:24px;background:var(--sky);color:#fff;border-radius:50%;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center}
-.gate-msg{background:var(--amber-bg);border:2px solid var(--amber);border-radius:10px;padding:16px 20px;margin-top:20px;text-align:center;font-size:14px;font-weight:600;color:#7a5e00;animation:fadeUp .3s ease}
-.gate-msg .lock-icon{font-size:28px;margin-bottom:6px}
-.btn-retry{display:inline-block;margin-top:10px;padding:10px 24px;background:var(--red);color:#fff;border:none;border-radius:6px;font:600 13px 'DM Sans',sans-serif;cursor:pointer;transition:all .15s}
-.btn-retry:hover{background:#b71c1c;box-shadow:var(--hover-shadow)}
-.quiz-progress{display:flex;gap:6px;align-items:center;margin-bottom:16px;flex-wrap:wrap}
-.qp-dot{width:10px;height:10px;border-radius:50%;background:var(--border);transition:background .3s}
-.qp-dot.done{background:var(--green)}
-.qp-label{font-size:11px;color:var(--text2);font-weight:600;margin-right:4px}
-.source-link{font-size:12px;color:var(--sky);text-decoration:none;font-weight:500;display:inline-flex;align-items:center;gap:4px}
-.source-link:hover{text-decoration:underline}
-.sources{margin-top:16px;padding-top:12px;border-top:1px solid var(--border)}
-.sources p{font-size:12px;color:var(--text2);margin-bottom:4px}
-.vid-thumb{position:relative;display:block;border-radius:10px;overflow:hidden;border:1px solid var(--border);box-shadow:var(--card-shadow);margin:16px 0;cursor:pointer;text-decoration:none}
-.vid-thumb img{width:100%;display:block}
-.vid-thumb .play-overlay{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:56px;height:56px;background:rgba(0,0,0,.7);border-radius:50%;display:flex;align-items:center;justify-content:center}
-.vid-thumb .play-overlay::after{content:'';border-style:solid;border-width:10px 0 10px 18px;border-color:transparent transparent transparent #fff;margin-left:3px}
-.vid-thumb .cap{padding:8px 14px;background:var(--bg);font-size:12px;color:var(--text2);text-align:center}
-@media(max-width:600px){main{padding:64px 14px 40px}.card{padding:18px}.quiz{padding:18px}header{padding:0 12px}.logo{font-size:13px}.btn{padding:6px 12px;font-size:12px}}
+body{font-family:'DM Sans','Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;min-height:100vh}
+.hero{background:var(--white);border-bottom:1px solid var(--border);padding:48px 24px 40px;text-align:center}
+.hero-logo{display:inline-flex;align-items:center;gap:12px;margin-bottom:16px}
+.hero-logo svg{width:40px;height:40px}
+.hero h1{font-family:'Inter',sans-serif;font-size:32px;font-weight:800;color:var(--navy);margin-bottom:8px}
+.hero p{font-size:16px;color:var(--text2);max-width:520px;margin:0 auto}
+.lessons{max-width:840px;margin:0 auto;padding:40px 20px 60px;display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:24px}
+.lesson-card{background:var(--white);border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:var(--card-shadow);transition:all .25s;text-decoration:none;color:inherit;display:flex;flex-direction:column}
+.lesson-card:hover{box-shadow:var(--hover-shadow);transform:translateY(-4px);border-color:var(--sky)}
+.lesson-thumb{position:relative;width:100%;aspect-ratio:16/9;overflow:hidden;background:var(--navy)}
+.lesson-thumb img{width:100%;height:100%;object-fit:cover;transition:transform .3s}
+.lesson-card:hover .lesson-thumb img{transform:scale(1.03)}
+.lesson-badge{position:absolute;top:12px;left:12px;background:var(--sky);color:#fff;padding:4px 10px;border-radius:4px;font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
+.lesson-body{padding:20px 24px 24px;flex:1;display:flex;flex-direction:column}
+.lesson-body h2{font-family:'Inter',sans-serif;font-size:20px;font-weight:800;color:var(--navy);margin-bottom:6px}
+.lesson-body .sub{font-size:14px;color:var(--text2);margin-bottom:16px;flex:1}
+.lesson-meta{display:flex;gap:16px;margin-bottom:16px;flex-wrap:wrap}
+.meta-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2);font-weight:500}
+.meta-icon{width:18px;height:18px;border-radius:50%;background:var(--sky-light);display:flex;align-items:center;justify-content:center;font-size:10px}
+.lesson-btn{display:block;width:100%;padding:12px;background:var(--sky);color:#fff;border:none;border-radius:8px;font:600 14px 'DM Sans',sans-serif;cursor:pointer;text-align:center;transition:all .15s}
+.lesson-btn:hover{background:#1557b0}
+.footer{text-align:center;padding:20px;font-size:12px;color:var(--text2)}
+.footer a{color:var(--sky);text-decoration:none}
+.footer a:hover{text-decoration:underline}
+@media(max-width:600px){.hero{padding:32px 16px 28px}.hero h1{font-size:24px}.lessons{padding:24px 14px 40px;grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-<div id="progress-bar" style="width:0%"></div>
-<header>
-  <div class="logo">
-    <svg viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="13" stroke="#1a73e8" stroke-width="2"/><path d="M8 20h12M10 20v-6h8v6M14 14v-4" stroke="#1a73e8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="10" cy="22" r="2" fill="#1a73e8"/><circle cx="18" cy="22" r="2" fill="#1a73e8"/></svg>
-    DA42 Ground School
+
+<div class="hero">
+  <div class="hero-logo">
+    <svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="18" stroke="#1a73e8" stroke-width="2.5"/><path d="M12 26L20 12l8 14" stroke="#1a73e8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="20" cy="23" r="3" fill="#1a73e8"/></svg>
+    <span style="font-family:'Inter',sans-serif;font-size:18px;font-weight:800;color:var(--navy)">DA42 Ground School</span>
   </div>
-  <div class="nav-center" id="nav-center">Module <strong>1</strong> of 12</div>
-  <div class="nav-btns">
-    <button class="btn" id="bp" onclick="go(-1)" disabled>&larr; Previous</button>
-    <button class="btn btn-primary" id="bs" onclick="speak()">&#x1f50a; Narrate</button>
-    <button class="btn" id="bn" onclick="go(1)">Next &rarr;</button>
-  </div>
-</header>
+  <h1>Choose Your Lesson</h1>
+  <p>Interactive ground school modules for the Diamond DA42 Twin Star. Each lesson uses cumulative learning with quizzes you must pass at 100% before advancing.</p>
+</div>
 
-<div id="scorebar">&#x2713; <span id="sc">0 / 0</span></div>
-<div class="tts-bar" id="tts">&#x1f50a; Narrating...</div>
-<main id="main"></main>
+<div class="lessons">
 
-<script>
-const TOTAL_Q=25;
-const MODULE_QUIZZES={
-  0:[],
-  1:['q1','q2'],
-  2:['q3','q4','q5'],
-  3:['q6','q7'],
-  4:['q8','q9','q10'],
-  5:['q11','q12','q13'],
-  6:['q14','q15'],
-  7:['q16','q17'],
-  8:['q18','q19'],
-  9:['q20','q21','q22'],
-  10:[],
-  11:[]
-};
+  <a class="lesson-card" href="propeller.html">
+    <div class="lesson-thumb">
+      <img src="https://img.youtube.com/vi/YjscP5juA5c/maxresdefault.jpg" alt="DA42 Propeller System">
+      <div class="lesson-badge">Lesson 1</div>
+    </div>
+    <div class="lesson-body">
+      <h2>Propeller System</h2>
+      <p class="sub">Pitch, feathering, FADEC, MT propeller construction, oil pressure control, counterweights, gearbox, accumulator, and emergency procedures including engine failure memory items and restart methods.</p>
+      <div class="lesson-meta">
+        <div class="meta-item"><span class="meta-icon">&#x1f4da;</span> 13 Modules</div>
+        <div class="meta-item"><span class="meta-icon">&#x2713;</span> 28 Quizzes</div>
+        <div class="meta-item"><span class="meta-icon">&#x23f1;</span> ~45 min</div>
+      </div>
+      <div class="lesson-btn">Start Lesson &rarr;</div>
+    </div>
+  </a>
 
-const ANSWERS={
-q1:{correct:'B',why_wrong:{A:'Combustion powers <strong>engine</strong> cylinders, not hydraulic actuators. Hydraulic actuators are powered by <strong>hydraulic fluid</strong> being pumped into extend or retract ports.',C:'Electrical power runs the pump motor and solenoids, but the actuator itself is moved by <strong>hydraulic fluid pressure</strong>, not electricity directly.'},explain:'Hydraulic actuators are cylinders powered by hydraulic fluid. Fluid enters through either the extend or retract port, pushing the actuator in the desired direction.'},
-q2:{correct:'A',why_wrong:{B:'The pump pressurizes the system, but it is the <strong>solenoid</strong> (electric plunger) that redirects fluid flow to the correct port.',C:'The accumulator stores pressure to reduce pump cycling. It does not direct fluid to specific ports \u2014 that\u2019s the <strong>solenoid\u2019s</strong> job.'},explain:'A solenoid is an electric plunger. When energized, it drops down and redirects the flow of hydraulic fluid to the extend or retract ports as needed.'},
-q3:{correct:'A',why_wrong:{B:'The left squat switch prevents <strong>gear retraction</strong> on the ground, not engine start. If it malfunctions with electric master on, the gear could try to retract while on the ground.',C:'Squat switches are on the <strong>main gear</strong>, not the nose gear. The DA42 has two squat switches, one on each main.'},explain:'The left squat switch prevents accidental gear retraction on the ground. If it malfunctions with electric master on and gear raised, the gear might try to retract \u2014 risking serious aircraft damage.'},
-q4:{correct:'C',why_wrong:{A:'Derating stall warning heat is one function, but the right squat switch does <strong>three things</strong>: derates stall warning heat to 50% on ground, disengages glow plugs in air, and activates ECU test switch on ground.',B:'Activating the ECU test switch on the ground is one function, but the right squat switch also derates stall warning heat and disengages glow plugs in air.'},explain:'The right squat switch has three functions: (1) derates stall warning heat to 50% on ground, (2) disengages glow plugs while in the air, and (3) activates the ECU test switch on the ground only.'},
-q5:{correct:'B',why_wrong:{A:'Two squat switches is correct, but they are on the <strong>main gear</strong>, not the nose gear. One on each main, with different functions.',C:'There are exactly <strong>two</strong> squat switches \u2014 one on each main landing gear. They are not on every gear leg.'},explain:'The DA42 has two squat switches, one on each main gear. The left prevents accidental gear retraction; the right handles stall warning, glow plugs, and ECU test.'},
-q6:{correct:'C',why_wrong:{A:'The full pressure switch is on the <strong>nose gear</strong> (back of the gear well), not on each main gear. Main gear has up and down limit switches.',B:'The full pressure switch is found in the <strong>back</strong> of the nose gear well, not the front. The front of the nose gear well has the up limit switch.'},explain:'The full pressure switch is in the back of the nose gear well. It energizes the extend solenoid during retraction once the nose wheel is fully retracted.'},
-q7:{correct:'A',why_wrong:{B:'When all gear is fully retracted, down limit switches are <strong>not</strong> depressed (gear has moved away from them). The up limit switches would be depressed instead.',C:'Limit switches show <strong>fully</strong> extended or <strong>fully</strong> retracted positions, not mid-travel. There are separate up and down limit switches.'},explain:'Up limit switches indicate fully retracted; down limit switches indicate fully extended. When gear is down and locked, down limit switches are depressed, illuminating the green gear lights.'},
-q8:{correct:'B',why_wrong:{A:'The brakes are <strong>hydraulically</strong> operated disc brakes, not pneumatic. The DA42 landing gear system is hydraulic.',C:'The brakes are controlled by <strong>toe pedals</strong>, not a single parking brake handle. Each main brake is individually operated.'},explain:'The DA42 has hydraulically operated disc brakes on the main gear, individually controlled by toe pedals. During preflight, check for hydraulic fluid leaks and brake condition.'},
-q9:{correct:'A',why_wrong:{B:'8 cm / 3.1 in is incorrect. The main gear damper struts should show <strong>4 cm (1.6 in)</strong> of extension (the silver part).',C:'2 cm / 0.8 in is too little. The correct extension is <strong>4 cm (1.6 in)</strong> on the main gear damper struts.'},explain:'The main gear damper struts (silver part) should be extended 4 cm (1.6 in). These are air-oil dampers that compress quickly and extend slowly to soften landings.'},
-q10:{correct:'C',why_wrong:{A:'Hydraulic pressure is what <strong>releases</strong> the downlock hooks, not what keeps them locked. Springs provide the locking force.',B:'Gravity plays no role in the downlock mechanism. <strong>Springs</strong> maintain force on each hook to keep it locked in the down position.'},explain:'Springs maintain force on each downlock hook to keep it locked in the down position. The hooks are released by hydraulic pressure when retraction is commanded.'},
-q11:{correct:'B',why_wrong:{A:'1,000\u20131,200 PSI is too low. The DA42 hydraulic system operates between <strong>1,400 and 1,650 PSI</strong>.',C:'2,000\u20132,400 PSI is too high. Normal operating pressure is <strong>1,400\u20131,650 PSI</strong>. The relief valve opens at 2,600 PSI.'},explain:'Normal system pressure is 1,400\u20131,650 PSI. The pressure switch monitors this and activates the pump if needed. The relief valve opens if pressure exceeds 2,600 PSI.'},
-q12:{correct:'C',why_wrong:{A:'The accumulator <strong>reduces</strong> pump cycling by maintaining stored pressure, which is the opposite of activating the pump. The pressure switch activates the pump.',B:'The accumulator stores pressure, but it does not open if pressure exceeds limits. The <strong>relief valve</strong> opens at 2,600 PSI for overpressure protection.'},explain:'The accumulator stores pressure to reduce pump cycling and ensure stabilized pressure. Without it, the pump would need to activate far more frequently.'},
-q13:{correct:'A',why_wrong:{B:'30 seconds is too long. The pump should run for a maximum of <strong>20 seconds</strong>. Longer than that indicates trouble maintaining pressure.',C:'Hearing the pump is <strong>normal</strong> when you turn on the electric master. The concern is only if it runs <strong>continuously</strong> (over 20 seconds), indicating a pressure problem.'},explain:'The hydraulic pump should run for up to 20 seconds when you turn on the electric master. If it runs continuously, that indicates trouble maintaining pressure \u2014 cause to terminate the flight and investigate.'},
-q14:{correct:'B',why_wrong:{A:'Fluid goes to <strong>both</strong> sides, not just the retract side. The retraction side has a larger piston surface area, so retract force wins, but sending fluid to both sides prevents the gear from slamming up.',C:'Fluid goes to both sides simultaneously. The extend side receives fluid too, but because the retraction piston has a <strong>larger effective surface area</strong>, the net force retracts the gear smoothly.'},explain:'During retraction, hydraulic fluid is sent to both sides of the actuators. The retraction side has a larger effective surface area, so retract force wins \u2014 but sending fluid to both sides prevents the gear from slamming up violently.'},
-q15:{correct:'C',why_wrong:{A:'The full pressure switch is on the <strong>nose wheel</strong>, not the mains. When the nose wheel is fully retracted, it depresses this switch.',B:'The full pressure switch energizes the <strong>extension</strong> solenoid (not retraction), which allows fluid on the extension side to return to the reservoir.'},explain:'Once the nose wheel is fully retracted, its full pressure switch is depressed. This energizes the extension solenoid, allowing fluid on the extension side of the actuators to return to the reservoir.'},
-q16:{correct:'A',why_wrong:{B:'Extension does NOT energize solenoids. Moving the gear switch to DOWN <strong>de-energizes</strong> both the retract and extend solenoids. The pump then moves fluid from retract side to extend side.',C:'While gravity and springs assist, the primary mechanism is the hydraulic pump moving fluid. De-energizing both solenoids allows the pump to direct fluid from retract to extend side.'},explain:'Moving the gear switch DOWN de-energizes both retract and extend solenoids. The pump moves fluid from the retract side to the extend side. Gravity and springs assist the gear into the down-and-locked position.'},
-q17:{correct:'B',why_wrong:{A:'The red light illuminates during <strong>transition</strong> (gear moving between positions). Three green means all gear down and locked.',C:'No lights at all means gear is fully retracted with all up-limit switches depressed. During extension, you see red (unsafe) until down-locks engage, then three green.'},explain:'When extending, the gear leaves the up-limit switches (red unsafe light) until the down-locks engage and depress the down-limit switches, illuminating three green gear lights.'},
-q18:{correct:'A',why_wrong:{B:'The micro switch <strong>deactivates</strong> the pump, not activates it. The emergency system relies on gravity and springs, not the hydraulic pump.',C:'The emergency valve <strong>bypasses</strong> the regulating valves, allowing fluid to flow freely. It does not increase pressure.'},explain:'Pulling the emergency extension lever activates a micro switch that deactivates the hydraulic pump. The emergency extension valve opens, bypassing the regulating valves. Gravity lets the gear fall, and tension springs lock it in place.'},
-q19:{correct:'C',why_wrong:{A:'The emergency system bypasses regulating valves, but fluid from the retract side goes <strong>back to the reservoir</strong> through the bypass valve, not into the extend side directly.',B:'Gravity alone is not sufficient. <strong>Tension springs</strong> also play a critical role in keeping the gear fully extended and locked in position.'},explain:'Fluid from the retract side flows through the bypass valve past the regulating valves and back to the reservoir. Fluid is drawn into the extend side from the reservoir. Tension springs keep the gear fully extended and locked.'},
-q20:{correct:'B',why_wrong:{A:'MIL-H-5606 is a different hydraulic fluid specification. The DA42 uses <strong>Aeroshell Fluid 41</strong> (or the equivalent AMG10).',C:'Skydrol is used in larger transport aircraft. The DA42 uses <strong>Aeroshell Fluid 41 or AMG10</strong>.'},explain:'The DA42 uses Aeroshell Fluid 41 or AMG10. This fluid is dyed red for leak detection \u2014 if you see red fluid around the aircraft during preflight, it indicates a hydraulic leak.'},
-q21:{correct:'A',why_wrong:{B:'Blue dye is not used for DA42 hydraulic fluid. It is dyed <strong>red</strong> specifically for leak detection purposes.',C:'The fluid is not clear. It is dyed <strong>red</strong> so that hydraulic leaks are easily visible during preflight inspections.'},explain:'DA42 hydraulic fluid is dyed red for leak detection. If you see red fluid around the aircraft during your walk-around, it\u2019s a strong indicator of a hydraulic leak that must be investigated.'},
-q22:{correct:'C',why_wrong:{A:'The CHECK GEAR CAS message has nothing to do with hydraulic fluid levels. It alerts you when flaps are in landing position (or power lever below ~20%) and gear is <strong>not down and locked</strong>.',B:'CHECK GEAR does not indicate squat switch failure. It appears when the aircraft is in a <strong>landing configuration</strong> (flaps landing or low power) but the gear is not down and locked.'},explain:'The CHECK GEAR CAS message appears when flaps are in landing position OR one power lever is below approximately 20%, AND the landing gear is not down and locked. It\u2019s telling you: you look like you\u2019re landing, but your gear isn\u2019t down.'}
-};
+  <a class="lesson-card" href="landing-gear.html">
+    <div class="lesson-thumb">
+      <img src="https://img.youtube.com/vi/s3bWFLFgkwY/maxresdefault.jpg" alt="DA42 Landing Gear System">
+      <div class="lesson-badge">Lesson 2</div>
+    </div>
+    <div class="lesson-body">
+      <h2>Landing Gear System</h2>
+      <p class="sub">Hydraulic actuators &amp; solenoids, squat switches, limit switches, brakes, dampers, downlock hooks, gear retraction &amp; extension sequences, emergency gear extension, and CAS messages.</p>
+      <div class="lesson-meta">
+        <div class="meta-item"><span class="meta-icon">&#x1f4da;</span> 12 Modules</div>
+        <div class="meta-item"><span class="meta-icon">&#x2713;</span> 25 Quizzes</div>
+        <div class="meta-item"><span class="meta-icon">&#x23f1;</span> ~40 min</div>
+      </div>
+      <div class="lesson-btn">Start Lesson &rarr;</div>
+    </div>
+  </a>
 
-const MODULES=[
-// ---- MODULE 0: Welcome ----
-{title:"Welcome to Landing Gear",sub:"Course overview and objectives",label:"START",speak:"Welcome to the DA42 landing gear system course. This lesson is based on Max's video covering the DA42 NG6 landing gear system. We'll cover four main areas: hydraulic fundamentals, preflight components, the hydraulic schematic showing how gear extends and retracts, and emergency procedures. You must pass every quiz at 100% before moving on. Let's get started.",html:`
-<div class="card"><h3>About This System</h3>
-<p>The DA42 uses <strong>hydraulically powered landing gear</strong>. This course covers how the system works, what to check during preflight, how gear retracts and extends, and what to do when things go wrong.</p></div>
-<div class="card"><h3>What You'll Master</h3>
-<ul class="checklist" id="obj">
-<li onclick="ck(this)"><span class="ck"></span>How hydraulic actuators and solenoids work</li>
-<li onclick="ck(this)"><span class="ck"></span>Squat switches and limit switches</li>
-<li onclick="ck(this)"><span class="ck"></span>Brakes, dampers, and downlock hooks</li>
-<li onclick="ck(this)"><span class="ck"></span>The hydraulic supply and control system</li>
-<li onclick="ck(this)"><span class="ck"></span>Gear retraction and extension sequences</li>
-<li onclick="ck(this)"><span class="ck"></span>Emergency gear extension</li>
-<li onclick="ck(this)"><span class="ck"></span>Hydraulic fluid identification</li>
-<li onclick="ck(this)"><span class="ck"></span>CAS messages and emergency procedures</li>
-</ul></div>
-<div class="card"><h3>How This Course Works</h3>
-<p>This course uses <strong>cumulative learning</strong>. Each module builds on the previous one. You <strong>must pass every quiz with 100% accuracy</strong> before advancing.</p>
-<p style="margin-top:8px">If you answer incorrectly, you'll see <strong>why your answer was wrong</strong>, and you'll need to <strong>review the module and retry</strong>.</p></div>
-<a class="vid-thumb" href="https://www.youtube.com/watch?v=s3bWFLFgkwY" target="_blank"><img src="https://img.youtube.com/vi/s3bWFLFgkwY/maxresdefault.jpg" alt="DA42 Landing Gear System video"><div class="play-overlay"></div><div class="cap">DA42 Landing Gear System &mdash; video by Max (source for this course)</div></a>
-<div class="sources"><p><strong>Source:</strong> <a class="source-link" href="https://www.youtube.com/watch?v=s3bWFLFgkwY" target="_blank">&#x1f3ac; DA42 Landing Gear System video by Max</a> &bull; <a class="source-link" href="https://www.diamondaircraft.com/en/flight-school-solution/aircraft/da42-vi/" target="_blank">Diamond Aircraft DA42</a></p></div>`},
+</div>
 
-// ---- MODULE 1: Hydraulics 101 ----
-{title:"Hydraulics 101",sub:"Actuators and solenoids \u2014 the two building blocks",label:"CONCEPT",speak:"The DA42 uses hydraulically powered landing gear. There are two key components to understand. First, the actuator. It's a cylinder with an extend port and a retract port. Hydraulic fluid entering one side pushes the actuator in that direction. Second, the solenoid. A solenoid is an electric plunger that, when energized, drops down and redirects the flow of hydraulic fluid to the port we need. Each landing gear has a hydraulic actuator visible in the gear well with extend and retract ports.",html:`
-<div class="analogy"><div class="label">Analogy &mdash; A Two-Way Syringe</div>
-<p>Think of a hydraulic actuator like a syringe with <strong>two openings</strong>. Push fluid in one side, the plunger extends. Push fluid in the other side, the plunger retracts. That's exactly how each landing gear leg moves.</p></div>
-<div class="card"><h3>The Actuator</h3>
-<p>Each landing gear has a <strong>hydraulic actuator</strong> &mdash; a cylinder with two ports:</p>
-<p style="margin-top:8px">&bull; <strong>Extend port:</strong> fluid enters here to push the gear down<br>
-&bull; <strong>Retract port:</strong> fluid enters here to pull the gear up</p>
-<p style="margin-top:8px">Unlike engine cylinders powered by combustion, hydraulic actuators are powered by <strong>hydraulic fluid pressure</strong>. Each actuator is visible in the gear well during preflight.</p></div>
-<div class="card"><h3>The Solenoid</h3>
-<p>A solenoid is an <strong>electric plunger</strong>. When energized (given power), it drops down and <strong>redirects the flow of hydraulic fluid</strong> to the correct port.</p>
-<p style="margin-top:8px">Think of it as a traffic cop for hydraulic fluid &mdash; it directs the flow where it needs to go.</p></div>
-<div class="keyfact">&#x1f4a1; Two building blocks: <strong>Actuators</strong> (cylinders that move the gear) + <strong>Solenoids</strong> (electric plungers that direct fluid flow).</div>
-<div class="quiz" id="q1"><div class="quiz-tag">&#x2713; Knowledge Check 1</div>
-<p class="q">How are hydraulic actuators on the DA42 landing gear powered?</p>
-<div class="opts">
-<div class="opt" data-letter="A" onclick="ans(this,'q1','A')"><span class="letter">A</span>Combustion, like engine cylinders</div>
-<div class="opt" data-letter="B" onclick="ans(this,'q1','B')"><span class="letter">B</span>Hydraulic fluid entering extend or retract ports</div>
-<div class="opt" data-letter="C" onclick="ans(this,'q1','C')"><span class="letter">C</span>Direct electrical power to the actuator</div>
-</div><div class="feedback" id="q1f"></div></div>
-<div class="quiz" id="q2"><div class="quiz-tag">&#x2713; Knowledge Check 2</div>
-<p class="q">What component directs hydraulic fluid to the correct port?</p>
-<div class="opts">
-<div class="opt" data-letter="A" onclick="ans(this,'q2','A')"><span class="letter">A</span>The solenoid &mdash; an electric plunger that redirects fluid flow</div>
-<div class="opt" data-letter="B" onclick="ans(this,'q2','B')"><span class="letter">B</span>The pump &mdash; it pushes fluid to the right port</div>
-<div class="opt" data-letter="C" onclick="ans(this,'q2','C')"><span class="letter">C</span>The accumulator &mdash; it stores and directs pressure</div>
-</div><div class="feedback" id="q2f"></div></div>
-<div class="sources"><p><strong>Source:</strong> <a class="source-link" href="https://www.youtube.com/watch?v=s3bWFLFgkwY&t=37s" target="_blank">&#x1f3ac; Video 0:37 &mdash; Hydraulic Systems</a></p></div>`},
+<div class="footer">
+  Based on video lessons by Max &bull; <a href="https://www.diamondaircraft.com/en/flight-school-solution/aircraft/da42-vi/" target="_blank">Diamond Aircraft DA42</a>
+</div>
 
-// ---- MODULE 2: Squat Switches ----
-{title:"Squat Switches",sub:"Electrical switches that know when you\u2019re on the ground",label:"PREFLIGHT",speak:"Squat switches are electrical switches on the landing gear that signal when the weight of the aircraft is on its wheels. The DA42 has two squat switches, one on each main gear, with different functions. The left squat switch prevents accidental gear retraction on the ground. If it malfunctions with electric master on, the gear could try to retract while on the ground, risking serious damage. The right squat switch does three things: derates stall warning heat to 50% on the ground, disengages glow plugs while in the air, and activates the ECU test switch on the ground only.",html:`
-<div class="card"><h3>What Are Squat Switches?</h3>
-<p><strong>Squat switches</strong> are electrical switches on the landing gear that signal when the <strong>weight of the aircraft is on its wheels</strong>. The DA42 has <strong>two squat switches</strong> &mdash; one on each main gear &mdash; but they have different functions.</p></div>
-<div class="card"><h3>Left Main Squat Switch</h3>
-<p><strong>Function:</strong> Prevents accidental gear retraction on the ground.</p>
-<div class="warning">&#x26a0;&#xfe0f; <strong>If this malfunctions</strong> with electric master on and gear handle raised, the gear could try to retract while on the ground &mdash; risking <strong>serious aircraft damage</strong>.</div></div>
-<div class="card"><h3>Right Main Squat Switch</h3>
-<p>The right squat switch has <strong>three functions</strong>:</p>
-<p style="margin-top:8px">1. <strong>Derates stall warning heat to 50%</strong> while on the ground<br>
-2. <strong>Disengages glow plugs</strong> while in the air<br>
-3. <strong>Activates the ECU test switch</strong> on the ground (prevents ECU test in flight)</p></div>
-<div class="keyfact">&#x1f4a1; Left squat switch = gear safety. Right squat switch = stall heat, glow plugs, ECU test.</div>
-<div class="quiz" id="q3"><div class="quiz-tag">&#x2713; Knowledge Check 1</div>
-<p class="q">What does the LEFT squat switch prevent?</p>
-<div class="opts">
-<div class="opt" data-letter="A" onclick="ans(this,'q3','A')"><span class="letter">A</span>Accidental gear retraction on the ground</div>
-<div class="opt" data-letter="B" onclick="ans(this,'q3','B')"><span class="letter">B</span>Accidental engine start on the ground</div>
-<div class="opt" data-letter="C" onclick="ans(this,'q3','C')"><span class="letter">C</span>Accidental flap deployment on the nose gear</div>
-</div><div class="feedback" id="q3f"></div></div>
-<div class="quiz" id="q4"><div class="quiz-tag">&#x2713; Knowledge Check 2</div>
-<p class="q">The RIGHT squat switch performs how many functions?</p>
-<div class="opts">
-<div class="opt" data-letter="A" onclick="ans(this,'q4','A')"><span class="letter">A</span>One &mdash; derates stall warning heat to 50%</div>
-<div class="opt" data-letter="B" onclick="ans(this,'q4','B')"><span class="letter">B</span>Two &mdash; ECU test and stall warning</div>
-<div class="opt" data-letter="C" onclick="ans(this,'q4','C')"><span class="letter">C</span>Three &mdash; stall warning heat, glow plugs, and ECU test</div>
-</div><div class="feedback" id="q4f"></div></div>
-<div class="quiz" id="q5"><div class="quiz-tag">&#x2713; Knowledge Check 3</div>
-<p class="q">How many squat switches does the DA42 have and where are they?</p>
-<div class="opts">
-<div class="opt" data-letter="A" onclick="ans(this,'q5','A')"><span class="letter">A</span>Two &mdash; one on each nose gear strut</div>
-<div class="opt" data-letter="B" onclick="ans(this,'q5','B')"><span class="letter">B</span>Two &mdash; one on each main gear</div>
-<div class="opt" data-letter="C" onclick="ans(this,'q5','C')"><span class="letter">C</span>Three &mdash; one on each gear leg</div>
-</div><div class="feedback" id="q5f"></div></div>
-<div class="sources"><p><strong>Source:</strong> <a class="source-link" href="https://www.youtube.com/watch?v=s3bWFLFgkwY&t=110s" target="_blank">&#x1f3ac; Video 1:50 &mdash; Squat Switches</a></p></div>`},
-
-// ---- MODULE 3: Limit Switches ----
-{title:"Limit Switches & Full Pressure Switch",sub:"How the aircraft knows gear position",label:"PREFLIGHT",speak:"Each main gear has up limit and down limit switches that indicate when the gear is fully retracted or fully extended. The nose gear has the same down limit switch and an up limit switch in the front of the gear well. But in addition, the nose gear has a full pressure switch in the back of the gear well. The full pressure switch energizes the extend solenoid during retraction, as we will see later.",html:`
-<div class="card"><h3>Up and Down Limit Switches</h3>
-<p>Each gear leg has <strong>limit switches</strong> that tell the system whether the gear is fully up or fully down:</p>
-<p style="margin-top:8px">&bull; <strong>Up limit switch:</strong> depressed when gear is fully retracted<br>
-&bull; <strong>Down limit switch:</strong> depressed when gear is fully extended and locked</p>
-<p style="margin-top:8px">These switches control the <strong>gear indicator lights</strong> in the cockpit &mdash; three green means all down-limit switches are depressed (gear down and locked).</p></div>
-<div class="card"><h3>Nose Gear: Full Pressure Switch</h3>
-<p>In addition to up and down limit switches, the nose gear has a <strong>full pressure switch</strong> in the <strong>back</strong> of the gear well.</p>
-<p style="margin-top:8px">This switch <strong>energizes the extend solenoid</strong> once the nose wheel is fully retracted, allowing fluid on the extension side to return to the reservoir. We'll see exactly how this works in the retraction module.</p></div>
-<div class="keyfact">&#x1f4a1; Main gear: up + down limit switches. Nose gear: up + down limit switches <strong>plus</strong> the full pressure switch.</div>
-<div class="quiz" id="q6"><div class="quiz-tag">&#x2713; Knowledge Check 1</div>
-<p class="q">Where is the full pressure switch located?</p>
-<div class="opts">
-<div class="opt" data-letter="A" onclick="ans(this,'q6','A')"><span class="letter">A</span>On each main gear actuator</div>
-<div class="opt" data-letter="B" onclick="ans(this,'q6','B')"><span class="letter">B</span>Front of the nose gear well</div>
-<div class="opt" data-letter="C" onclick="ans(this,'q6','C')"><span class="letter">C</span>Back of the nose gear well</div>
-</div><div class="feedback" id="q6f"></div></div>
-<div class="quiz" id="q7"><div class="quiz-tag">&#x2713; Knowledge Check 2</div>
-<p class="q">When gear is fully extended and locked, which switches are depressed?</p>
-<div class="opts">
-<div class="opt" data-letter="A" onclick="ans(this,'q7','A')"><span class="letter">A</span>Down limit switches &mdash; illuminating three green lights</div>
-<div class="opt" data-letter="B" onclick="ans(this,'q7','B')"><span class="letter">B</span>Up limit switches and down limit switches</div>
-<div class="opt" data-letter="C" onclick="ans(this,'q7','C')"><span class="letter">C</span>No switches &mdash; lights are controlled by the solenoids</div>
-</div><div class="feedback" id="q7f"></div></div>
-<div class="sources"><p><strong>Source:</strong> <a class="source-link" href="https://www.youtube.com/watch?v=s3bWFLFgkwY&t=162s" target="_blank">&#x1f3ac; Video 2:42 &mdash; Limit Switches</a></p></div>`},
-
-// ---- MODULE 4: Brakes, Dampers, Downlocks ----
-{title:"Brakes, Dampers & Downlock Hooks",sub:"The mechanical components you inspect on preflight",label:"PREFLIGHT",speak:"The DA42 has hydraulically operated disc brakes on the main gear, individually operated by toe pedals. Check for leaks and brake condition. Also check tires for bald spots and sufficient tread. The main gear tubular struts use air-oil dampers that compress quickly and extend slowly to soften landings. The silver damper strut should be extended 4 centimeters or 1.6 inches on the mains. Nose gear with MAM42-659 should show at least 12 centimeters or 4.7 inches. Downlock hooks engage when gear is extended. Springs keep them locked down. They are released by hydraulic pressure for retraction.",html:`
-<div class="card"><h3>Brakes</h3>
-<p>&bull; <strong>Hydraulically operated disc brakes</strong> on main landing gear<br>
-&bull; Individually operated by <strong>toe pedals</strong><br>
-&bull; Preflight: check for <strong>hydraulic fluid leaks</strong> and brake condition<br>
-&bull; Also check tires: no bald spots, sufficient tread</p></div>
-<div class="card"><h3>Damper Struts</h3>
-<p>The main gear tubular struts use <strong>air-oil dampers</strong> that compress quickly and extend slowly to soften landings.</p>
-<p style="margin-top:8px">&bull; <strong>Main gear:</strong> damper strut (silver part) should be extended <strong>4 cm (1.6 in)</strong><br>
-&bull; <strong>Nose gear</strong> (with MAM42-659 higher takeoff weight): at least <strong>12 cm (4.7 in)</strong></p></div>
-<div class="card"><h3>Downlock Hooks</h3>
-<p>When the landing gear is extended, <strong>downlock hooks engage</strong>.</p>
-<p style="margin-top:8px">&bull; <strong>Springs</strong> maintain force on each hook to keep it locked in the down position<br>
-&bull; Hooks are <strong>released by hydraulic pressure</strong> when retraction is commanded<br>
-&bull; Preflight: check hooks are in good shape and inspect the <strong>bearing shaft</strong></p></div>
-<div class="keyfact">&#x1f4a1; Springs hold downlocks IN. Hydraulic pressure pushes them OUT. This is a fail-safe design &mdash; if hydraulics fail, springs keep the gear locked down.</div>
-<div class="quiz" id="q8"><div class="quiz-tag">&#x2713; Knowledge Check 1</div>
-<p class="q">What type of brakes does the DA42 have?</p>
-<div class="opts">
-<div class="opt" data-letter="A" onclick="ans(this,'q8','A')"><span class="letter">A</span>Pneumatic drum brakes on all gear</div>
-<div class="opt" data-letter="B" onclick="ans(this,'q8','B')"><span class="letter">B</span>Hydraulically operated disc brakes on main gear, controlled by toe pedals</div>
-<div class="opt" data-letter="C" onclick="ans(this,'q8','C')"><span class="letter">C</span>Electric brakes controlled by a single parking brake handle</div>
-</div><div class="feedback" id="q8f"></div></div>
-<div class="quiz" id="q9"><div class="quiz-tag">&#x2713; Knowledge Check 2</div>
-<p class="q">How far should the main gear damper struts (silver part) be extended?</p>
-<div class="opts">
-<div class="opt" data-letter="A" onclick="ans(this,'q9','A')"><span class="letter">A</span>4 cm (1.6 in)</div>
-<div class="opt" data-letter="B" onclick="ans(this,'q9','B')"><span class="letter">B</span>8 cm (3.1 in)</div>
-<div class="opt" data-letter="C" onclick="ans(this,'q9','C')"><span class="letter">C</span>2 cm (0.8 in)</div>
-</div><div class="feedback" id="q9f"></div></div>
-<div class="quiz" id="q10"><div class="quiz-tag">&#x2713; Knowledge Check 3</div>
-<p class="q">What keeps the downlock hooks in the locked (down) position?</p>
-<div class="opts">
-<div class="opt" data-letter="A" onclick="ans(this,'q10','A')"><span class="letter">A</span>Hydraulic pressure holds them locked</div>
-<div class="opt" data-letter="B" onclick="ans(this,'q10','B')"><span class="letter">B</span>Gravity keeps them engaged</div>
-<div class="opt" data-letter="C" onclick="ans(this,'q10','C')"><span class="letter">C</span>Springs maintain force on each hook</div>
-</div><div class="feedback" id="q10f"></div></div>
-<div class="sources"><p><strong>Source:</strong> <a class="source-link" href="https://www.youtube.com/watch?v=s3bWFLFgkwY&t=191s" target="_blank">&#x1f3ac; Video 3:11 &mdash; Brakes</a> &bull; <a class="source-link" href="https://www.youtube.com/watch?v=s3bWFLFgkwY&t=213s" target="_blank">3:33 &mdash; Damper</a> &bull; <a class="source-link" href="https://www.youtube.com/watch?v=s3bWFLFgkwY&t=239s" target="_blank">3:59 &mdash; Downlock</a></p></div>`},
-
-// ---- MODULE 5: Hydraulic Supply System ----
-{title:"Hydraulic Supply & Control System",sub:"The reservoir, pump, accumulator, and relief valve",label:"SYSTEM",speak:"In the rear of the aircraft is the hydraulic supply and control system. The hydraulic reservoir supplies the fluid. An electric motor powers the pump which pressurizes the system. Normal operating pressure is between 1400 and 1650 PSI. A pressure switch monitors this and activates the pump if needed. A relief valve opens if pressure exceeds 2600 PSI. The accumulator stores pressure to reduce pump cycling and ensure stabilized pressure. When you turn the electric master on, the hydraulic pump activates to restore pressure. It should only run for up to 20 seconds. Continuous pump operation means trouble.",html:`
-<div class="card"><h3>Components in the Rear of the Aircraft</h3>
-<div class="flow">
-<div class="flow-box"><div class="fl-title">Reservoir</div><div class="fl-sub">Stores hydraulic fluid</div></div>
-<div class="flow-arrow">&rarr;</div>
-<div class="flow-box"><div class="fl-title">Electric Motor</div><div class="fl-sub">Powers the pump</div></div>
-<div class="flow-arrow">&rarr;</div>
-<div class="flow-box"><div class="fl-title">Pump</div><div class="fl-sub">Pressurizes system</div></div>
-</div></div>
-<div class="card"><h3>Pressure Management</h3>
-<p>&bull; <strong>Normal pressure:</strong> 1,400 &ndash; 1,650 PSI<br>
-&bull; <strong>Pressure switch:</strong> monitors pressure, activates pump if needed<br>
-&bull; <strong>Relief valve:</strong> opens if pressure exceeds <strong>2,600 PSI</strong><br>
-&bull; <strong>Accumulator:</strong> stores pressure to reduce pump cycling and ensure stabilized pressure</p></div>
-<div class="card"><h3>Hydraulic Pump on Startup</h3>
-<p>When you turn the <strong>electric master on</strong>, you'll hear the hydraulic pump activate as it restores pressure to the system.</p>
-<div class="warning">&#x26a0;&#xfe0f; The pump should run for <strong>up to 20 seconds only</strong>. If it runs continuously, that indicates trouble maintaining pressure &mdash; <strong>terminate the flight and investigate</strong>.</div></div>
-<div class="keyfact">&#x1f4a1; Normal pressure: 1,400&ndash;1,650 PSI. Relief valve: 2,600 PSI. Pump on startup: max 20 seconds.</div>
-<div class="quiz" id="q11"><div class="quiz-tag">&#x2713; Knowledge Check 1</div>
-<p class="q">What is the normal hydraulic system operating pressure?</p>
-<div class="opts">
-<div class="opt" data-letter="A" onclick="ans(this,'q11','A')"><span class="letter">A</span>1,000 &ndash; 1,200 PSI</div>
-<div class="opt" data-letter="B" onclick="ans(this,'q11','B')"><span class="letter">B</span>1,400 &ndash; 1,650 PSI</div>
-<div class="opt" data-letter="C" onclick="ans(this,'q11','C')"><span class="letter">C</span>2,000 &ndash; 2,400 PSI</div>
-</div><div class="feedback" id="q11f"></div></div>
-<div class="quiz" id="q12"><div class="quiz-tag">&#x2713; Knowledge Check 2</div>
-<p class="q">What is the purpose of the accumulator?</p>
-<div class="opts">
-<div class="opt" data-letter="A" onclick="ans(this,'q12','A')"><span class="letter">A</span>It activates the pump when pressure drops</div>
-<div class="opt" data-letter="B" onclick="ans(this,'q12','B')"><span class="letter">B</span>It opens when pressure exceeds 2,600 PSI</div>
-<div class="opt" data-letter="C" onclick="ans(this,'q12','C')"><span class="letter">C</span>It stores pressure to reduce pump cycling and stabilize pressure</div>
-</div><div class="feedback" id="q12f"></div></div>
-<div class="quiz" id="q13"><div class="quiz-tag">&#x2713; Knowledge Check 3</div>
-<p class="q">When you turn the electric master on, the hydraulic pump should run for a maximum of:</p>
-<div class="opts">
-<div class="opt" data-letter="A" onclick="ans(this,'q13','A')"><span class="letter">A</span>20 seconds &mdash; longer means trouble, terminate the flight</div>
-<div class="opt" data-letter="B" onclick="ans(this,'q13','B')"><span class="letter">B</span>30 seconds &mdash; this is normal for pressurization</div>
-<div class="opt" data-letter="C" onclick="ans(this,'q13','C')"><span class="letter">C</span>It should not activate at all &mdash; hearing it means there's a leak</div>
-</div><div class="feedback" id="q13f"></div></div>
-<div class="sources"><p><strong>Source:</strong> <a class="source-link" href="https://www.youtube.com/watch?v=s3bWFLFgkwY&t=259s" target="_blank">&#x1f3ac; Video 4:19 &mdash; Hydraulic Supply</a> &bull; <a class="source-link" href="https://www.youtube.com/watch?v=s3bWFLFgkwY&t=302s" target="_blank">5:02 &mdash; Pump</a></p></div>`},
-
-// ---- MODULE 6: Gear Retraction ----
-{title:"Gear Retraction",sub:"What happens when you move the gear selector UP",label:"SYSTEM",speak:"Move the gear selector to UP. Two conditions must be met: electric master on and the left main squat switch relieved, meaning you're not on the ground. The pump activates along with the retraction solenoid. Fluid is sent to both sides of the actuators. Why both sides? Because we don't want the gear to slam up. The retraction side of the piston has a larger effective surface area, so it wins and pushes the actuator to retract. Down limit switches release so gear lights extinguish and the red unsafe light illuminates. Once the nose wheel is fully retracted, the full pressure switch energizes the extension solenoid, allowing fluid on the extension side to return to the reservoir.",html:`
-<div class="card"><h3>Conditions for Retraction</h3>
-<p>Two things must be true:<br>
-&bull; <strong>Electric master switch</strong> is ON<br>
-&bull; <strong>Left main squat switch</strong> is relieved (aircraft not on ground)</p>
-<p style="margin-top:8px">Remember from Module 2: the left squat switch prevents accidental retraction on the ground.</p></div>
-<div class="card"><h3>Retraction Sequence</h3>
-<ol class="steps">
-<li>Gear selector moved to <strong>UP</strong></li>
-<li>Pump activates + <strong>retraction solenoid</strong> energized</li>
-<li>Hydraulic fluid sent to <strong>both sides</strong> of actuators</li>
-<li>Retraction side has <strong>larger effective surface area</strong> &rarr; net force retracts gear</li>
-<li>Down limit switches release &rarr; gear lights extinguish, <strong>red unsafe light</strong> illuminates</li>
-<li>Nose wheel fully retracted &rarr; <strong>full pressure switch</strong> depressed</li>
-<li>Extension solenoid energized &rarr; fluid on extend side returns to reservoir</li>
-</ol></div>
-<div class="note">&#x1f4d6; <strong>Why both sides?</strong> Sending fluid to both sides prevents the gear from violently slamming up. The retraction piston has a larger area, so it "wins" &mdash; but smoothly.</div>
-<div class="keyfact">&#x1f4a1; In flight: the pressure pump switch maintains 1,400&ndash;1,650 PSI. If no internal leaks, the <strong>accumulator maintains pressure</strong> without the pump running.</div>
-<div class="quiz" id="q14"><div class="quiz-tag">&#x2713; Knowledge Check 1</div>
-<p class="q">During retraction, where is hydraulic fluid sent?</p>
-<div class="opts">
-<div class="opt" data-letter="A" onclick="ans(this,'q14','A')"><span class="letter">A</span>Only to the retract side of the actuators</div>
-<div class="opt" data-letter="B" onclick="ans(this,'q14','B')"><span class="letter">B</span>To both sides &mdash; retract side has larger area so it wins</div>
-<div class="opt" data-letter="C" onclick="ans(this,'q14','C')"><span class="letter">C</span>To both sides equally &mdash; gravity determines direction</div>
-</div><div class="feedback" id="q14f"></div></div>
-<div class="quiz" id="q15"><div class="quiz-tag">&#x2713; Knowledge Check 2</div>
-<p class="q">Once the nose wheel is fully retracted, what happens?</p>
-<div class="opts">
-<div class="opt" data-letter="A" onclick="ans(this,'q15','A')"><span class="letter">A</span>The pump shuts off and pressure stabilizes</div>
-<div class="opt" data-letter="B" onclick="ans(this,'q15','B')"><span class="letter">B</span>The retraction solenoid de-energizes automatically</div>
-<div class="opt" data-letter="C" onclick="ans(this,'q15','C')"><span class="letter">C</span>The full pressure switch energizes the extension solenoid, returning extend-side fluid to the reservoir</div>
-</div><div class="feedback" id="q15f"></div></div>
-<div class="sources"><p><strong>Source:</strong> <a class="source-link" href="https://www.youtube.com/watch?v=s3bWFLFgkwY&t=327s" target="_blank">&#x1f3ac; Video 5:27 &mdash; Gear Retraction</a></p></div>`},
-
-// ---- MODULE 7: Gear Extension ----
-{title:"Gear Extension",sub:"What happens when you move the gear selector DOWN",label:"SYSTEM",speak:"Move the gear switch to DOWN. This de-energizes both the retract and extend solenoids. The pump moves fluid from the retract side to the extend side and back to the reservoir. Gear leaves the up limit switches so the red unsafe light illuminates. Gravity and springs assist the gear down. When downlocks engage and depress the down limit switches, the three green gear lights illuminate. The pump continues to run until system pressure is sufficient.",html:`
-<div class="card"><h3>Extension Sequence</h3>
-<ol class="steps">
-<li>Gear selector moved to <strong>DOWN</strong></li>
-<li>Both retract and extend solenoids <strong>de-energized</strong></li>
-<li>Pump moves fluid from retract side to extend side and back to reservoir</li>
-<li>Gear leaves up limit switches &rarr; <strong>red unsafe light</strong> illuminates</li>
-<li>Gear assisted down by <strong>gravity and springs</strong></li>
-<li><strong>Downlocks engage</strong> &rarr; down limit switches depressed &rarr; <strong>three green lights</strong></li>
-<li>Pump continues until system pressure is sufficient</li>
-</ol></div>
-<div class="note">&#x1f4d6; <strong>Cumulative link:</strong> Remember from Module 4 &mdash; springs keep the downlock hooks locked once engaged. And from Module 3 &mdash; the down limit switches are what illuminate the green gear lights.</div>
-<div class="keyfact">&#x1f4a1; Extension: solenoids <strong>de-energize</strong>. Retraction: solenoids <strong>energize</strong>. The system is designed so that the default (de-energized) state moves gear DOWN &mdash; a safety feature.</div>
-<div class="quiz" id="q16"><div class="quiz-tag">&#x2713; Knowledge Check 1</div>
-<p class="q">When you move the gear switch to DOWN, what happens to the solenoids?</p>
-<div class="opts">
-<div class="opt" data-letter="A" onclick="ans(this,'q16','A')"><span class="letter">A</span>Both retract and extend solenoids are de-energized</div>
-<div class="opt" data-letter="B" onclick="ans(this,'q16','B')"><span class="letter">B</span>The extend solenoid is energized to push gear down</div>
-<div class="opt" data-letter="C" onclick="ans(this,'q16','C')"><span class="letter">C</span>All solenoids are energized to assist gravity</div>
-</div><div class="feedback" id="q16f"></div></div>
-<div class="quiz" id="q17"><div class="quiz-tag">&#x2713; Knowledge Check 2</div>
-<p class="q">During gear extension, the light sequence is:</p>
-<div class="opts">
-<div class="opt" data-letter="A" onclick="ans(this,'q17','A')"><span class="letter">A</span>Three green &rarr; red unsafe &rarr; no lights</div>
-<div class="opt" data-letter="B" onclick="ans(this,'q17','B')"><span class="letter">B</span>No lights (retracted) &rarr; red unsafe (in transit) &rarr; three green (down and locked)</div>
-<div class="opt" data-letter="C" onclick="ans(this,'q17','C')"><span class="letter">C</span>Red unsafe &rarr; no lights &rarr; three green</div>
-</div><div class="feedback" id="q17f"></div></div>
-<div class="sources"><p><strong>Source:</strong> <a class="source-link" href="https://www.youtube.com/watch?v=s3bWFLFgkwY&t=408s" target="_blank">&#x1f3ac; Video 6:48 &mdash; Gear Extension</a></p></div>`},
-
-// ---- MODULE 8: Emergency Extension ----
-{title:"Emergency Gear Extension",sub:"When hydraulics fail \u2014 gravity and springs save the day",label:"EMERGENCY",speak:"Emergency gear extension is similar to normal extension, except the emergency extension valve opens, bypassing the regulating valves. When you pull the emergency gear extension lever, a micro switch deactivates the hydraulic pump. Gravity lets the gear fall. The open emergency valve lets fluid from the retract side flow through the bypass valve past the regulating valves back to the reservoir. Fluid is drawn into the extend side from the reservoir. Tension springs keep the gear fully extended and locked. Down limit switches illuminate the green lights.",html:`
-<div class="card"><h3>Emergency Extension Sequence</h3>
-<ol class="steps">
-<li>Pull the <strong>emergency gear extension handle</strong></li>
-<li>A <strong>micro switch deactivates</strong> the hydraulic pump</li>
-<li><strong>Emergency extension valve opens</strong>, bypassing the regulating valves</li>
-<li><strong>Gravity</strong> lets the gear fall</li>
-<li>Fluid from retract side flows through bypass valve &rarr; past regulating valves &rarr; back to <strong>reservoir</strong></li>
-<li>Fluid drawn into extend side from the reservoir</li>
-<li><strong>Tension springs</strong> keep gear fully extended and locked</li>
-<li>Down limit switches pressed &rarr; <strong>green lights</strong></li>
-</ol></div>
-<div class="keyfact">&#x1f4a1; Emergency extension = gravity + springs. The pump is <strong>deactivated</strong>, and the emergency valve <strong>bypasses</strong> all regulating valves.</div>
-<div class="note">&#x1f4d6; <strong>Cumulative link:</strong> The tension springs here work alongside the downlock hook springs from Module 4. Multiple spring systems ensure the gear stays down and locked even without hydraulic power.</div>
-<div class="quiz" id="q18"><div class="quiz-tag">&#x2713; Knowledge Check 1</div>
-<p class="q">When you pull the emergency gear extension handle, what happens first?</p>
-<div class="opts">
-<div class="opt" data-letter="A" onclick="ans(this,'q18','A')"><span class="letter">A</span>A micro switch deactivates the hydraulic pump and the emergency valve opens</div>
-<div class="opt" data-letter="B" onclick="ans(this,'q18','B')"><span class="letter">B</span>The hydraulic pump activates at maximum pressure</div>
-<div class="opt" data-letter="C" onclick="ans(this,'q18','C')"><span class="letter">C</span>The emergency valve increases system pressure to force the gear down</div>
-</div><div class="feedback" id="q18f"></div></div>
-<div class="quiz" id="q19"><div class="quiz-tag">&#x2713; Knowledge Check 2</div>
-<p class="q">During emergency extension, what keeps the gear fully extended and locked?</p>
-<div class="opts">
-<div class="opt" data-letter="A" onclick="ans(this,'q19','A')"><span class="letter">A</span>Hydraulic pressure from the emergency pump</div>
-<div class="opt" data-letter="B" onclick="ans(this,'q19','B')"><span class="letter">B</span>Gravity alone &mdash; no mechanical locking needed</div>
-<div class="opt" data-letter="C" onclick="ans(this,'q19','C')"><span class="letter">C</span>Tension springs keep the gear extended and locked in place</div>
-</div><div class="feedback" id="q19f"></div></div>
-<div class="sources"><p><strong>Source:</strong> <a class="source-link" href="https://www.youtube.com/watch?v=s3bWFLFgkwY&t=448s" target="_blank">&#x1f3ac; Video 7:28 &mdash; Emergency Gear Extension</a></p></div>`},
-
-// ---- MODULE 9: Fluid, CAS & Emergency Procedure ----
-{title:"Hydraulic Fluid, CAS Messages & Emergency Procedure",sub:"Identification, warnings, and what to do when gear won\u2019t come down",label:"EMERGENCY",speak:"The DA42 uses Aeroshell Fluid 41 or AMG10. This fluid is dyed red for leak detection. If you see red fluid around the aircraft, it indicates a hydraulic leak. The CHECK GEAR CAS message appears when flaps are in landing position or one power lever is below approximately 20 percent and the gear is not down and locked. For emergencies: if the gear unsafe light stays on for more than 20 seconds, something is wrong. Lower airspeed to 152 knots, the maximum retraction speed VLR. Recycle the gear. If that doesn't work, go to manual extension. Check indicator lights, verify electric master on, bus voltage normal, circuit breakers in. Be at 152 knots. Lower gear selector first, then pull the manual gear extension handle. If some green but not all, slow to 110 and use moderate yawing. If gear still not down and locked, prepare for gear up landing.",html:`
-<div class="card"><h3>Hydraulic Fluid</h3>
-<p>&bull; <strong>Type:</strong> Aeroshell Fluid 41 or AMG10<br>
-&bull; <strong>Color:</strong> Dyed <strong>red</strong> for leak detection<br>
-&bull; If you see red fluid during preflight &rarr; investigate for hydraulic leak</p></div>
-<div class="card"><h3>CHECK GEAR CAS Message</h3>
-<p>This warning appears when:</p>
-<p style="margin-top:8px">&bull; Flaps are in <strong>landing position</strong>, OR<br>
-&bull; One power lever is below approximately <strong>20%</strong></p>
-<p style="margin-top:4px"><strong>AND</strong> the landing gear is <strong>not down and locked</strong>.</p>
-<p style="margin-top:8px">Some aircraft have a <strong>gear warning mute button</strong> in the top left. Either way, this message means: you look like you're landing, but your gear isn't down.</p></div>
-<div class="section-divider"></div>
-<div class="card" style="border-left:4px solid var(--red)"><h3>&#x1f6a8; Emergency: Gear Won't Come Down</h3>
-<p>The gear system is <strong>designed to come down</strong>. If it won't, something has failed badly.</p>
-<div class="warning">&#x26a0;&#xfe0f; <strong>Detect:</strong> Gear unsafe light ON for more than <strong>20 seconds</strong> = something is wrong. Normal operation: light extinguishes &rarr; three green or no green.</div>
-<ol class="steps">
-<li>Lower airspeed to <strong>V<sub>LR</sub> = 152 KIAS</strong> (max retraction speed)</li>
-<li><strong>Recycle the gear</strong> &mdash; bring it up, then back down</li>
-<li>If recycling fails &rarr; proceed to <strong>manual extension</strong></li>
-</ol></div>
-<div class="card" style="border-left:4px solid var(--amber)"><h3>Manual Extension Procedure</h3>
-<ol class="steps">
-<li>Check <strong>gear indicator lights</strong> are working</li>
-<li>Verify <strong>electric master</strong> is ON</li>
-<li>Verify <strong>bus voltage</strong> is in normal range</li>
-<li>Check <strong>circuit breaker</strong> &mdash; reset if necessary</li>
-<li>Airspeed at <strong>V<sub>LR</sub> = 152 KIAS</strong></li>
-<li>Gear selector &rarr; <strong>DOWN</strong> (do this first!)</li>
-<li>Pull the <strong>manual gear extension handle</strong></li>
-</ol>
-<p style="margin-top:12px">If some gear shows green but not all: slow to <strong>110 KIAS</strong> and use <strong>moderate yawing</strong> to push gear into locked position.</p>
-<p style="margin-top:8px">Verify <strong>three green lights</strong>. If gear is still not down and locked &rarr; <strong>gear up landing</strong>.</p></div>
-<div class="quiz" id="q20"><div class="quiz-tag">&#x2713; Knowledge Check 1</div>
-<p class="q">What hydraulic fluid does the DA42 use?</p>
-<div class="opts">
-<div class="opt" data-letter="A" onclick="ans(this,'q20','A')"><span class="letter">A</span>MIL-H-5606</div>
-<div class="opt" data-letter="B" onclick="ans(this,'q20','B')"><span class="letter">B</span>Aeroshell Fluid 41 or AMG10</div>
-<div class="opt" data-letter="C" onclick="ans(this,'q20','C')"><span class="letter">C</span>Skydrol LD-4</div>
-</div><div class="feedback" id="q20f"></div></div>
-<div class="quiz" id="q21"><div class="quiz-tag">&#x2713; Knowledge Check 2</div>
-<p class="q">Why is the hydraulic fluid dyed red?</p>
-<div class="opts">
-<div class="opt" data-letter="A" onclick="ans(this,'q21','A')"><span class="letter">A</span>For leak detection &mdash; red fluid around the aircraft means a hydraulic leak</div>
-<div class="opt" data-letter="B" onclick="ans(this,'q21','B')"><span class="letter">B</span>To distinguish it from engine oil, which is blue</div>
-<div class="opt" data-letter="C" onclick="ans(this,'q21','C')"><span class="letter">C</span>It's not dyed &mdash; the fluid is naturally clear</div>
-</div><div class="feedback" id="q21f"></div></div>
-<div class="quiz" id="q22"><div class="quiz-tag">&#x2713; Knowledge Check 3</div>
-<p class="q">When does the CHECK GEAR CAS message appear?</p>
-<div class="opts">
-<div class="opt" data-letter="A" onclick="ans(this,'q22','A')"><span class="letter">A</span>When hydraulic fluid level is low</div>
-<div class="opt" data-letter="B" onclick="ans(this,'q22','B')"><span class="letter">B</span>When the left squat switch fails</div>
-<div class="opt" data-letter="C" onclick="ans(this,'q22','C')"><span class="letter">C</span>When flaps are in landing position (or power &lt;20%) and gear is not down and locked</div>
-</div><div class="feedback" id="q22f"></div></div>
-<div class="sources"><p><strong>Source:</strong> <a class="source-link" href="https://www.youtube.com/watch?v=s3bWFLFgkwY&t=494s" target="_blank">&#x1f3ac; Video 8:14 &mdash; Fluid</a> &bull; <a class="source-link" href="https://www.youtube.com/watch?v=s3bWFLFgkwY&t=511s" target="_blank">8:31 &mdash; CAS</a> &bull; <a class="source-link" href="https://www.youtube.com/watch?v=s3bWFLFgkwY&t=540s" target="_blank">9:00 &mdash; Emergency</a></p></div>`},
-
-// ---- MODULE 10: Emergency Quick Reference ----
-{title:"Emergency Quick Reference",sub:"The complete gear emergency flow at a glance",label:"EMERGENCY",speak:"This is your quick reference card for landing gear emergencies. Detect: gear unsafe light on for more than 20 seconds. Step 1: slow to 152 knots. Step 2: recycle the gear. Step 3: if that fails, manual extension. Check lights, electric master, bus voltage, circuit breakers. Selector down first, then pull manual extension handle. If partial green, slow to 110 and yaw. If no joy, gear up landing. Take nothing else away from this video except how to handle a landing gear emergency.",html:`
-<div class="warning" style="text-align:center;font-size:16px;padding:20px">&#x26a0;&#xfe0f; <strong>As Max says: Take nothing else away from this video &mdash;<br>it's how to handle a landing gear emergency.</strong></div>
-<div class="card" style="border:2px solid var(--red)"><h3 style="color:var(--red)">&#x1f6a8; Landing Gear Emergency Flow</h3>
-<ul class="checklist" id="emg">
-<li onclick="ck(this)"><span class="ck"></span><strong>DETECT:</strong> Gear unsafe light ON &gt; 20 seconds</li>
-<li onclick="ck(this)"><span class="ck"></span><strong>SLOW:</strong> V<sub>LR</sub> = 152 KIAS</li>
-<li onclick="ck(this)"><span class="ck"></span><strong>RECYCLE:</strong> Gear up, then gear down</li>
-<li onclick="ck(this)"><span class="ck"></span><strong>CHECK:</strong> Indicator lights, electric master, bus voltage, circuit breakers</li>
-<li onclick="ck(this)"><span class="ck"></span><strong>MANUAL:</strong> Gear selector DOWN first, then pull extension handle</li>
-<li onclick="ck(this)"><span class="ck"></span><strong>IF PARTIAL:</strong> Slow to 110 KIAS, moderate yawing</li>
-<li onclick="ck(this)"><span class="ck"></span><strong>VERIFY:</strong> Three green lights</li>
-<li onclick="ck(this)"><span class="ck"></span><strong>IF NO JOY:</strong> Gear up landing</li>
-</ul></div>
-<div class="keyfact">&#x1f4a1; The gear system is <strong>designed to come down</strong>. If it won't, something has failed badly. Follow this checklist methodically.</div>
-<div class="sources"><p><strong>Source:</strong> <a class="source-link" href="https://www.youtube.com/watch?v=s3bWFLFgkwY&t=540s" target="_blank">&#x1f3ac; Video 9:00 &mdash; Emergency Procedures</a></p></div>`},
-
-// ---- MODULE 11: Course Complete ----
-{title:"Course Complete",sub:"Congratulations!",label:"FINISH",speak:"Congratulations! You have completed the DA42 Landing Gear System course with a perfect score. You now understand hydraulic actuators and solenoids, squat and limit switches, the hydraulic supply system, gear retraction and extension, emergency procedures, and how to identify hydraulic leaks. Keep reviewing and stay safe.",html:`
-<div class="card" style="text-align:center;border-color:var(--green)">
-<div style="font-size:48px;margin-bottom:12px">&#x1f396;&#xfe0f;</div>
-<h3 style="color:var(--green);font-size:20px">Course Complete!</h3>
-<p id="final" style="font-size:32px;font-weight:800;color:var(--navy);margin:12px 0">25 / 25</p>
-<p style="color:var(--text2);font-size:14px">You passed every quiz with 100% accuracy.<br>You've mastered the DA42 landing gear system from hydraulic fundamentals through emergency procedures.</p>
-<div style="margin-top:20px;text-align:left">
-<h3 style="margin-bottom:10px">Continue Learning</h3>
-<p>&bull; <a href="https://www.youtube.com/watch?v=s3bWFLFgkwY" target="_blank" style="color:var(--sky)">Watch the original landing gear video by Max</a></p>
-<p>&bull; <a href="https://www.diamondaircraft.com/en/flight-school-solution/aircraft/da42-vi/" target="_blank" style="color:var(--sky)">Diamond Aircraft DA42 page</a></p>
-<p>&bull; Review the DA42 AFM Landing Gear and Emergency sections</p>
-</div></div>`}
-];
-
-// ===== STATE =====
-let cur=0,score=0,total=0;
-const passed=new Set();
-
-// ===== RENDER =====
-function render(){
-  const m=MODULES[cur];
-  let h=`<div class="module"><div class="module-label">${m.label}</div><h2>${m.title}</h2><p class="subtitle">${m.sub}</p>`;
-  const quizzes=MODULE_QUIZZES[cur]||[];
-  if(quizzes.length>0){
-    let dots='<div class="quiz-progress"><span class="qp-label">Quiz Progress:</span>';
-    quizzes.forEach(qid=>{dots+=`<span class="qp-dot${passed.has(qid)?' done':''}" id="dot-${qid}"></span>`;});
-    const allDone=quizzes.every(q=>passed.has(q));
-    if(allDone) dots+='<span style="font-size:12px;color:var(--green);font-weight:600;margin-left:6px">All passed!</span>';
-    else dots+=`<span style="font-size:12px;color:var(--text2);margin-left:6px">${quizzes.filter(q=>passed.has(q)).length}/${quizzes.length}</span>`;
-    dots+='</div>';
-    h+=dots;
-  }
-  h+=m.html+'</div>';
-  if(quizzes.length>0&&!quizzes.every(q=>passed.has(q))){
-    h+=`<div class="gate-msg" id="gate"><div class="lock-icon">&#x1f512;</div>Pass all ${quizzes.length} quiz${quizzes.length>1?'zes':''} above with 100% to unlock the next module.</div>`;
-  }
-  document.getElementById('main').innerHTML=h;
-  updateNav();
-  document.getElementById('progress-bar').style.width=(cur/(MODULES.length-1)*100)+'%';
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-
-function updateNav(){
-  document.getElementById('nav-center').innerHTML=`Module <strong>${cur+1}</strong> of ${MODULES.length}`;
-  document.getElementById('bp').disabled=cur<=0;
-  const quizzes=MODULE_QUIZZES[cur]||[];
-  const allPassed=quizzes.length===0||quizzes.every(q=>passed.has(q));
-  document.getElementById('bn').disabled=cur>=MODULES.length-1||!allPassed;
-}
-
-function go(d){const n=cur+d;if(n>=0&&n<MODULES.length){const quizzes=MODULE_QUIZZES[cur]||[];const allPassed=quizzes.length===0||quizzes.every(q=>passed.has(q));if(d>0&&!allPassed)return;cur=n;render();}}
-
-function ck(li){li.classList.toggle('done');li.querySelector('.ck').textContent=li.classList.contains('done')?'\u2713':'';}
-
-function updateScore(){
-  document.getElementById('sc').textContent=score+' / '+total;
-  if(document.getElementById('final'))document.getElementById('final').textContent=score+' / '+TOTAL_Q;
-}
-
-// ===== QUIZ ENGINE =====
-function ans(el,qid,letter){
-  if(passed.has(qid))return;
-  const a=ANSWERS[qid];
-  const fb=document.getElementById(qid+'f');
-  const quiz=document.getElementById(qid);
-  const opts=quiz.querySelectorAll('.opt');
-  total++;
-  if(letter===a.correct){
-    score++;passed.add(qid);el.classList.add('correct');
-    opts.forEach(o=>o.style.pointerEvents='none');
-    fb.className='feedback show pass';fb.innerHTML=`<strong>Correct!</strong> ${a.explain}`;
-    const dot=document.getElementById('dot-'+qid);if(dot)dot.classList.add('done');
-    const quizzes=MODULE_QUIZZES[cur]||[];
-    const allPassed=quizzes.every(q=>passed.has(q));
-    if(allPassed){
-      const gate=document.getElementById('gate');
-      if(gate)gate.innerHTML=`<div class="lock-icon" style="color:var(--green)">&#x2705;</div><strong style="color:var(--green)">All quizzes passed!</strong> You may now proceed to the next module.`;
-      const qp=document.querySelector('.quiz-progress');
-      if(qp){const lbl=qp.querySelector('span:last-child');if(lbl){lbl.style.color='var(--green)';lbl.textContent='All passed!';}}
-    } else {
-      const qp=document.querySelector('.quiz-progress');
-      if(qp){const lbl=qp.querySelector('span:last-child');if(lbl)lbl.textContent=quizzes.filter(q=>passed.has(q)).length+'/'+quizzes.length;}
-    }
-    updateNav();updateScore();
-  } else {
-    el.classList.add('wrong');
-    opts.forEach(o=>{if(o.dataset.letter===a.correct)o.classList.add('correct');o.style.pointerEvents='none';});
-    const wrongExplain=a.why_wrong[letter]||'';
-    fb.className='feedback show fail';
-    fb.innerHTML=`<strong>Incorrect.</strong> ${wrongExplain}<br><br><strong>The correct answer is ${a.correct}:</strong> ${a.explain}<br><br><button class="btn-retry" onclick="retryModule()">&#x1f504; Review Module &amp; Retry All Quizzes</button>`;
-    updateScore();
-  }
-}
-
-function retryModule(){
-  const quizzes=MODULE_QUIZZES[cur]||[];
-  quizzes.forEach(qid=>passed.delete(qid));
-  render();
-}
-
-// ===== TTS =====
-let speaking=false,audio=null;
-async function speak(){
-  const t=MODULES[cur].speak;if(!t)return;
-  if(speaking&&audio){audio.pause();audio=null;speaking=false;document.getElementById('tts').classList.remove('on');document.getElementById('bs').textContent='\u{1f50a} Narrate';return;}
-  speaking=true;document.getElementById('tts').classList.add('on');document.getElementById('bs').textContent='\u23f9 Stop';
-  try{
-    const r=await fetch('http://localhost:8100/v1/audio/speech',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'chatterbox',voice:'kirk',input:t,response_format:'mp3'})});
-    if(!r.ok)throw new Error('TTS error');
-    const b=await r.blob(),u=URL.createObjectURL(b);audio=new Audio(u);
-    audio.onended=()=>{URL.revokeObjectURL(u);speaking=false;audio=null;document.getElementById('tts').classList.remove('on');document.getElementById('bs').textContent='\u{1f50a} Narrate';};
-    await audio.play();
-  }catch(e){speaking=false;document.getElementById('tts').classList.remove('on');document.getElementById('bs').textContent='\u{1f50a} Narrate';const u=new SpeechSynthesisUtterance(t);u.rate=.9;u.pitch=.8;u.onend=()=>{speaking=false;document.getElementById('bs').textContent='\u{1f50a} Narrate';};speechSynthesis.speak(u);document.getElementById('bs').textContent='\u23f9 Stop';}
-}
-
-// ===== KEYBOARD NAV =====
-document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')go(1);if(e.key==='ArrowLeft')go(-1);if(e.key==='s'||e.key==='S')speak();});
-render();
-</script>
 </body>
 </html>
