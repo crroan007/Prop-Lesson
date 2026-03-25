@@ -358,7 +358,7 @@ q28:{
 // ===== MODULES =====
 const MODULES=[
 // ---- MODULE 0: Welcome ----
-{title:"Welcome Aboard",sub:"Course overview and learning objectives",label:"START",speak:"Welcome to the DA42 propeller system course. This lesson is based on the video by Max covering the DA42 propeller system. We'll build from basic concepts up to emergency procedures using cumulative learning. Each module builds on the last, and you must pass every quiz with 100% accuracy before moving on. Let's get started.",html:`
+{title:"Welcome Aboard",sub:"Course overview and learning objectives",label:"START",speak:"Welcome to the DA42 propeller system course. This lesson is based on the video by Max covering the DA42 NG6 propeller system. The propeller system is tightly coupled with the engine, the gearbox, and the ECUs. We'll focus on the propeller and the gearbox, building from basic concepts up to emergency procedures using cumulative learning. If you're coming from a Cessna 172 or similar fixed pitch airplane, this course will introduce you to variable pitch. Each module builds on the last, and you must pass every quiz with 100% accuracy before moving on. Let's get started.",html:`
 <div class="card"><h3>What You'll Master</h3>
 <ul class="checklist" id="obj">
 <li onclick="ck(this)"><span class="ck"></span>What pitch means and why it matters</li>
@@ -372,6 +372,8 @@ const MODULES=[
 <li onclick="ck(this)"><span class="ck"></span>Emergency: oscillating RPM, overspeed, fixed RPM</li>
 <li onclick="ck(this)"><span class="ck"></span>Engine failure memory items & restart procedures</li>
 </ul></div>
+<div class="card"><h3>About This System</h3>
+<p>The DA42 propeller system is <strong>tightly coupled with the engine, the gearbox, and the ECUs</strong>. This course focuses on the propeller and gearbox. If you're coming from a <strong>Cessna 172</strong> or similar single-engine fixed-pitch airplane, this will be your introduction to variable pitch, feathering propellers.</p></div>
 <div class="card"><h3>How This Course Works</h3>
 <p>This course uses <strong>cumulative learning</strong>. Each module builds on the previous one. You <strong>must pass every quiz with 100% accuracy</strong> before advancing to the next module.</p>
 <p style="margin-top:8px">If you answer a question incorrectly, you'll see an explanation of <strong>why your answer was wrong</strong>, and you'll need to <strong>review the module and retry</strong>. This ensures you truly understand the material before moving on.</p>
@@ -501,7 +503,7 @@ const MODULES=[
 &bull; <strong>De-ice:</strong> rubber strip channels TKS fluid to the leading edges (if equipped)<br>
 &bull; <strong>Spinner:</strong> aluminum &mdash; <strong>never push the spinner</strong> to move the aircraft</p></div>
 <div class="analogy"><div class="label">Preflight Mindset</div>
-<p>Run your hand along each leading edge during preflight. Yes, a nick might cut you. But it is far better to <strong>find damage on the ground</strong> than to discover it in flight. Think of it as shaking hands with your propeller &mdash; you want to know it's healthy before you trust it with your life.</p></div>
+<p>Run your hand along each leading edge during preflight. Yes, a nick might cut you. But as Max says in the video: it is far better to <strong>find damage on the ground</strong> than to discover it in flight. Look for chips in the plastic coating or nicks in the stainless steel &mdash; even small damage matters.</p></div>
 <div class="warning">&#x26a0;&#xfe0f; <strong>AFM Caution:</strong> Avoid high RPM on the ground. Stones and debris can be sucked up and damage the leading edges.</div>
 <div class="quiz" id="q9"><div class="quiz-tag">&#x2713; Knowledge Check 1</div>
 <p class="q">What material are the MT propeller leading edges made of?</p>
@@ -626,6 +628,8 @@ const MODULES=[
 <p>&bull; Derates engine speed to prop speed: <strong>1.69 : 1</strong> ratio<br>
 &bull; Governor uses <strong>gearbox oil</strong> (check through sight glass on preflight)<br>
 &bull; Your EIS displays <strong>propeller RPM</strong>, not engine RPM</p></div>
+<div class="card"><h3>Pressure Accumulator (Unfeathering Accumulator)</h3>
+<p>Also known as the <strong>unfeathering accumulator</strong>, it stores a small quantity of pressurized gearbox oil in a <strong>nitrogen-charged metal cylinder</strong>. Its job is to push the propeller out of feather when you turn the engine master on.</p></div>
 <div class="analogy"><div class="label">Analogy &mdash; A Pressurized Fire Extinguisher</div>
 <p>The accumulator is like a small fire extinguisher pre-charged with nitrogen. Squeeze the handle (engine master ON) and it releases pressurized oil to push the prop out of feather. Release the handle (engine master OFF), and the system recharges for next time.</p></div>
 <div class="card"><h3>Feather / Unfeather Sequence</h3>
@@ -659,7 +663,7 @@ const MODULES=[
 // ---- MODULE 10: Emergency RPM ----
 {title:"Emergency: Defective RPM Regulating System",sub:"Oscillating RPM, propeller overspeed, and fixed RPM",label:"EMERGENCY",speak:"Three propeller emergencies. Oscillating RPM: change power first, the RPM may stabilize at a different setting. If not, check for ECU failure and switch the ECU. If unresolved, land at the nearest suitable airfield. Propeller overspeed: the limit is 2500 RPM maximum for 20 seconds. Reduce power immediately, check and switch ECU if needed, and land. Fixed RPM means the RPM won't change with power. Same drill: check ECU, switch ECU, and if unresolved, land and terminate the flight.",html:`
 <div class="card" style="border-left:4px solid var(--red)"><h3>&#x1f504; Oscillating RPM</h3>
-<ol class="steps"><li>Change power setting &mdash; RPM may stabilize at a different setting</li><li>Check for ECU failure indication (A or B)</li><li>Switch to the other ECU if failure detected</li><li>If unresolved &rarr; <strong>land at nearest suitable airfield</strong></li></ol></div>
+<ol class="steps"><li>Change power setting &mdash; RPM may stabilize at a different setting</li><li>Check for ECU failure indication (A or B)</li><li>Switch to the other ECU if failure detected</li><li>If unresolved &rarr; return ECU to AUTO and <strong>land at nearest suitable airfield</strong></li></ol></div>
 <div class="card" style="border-left:4px solid var(--red)"><h3>&#x26a1; Propeller Overspeed</h3>
 <div class="warning">&#x26a0;&#xfe0f; <strong>Limit: 2,500 RPM maximum for 20 seconds</strong> (AFM power plant limitation)</div>
 <ol class="steps"><li>Reduce power immediately</li><li>Check for ECU failure</li><li>Switch ECU (A&#x2194;B)</li><li>If unresolved &rarr; <strong>land immediately</strong></li></ol></div>
@@ -691,7 +695,9 @@ const MODULES=[
 
 // ---- MODULE 11: Engine Failure & Restarts ----
 {title:"Engine Failure & Restart Procedures",sub:"Memory items, Identify-Verify-Fix-Secure, and two restart methods",label:"EMERGENCY",speak:"For engine failure below 3000 feet or during a critical phase of flight, these are memory items. Power lever max. Maintain directional control. Airspeed to V S C. Gear up. Flaps up. Secure the engine. Use the pattern: Identify dead foot dead engine. Verify by pulling throttle back. Fix by turning engine master off which feathers the prop. Secure: alternator off, fuel pump off, fuel selector off. For restarts with the starter, be below 100 knots and either under 18000 feet for immediate or under 10000 feet within 2 minutes. For windmilling restart, you must be between 125 and 145 knots indicated.",html:`
-<div class="card" style="border-left:4px solid var(--amber);background:var(--amber-bg)"><h3>&#x1f480; Engine Failure Below 3,000 ft &mdash; MEMORY ITEMS</h3>
+<div class="card"><h3>When These Apply</h3>
+<p>Below <strong>3,000 ft</strong> or during a <strong>critical phase of flight</strong>, there is no time to troubleshoot. The goal is to secure the engine, get it feathered to the most aerodynamic position, <strong>declare an emergency</strong>, and come back to land.</p></div>
+<div class="card" style="border-left:4px solid var(--amber);background:var(--amber-bg)"><h3>&#x1f480; Engine Failure &mdash; MEMORY ITEMS</h3>
 <ul class="checklist" id="mem">
 <li onclick="ck(this)"><span class="ck"></span><strong>Power lever &mdash; MAX</strong></li>
 <li onclick="ck(this)"><span class="ck"></span><strong>Maintain directional control</strong></li>
