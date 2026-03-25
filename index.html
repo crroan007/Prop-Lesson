@@ -16,12 +16,12 @@ header{position:fixed;top:3px;left:0;right:0;z-index:999;background:var(--white)
 .logo svg{width:28px;height:28px}
 .nav-center{font-size:13px;color:var(--text2);font-weight:500}
 .nav-center strong{color:var(--text)}
-.nav-btns{display:flex;gap:8px}
+.nav-btns{display:flex;gap:8px;align-items:center}
 .btn{padding:8px 18px;border-radius:6px;border:1px solid var(--border);background:var(--white);color:var(--text);font:600 13px 'DM Sans',sans-serif;cursor:pointer;transition:all .15s}
-.btn:hover{background:var(--sky-light);border-color:var(--sky);color:var(--sky)}
+.btn:hover:not(:disabled){background:var(--sky-light);border-color:var(--sky);color:var(--sky)}
 .btn:disabled{opacity:.3;cursor:default}
 .btn-primary{background:var(--sky);color:#fff;border-color:var(--sky)}
-.btn-primary:hover{background:#1557b0;box-shadow:var(--hover-shadow)}
+.btn-primary:hover:not(:disabled){background:#1557b0;box-shadow:var(--hover-shadow)}
 main{max-width:760px;margin:0 auto;padding:76px 20px 60px}
 .module{margin-bottom:48px;animation:fadeUp .5s ease both}
 .module:nth-child(2){animation-delay:.05s}.module:nth-child(3){animation-delay:.1s}
@@ -77,7 +77,19 @@ main{max-width:760px;margin:0 auto;padding:76px 20px 60px}
 .steps{counter-reset:step}
 .steps li{counter-increment:step;padding-left:36px;position:relative;margin-bottom:12px;font-size:14px;color:var(--text2);line-height:1.7}
 .steps li::before{content:counter(step);position:absolute;left:0;top:2px;width:24px;height:24px;background:var(--sky);color:#fff;border-radius:50%;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center}
-@media(max-width:600px){main{padding:64px 14px 40px}.card{padding:18px}.quiz{padding:18px}}
+.gate-msg{background:var(--amber-bg);border:2px solid var(--amber);border-radius:10px;padding:16px 20px;margin-top:20px;text-align:center;font-size:14px;font-weight:600;color:#7a5e00;animation:fadeUp .3s ease}
+.gate-msg .lock-icon{font-size:28px;margin-bottom:6px}
+.btn-retry{display:inline-block;margin-top:10px;padding:10px 24px;background:var(--red);color:#fff;border:none;border-radius:6px;font:600 13px 'DM Sans',sans-serif;cursor:pointer;transition:all .15s}
+.btn-retry:hover{background:#b71c1c;box-shadow:var(--hover-shadow)}
+.quiz-progress{display:flex;gap:6px;align-items:center;margin-bottom:16px;flex-wrap:wrap}
+.qp-dot{width:10px;height:10px;border-radius:50%;background:var(--border);transition:background .3s}
+.qp-dot.done{background:var(--green)}
+.qp-label{font-size:11px;color:var(--text2);font-weight:600;margin-right:4px}
+.source-link{font-size:12px;color:var(--sky);text-decoration:none;font-weight:500;display:inline-flex;align-items:center;gap:4px}
+.source-link:hover{text-decoration:underline}
+.sources{margin-top:16px;padding-top:12px;border-top:1px solid var(--border)}
+.sources p{font-size:12px;color:var(--text2);margin-bottom:4px}
+@media(max-width:600px){main{padding:64px 14px 40px}.card{padding:18px}.quiz{padding:18px}header{padding:0 12px}.logo{font-size:13px}.btn{padding:6px 12px;font-size:12px}}
 </style>
 </head>
 <body>
@@ -87,274 +99,798 @@ main{max-width:760px;margin:0 auto;padding:76px 20px 60px}
     <svg viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="13" stroke="#1a73e8" stroke-width="2"/><path d="M8 18L14 8l6 10" stroke="#1a73e8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="14" cy="16" r="2" fill="#1a73e8"/></svg>
     DA42 Ground School
   </div>
-  <div class="nav-center" id="nav-center">Module <strong>1</strong> of 9</div>
+  <div class="nav-center" id="nav-center">Module <strong>1</strong> of 13</div>
   <div class="nav-btns">
-    <button class="btn" id="bp" onclick="go(-1)" disabled>← Previous</button>
-    <button class="btn btn-primary" id="bs" onclick="speak()">🔊 Narrate</button>
-    <button class="btn" id="bn" onclick="go(1)">Next →</button>
+    <button class="btn" id="bp" onclick="go(-1)" disabled>&larr; Previous</button>
+    <button class="btn btn-primary" id="bs" onclick="speak()">&#x1f50a; Narrate</button>
+    <button class="btn" id="bn" onclick="go(1)">Next &rarr;</button>
   </div>
 </header>
 
-<div id="scorebar">✓ <span id="sc">0 / 0</span></div>
-<div class="tts-bar" id="tts">🔊 Narrating...</div>
-<main id="main">
-<!-- CONTENT INJECTED BY JS -->
-</main>
+<div id="scorebar">&#x2713; <span id="sc">0 / 0</span></div>
+<div class="tts-bar" id="tts">&#x1f50a; Narrating...</div>
+<main id="main"></main>
 
 <script>
+// ===== MODULE QUIZ MAPPING =====
+const MODULE_QUIZZES={
+  0:[],
+  1:['q1','q2'],
+  2:['q3','q4'],
+  3:['q5','q6'],
+  4:['q7','q8'],
+  5:['q9','q10','q11'],
+  6:['q12','q13'],
+  7:['q14','q15','q16'],
+  8:['q17','q18'],
+  9:['q19','q20','q21'],
+  10:['q22','q23','q24'],
+  11:['q25','q26','q27','q28'],
+  12:[]
+};
+
+// ===== ANSWER EXPLANATIONS =====
+const ANSWERS={
+q1:{
+  correct:'B',
+  why_wrong:{
+    A:'Large bite and low RPM describes <strong>coarse pitch</strong>, not fine pitch. Fine pitch means the blade takes a small, shallow bite of air.',
+    C:'High RPM is correct for fine pitch, but the bite is <strong>small</strong>, not large. A fine (flat) blade angle slices through air easily with small bites.'
+  },
+  explain:'Fine pitch = small blade angle = small bite of air = high RPM. Think of a flat hand slicing through water \u2014 easy to move but grabs little.'
+},
+q2:{
+  correct:'B',
+  why_wrong:{
+    A:'Takeoff requires <strong>fine pitch</strong> (low gear) for maximum thrust and high RPM to accelerate quickly. Coarse pitch at takeoff would be like starting a bike in 5th gear.',
+    C:'Descent has nothing to do with coarse vs fine pitch selection. Pitch is about matching blade angle to flight phase for efficiency.'
+  },
+  explain:'Coarse pitch takes a big bite of air at lower RPM \u2014 efficient for cruise, like a bike in high gear at top speed.'
+},
+q3:{
+  correct:'A',
+  why_wrong:{
+    B:'Fixed pitch propellers are actually <strong>simpler and lighter</strong> than variable pitch. Their disadvantage is performance, not weight.',
+    C:'Fixed pitch propellers can generate thrust at altitude. The issue is they are only optimized for <strong>one specific airspeed</strong>, performing poorly everywhere else.'
+  },
+  explain:'A fixed pitch prop is like a bike stuck in one gear \u2014 perfect at one speed, inefficient at all others. The DA42 uses variable pitch to be efficient across all phases of flight.'
+},
+q4:{
+  correct:'C',
+  why_wrong:{
+    A:'Fixed pitch propellers cannot change blade angle. The DA42 needs variable pitch for efficiency across takeoff, climb, and cruise.',
+    B:'While the DA42 does have variable pitch, the full answer is <strong>variable pitch, feathering</strong>. Feathering capability is critical for engine-out safety in a twin.'
+  },
+  explain:'The DA42 has variable pitch, feathering propellers. Variable pitch for efficiency at all speeds; feathering to minimize drag if an engine fails.'
+},
+q5:{
+  correct:'C',
+  why_wrong:{
+    A:'Feathering does the <strong>opposite</strong> of increasing thrust. It aligns the blade edge-on to airflow to <strong>eliminate drag</strong> when an engine is inoperative.',
+    B:'Feathering does not lock the prop. The blade simply rotates to approximately 90\u00b0 \u2014 parallel to the oncoming airflow \u2014 so it creates minimal drag.'
+  },
+  explain:'Feathered = blade edge-on to wind (approximately 90\u00b0) = minimum drag. Like turning a playing card edge-on out a car window \u2014 it slices through the air.'
+},
+q6:{
+  correct:'B',
+  why_wrong:{
+    A:'45\u00b0 is roughly a mid-range pitch angle, not feathered. Feathering requires the blade to be nearly parallel to the oncoming airflow.',
+    C:'12\u00b0 is approximately <strong>fine pitch</strong> (flat blade, small bite). This is the opposite of feathered \u2014 it would create maximum drag if windmilling.'
+  },
+  explain:'A feathered blade is at approximately 90\u00b0 \u2014 edge-on to the airflow, parallel to the direction of flight. This minimizes drag from an inoperative engine.'
+},
+q7:{
+  correct:'B',
+  why_wrong:{
+    A:'The DA42 has <strong>no blue RPM levers</strong>. FADEC eliminates manual RPM control. The pilot only sets a power lever percentage, and the ECU handles the rest.',
+    C:'The governor physically adjusts blade pitch, but it takes <strong>instructions from the ECU</strong>. The ECU is the brain; the governor is the muscle.'
+  },
+  explain:'The ECU reads the power lever position, looks up the target RPM on the propeller set point curve, and commands the governor to adjust blade pitch accordingly. No blue levers needed.'
+},
+q8:{
+  correct:'C',
+  why_wrong:{
+    A:'1,800 RPM is incorrect. Diamond publishes a specific propeller set point curve, and at 60% power the target is 1,980 RPM.',
+    B:'2,100 RPM is too high for 60% power. The propeller set point curve shows 1,980 RPM at this power setting.'
+  },
+  explain:'Diamond publishes a propeller set point curve. At 60% power, the ECU targets 1,980 RPM. The governor adjusts blade pitch to maintain this RPM.'
+},
+q9:{
+  correct:'A',
+  why_wrong:{
+    B:'Titanium is not used on the MT propeller leading edges. The construction uses <strong>stainless steel</strong> for its durability against erosion.',
+    C:'Carbon fiber is not the leading edge material. The blades themselves are wood composite with plastic coating, but the leading edges are <strong>stainless steel</strong>.'
+  },
+  explain:'The MT propeller leading edges are stainless steel for durability against erosion and impact. The blades are wood composite with reinforced plastic coating.'
+},
+q10:{
+  correct:'B',
+  why_wrong:{
+    A:'<strong>Never push the spinner.</strong> The aluminum spinner is not designed to withstand pushing forces. Always push on the propeller blades themselves to move the aircraft.'
+  },
+  explain:'Always push on the propeller blades, never the spinner. The spinner is a lightweight aluminum fairing not designed to handle pushing forces.'
+},
+q11:{
+  correct:'A',
+  why_wrong:{
+    B:'Overheating is a concern in some contexts, but the specific AFM caution about high RPM on the ground is about <strong>debris ingestion</strong> \u2014 stones and debris can be sucked up and damage the leading edges.',
+    C:'While noise may be a consideration, the AFM specifically warns about <strong>stone and debris damage</strong> to the propeller leading edges during high RPM ground operations.'
+  },
+  explain:'The AFM cautions against high RPM on the ground because the propeller can suck up stones and debris, damaging the stainless steel leading edges.'
+},
+q12:{
+  correct:'A',
+  why_wrong:{
+    B:'Counter-clockwise is incorrect. Both DA42 propellers rotate <strong>clockwise</strong> when viewed from the pilot\u2019s seat. This makes it a conventional twin (same direction, same engine type).',
+    C:'The DA42 does NOT have counter-rotating propellers. Both rotate the <strong>same</strong> direction (clockwise), which is why there IS a critical engine.'
+  },
+  explain:'Both propellers rotate clockwise from the pilot\u2019s perspective. Same engine, same direction = conventional twin. This creates asymmetric effects that make the left engine critical.'
+},
+q13:{
+  correct:'A',
+  why_wrong:{
+    B:'The right engine is NOT the critical engine on the DA42. With both props rotating clockwise, the PAST factors (P-factor, Accelerated slipstream, Spiraling slipstream, Torque) cause the <strong>left</strong> engine failure to have the worst effect.',
+    C:'There IS a critical engine on the DA42. Only counter-rotating twins eliminate the critical engine concept. The DA42\u2019s conventional layout means the left engine is critical.'
+  },
+  explain:'The left engine is critical because both propellers rotate clockwise. Losing the left engine creates the greatest adverse yawing moment due to PAST factors: P-factor, Accelerated slipstream, Spiraling slipstream, and Torque.'
+},
+q14:{
+  correct:'A',
+  why_wrong:{
+    B:'More oil pressure pushes blades to <strong>fine pitch</strong>, not coarse. Think: more pressure = more force = blades pushed toward flat (fine) angle for takeoff.',
+    C:'Oil pressure does NOT feather the blades. <strong>Removing</strong> oil pressure allows counterweights to push toward feathered. More oil = fine pitch.'
+  },
+  explain:'More oil pressure in the propeller hub pushes blades toward fine pitch (small bite, high RPM) \u2014 the takeoff setting. The governor pumps gearbox oil to control this.'
+},
+q15:{
+  correct:'B',
+  why_wrong:{
+    A:'Less oil moves blades toward <strong>coarse</strong>, not fine. Fine pitch requires <strong>increased</strong> oil pressure to push blades to a flatter angle.',
+    C:'Less oil moves toward coarse, but not all the way to feathered. Complete removal of oil pressure is needed for feathering.'
+  },
+  explain:'Reduced oil pressure allows the blades to move toward coarse pitch (big bite, lower RPM) \u2014 the cruise setting. Counterweights assist this movement.'
+},
+q16:{
+  correct:'C',
+  why_wrong:{
+    A:'No oil does NOT produce fine pitch. Fine pitch requires <strong>maximum</strong> oil pressure. With no oil, counterweights push blades all the way to feathered.',
+    B:'Coarse pitch still requires some oil pressure. With <strong>zero</strong> oil pressure, counterweights push the blades past coarse all the way to the feathered position.'
+  },
+  explain:'No oil pressure = feathered. The counterweights naturally push the blades toward coarse/feathered. With zero oil in the hub, blades go to full feather (approximately 90\u00b0).'
+},
+q17:{
+  correct:'A',
+  why_wrong:{
+    B:'Centrifugal force pushes toward <strong>fine pitch (flat)</strong>, not coarse. This is actually the dangerous direction \u2014 that\u2019s why counterweights are installed to oppose it.',
+    C:'Centrifugal force does not feather the blades. It pushes them toward <strong>fine pitch</strong>. The <strong>counterweights</strong> are what push toward feathered.'
+  },
+  explain:'Spinning blades experience centrifugal force that naturally pushes them toward fine (flat) pitch \u2014 the worst position in an engine failure. Counterweights on each blade base oppose this, pushing toward the safe coarse/feathered direction.'
+},
+q18:{
+  correct:'B',
+  why_wrong:{
+    A:'1,000 RPM is incorrect. The low pitch stop pins engage below <strong>1,300 RPM</strong>. This is why the propellers don\u2019t fully feather during ground shutdown.',
+    C:'1,600 RPM is too high. The pins engage below <strong>1,300 RPM</strong>, preventing feathering during normal ground operations while allowing it during flight.'
+  },
+  explain:'Low pitch stop pins prevent feathering below 1,300 RPM. That\u2019s why propellers don\u2019t fully feather when you shut down on the ground \u2014 RPM drops below 1,300 and the pins engage.'
+},
+q19:{
+  correct:'B',
+  why_wrong:{
+    A:'1.47:1 is incorrect. The gearbox derates engine speed to propeller speed at a ratio of <strong>1.69 : 1</strong>.',
+    C:'2.00:1 is incorrect. The correct gear reduction ratio is <strong>1.69 : 1</strong> \u2014 the engine turns 1.69 times for every one propeller rotation.'
+  },
+  explain:'The gearbox reduces engine speed to propeller speed at a 1.69 : 1 ratio. The engine spins 1.69 times for every single propeller revolution.'
+},
+q20:{
+  correct:'A',
+  why_wrong:{
+    B:'The EIS displays <strong>propeller RPM</strong>, not engine RPM. Because of the 1.69:1 gearbox ratio, the actual engine RPM is higher than what you see on the instruments.'
+  },
+  explain:'Your EIS displays propeller RPM, not engine RPM. Since the gearbox derates at 1.69:1, the engine actually spins faster than the number shown on your instruments.'
+},
+q21:{
+  correct:'B',
+  why_wrong:{
+    A:'This is <strong>backwards</strong> and dangerous. You must bring the power lever to IDLE <strong>first</strong>, then turn Engine Master OFF. Getting this wrong can prevent proper feathering.',
+    C:'Fuel selector and alternator are part of the engine <strong>securing</strong> procedure, not the feathering sequence. Feathering is: IDLE first, then Engine Master OFF.'
+  },
+  explain:'To feather: power lever to IDLE first, then Engine Master OFF. This opens the electric governor valve, oil drains from the hub, counterweights push blades to feathered, and the accumulator stores oil.'
+},
+q22:{
+  correct:'A',
+  why_wrong:{
+    B:'Switching the ECU is step <strong>3</strong>, not step 1. First, try changing the power setting \u2014 the RPM may stabilize at a different power level without any ECU intervention.',
+    C:'Landing immediately is the <strong>last resort</strong> if other steps fail. First try changing power, then checking/switching ECU.'
+  },
+  explain:'For oscillating RPM: first change the power setting. The RPM may stabilize at a different power level. If not, check for ECU failure, switch ECU (A\u2194B), and if still unresolved, land at the nearest suitable airfield.'
+},
+q23:{
+  correct:'B',
+  why_wrong:{
+    A:'2,000 RPM for 30 seconds is incorrect. The power plant limitation is <strong>2,500 RPM</strong> maximum for <strong>20 seconds</strong>.',
+    C:'3,000 RPM for 10 seconds is incorrect. The actual limit is <strong>2,500 RPM for 20 seconds</strong> \u2014 this is a specific limitation from the AFM.'
+  },
+  explain:'The maximum propeller overspeed is 2,500 RPM for a maximum of 20 seconds. This is a power plant limitation from the AFM. Exceeding this risks structural damage.'
+},
+q24:{
+  correct:'C',
+  why_wrong:{
+    A:'Continuing the flight is NOT safe if the ECU switch fails to resolve a defective RPM issue. The correct action is to <strong>land at the nearest suitable airfield</strong>.',
+    B:'Shutting down the engine is not the prescribed step. The AFM procedure says to <strong>land at the nearest suitable airfield</strong> and terminate the flight.'
+  },
+  explain:'If switching the ECU (A\u2194B) doesn\u2019t resolve the RPM issue (oscillating, overspeed, or fixed), you must land at the nearest suitable airfield and terminate the flight.'
+},
+q25:{
+  correct:'B',
+  why_wrong:{
+    A:'The correct order is: Power lever MAX \u2192 Maintain directional control \u2192 Airspeed V<sub>SC</sub> \u2192 Gear UP \u2192 <strong>Flaps UP</strong> \u2192 Secure engine. "Secure engine" comes last, not after gear UP.',
+    C:'Alternator OFF is part of the <strong>secure</strong> step, which comes after flaps UP. The memory items sequence is: power, control, airspeed, gear, flaps, then secure.'
+  },
+  explain:'Memory items in order: Power lever MAX \u2192 Maintain directional control \u2192 Airspeed to V<sub>SC</sub> \u2192 Gear UP \u2192 Flaps UP \u2192 Secure the engine.'
+},
+q26:{
+  correct:'C',
+  why_wrong:{
+    A:'Pulling the throttle back is the <strong>Verify</strong> step, not Fix. Verify = pull throttle back to confirm which engine failed. Fix = Engine Master OFF to feather the prop.',
+    B:'Switching the ECU is part of the <strong>defective RPM</strong> procedure, not the engine failure Identify-Verify-Fix-Secure sequence.'
+  },
+  explain:'In the Identify-Verify-Fix-Secure pattern: Identify = dead foot, dead engine. Verify = pull throttle back. Fix = Engine Master OFF (which feathers the prop). Secure = alternator OFF, fuel pump OFF, fuel selector OFF.'
+},
+q27:{
+  correct:'A',
+  why_wrong:{
+    B:'125 KIAS is too fast for a starter restart. You want to be <strong>below 100 KIAS</strong> (preferably lower) to avoid putting excessive stress on the starter motor.',
+    C:'150 KIAS is far too fast. High airspeed during a starter restart puts dangerous stress on the starter. Stay <strong>below 100 KIAS</strong>.'
+  },
+  explain:'For a restart with the starter, airspeed should be below 100 KIAS (preferably lower) to avoid excessive stress on the starter motor. Also: \u226418,000 ft for immediate restart, or \u226410,000 ft if within 2 minutes.'
+},
+q28:{
+  correct:'C',
+  why_wrong:{
+    A:'80\u2013100 KIAS is too slow for windmilling. The prop needs enough airflow to windmill and restart. The correct range is <strong>125\u2013145 KIAS</strong>.',
+    B:'100\u2013120 KIAS is not the correct range. Windmilling restart requires <strong>125\u2013145 KIAS</strong> \u2014 fast enough to windmill but within structural limits.'
+  },
+  explain:'Windmilling restart requires 125\u2013145 KIAS. Too slow and the prop won\u2019t generate enough windmilling force. Too fast and you risk exceeding structural limits.'
+}
+};
+
+// ===== MODULES =====
 const MODULES=[
-// ---- MODULE 1: Welcome ----
-{title:"Welcome Aboard",sub:"Course overview and objectives",label:"START",speak:"Welcome to the DA42 propeller system course. This lesson will take you through everything you need to understand about how the propeller works on the DA42 twin. We'll build from the basics up to emergency procedures. Let's get started.",html:`
+// ---- MODULE 0: Welcome ----
+{title:"Welcome Aboard",sub:"Course overview and learning objectives",label:"START",speak:"Welcome to the DA42 propeller system course. This lesson is based on the video by Max covering the DA42 NG6 propeller system. The propeller system is tightly coupled with the engine, the gearbox, and the ECUs. We'll focus on the propeller and the gearbox, building from basic concepts up to emergency procedures using cumulative learning. If you're coming from a Cessna 172 or similar fixed pitch airplane, this course will introduce you to variable pitch. Each module builds on the last, and you must pass every quiz with 100% accuracy before moving on. Let's get started.",html:`
 <div class="card"><h3>What You'll Master</h3>
 <ul class="checklist" id="obj">
 <li onclick="ck(this)"><span class="ck"></span>What pitch means and why it matters</li>
+<li onclick="ck(this)"><span class="ck"></span>Fixed vs variable pitch propellers</li>
+<li onclick="ck(this)"><span class="ck"></span>What feathering is and why it's critical</li>
 <li onclick="ck(this)"><span class="ck"></span>How FADEC controls RPM automatically</li>
 <li onclick="ck(this)"><span class="ck"></span>MT propeller construction & preflight</li>
-<li onclick="ck(this)"><span class="ck"></span>The oil-based pitch control system</li>
+<li onclick="ck(this)"><span class="ck"></span>Critical engine concept (PAST)</li>
+<li onclick="ck(this)"><span class="ck"></span>Oil pressure pitch control system</li>
+<li onclick="ck(this)"><span class="ck"></span>Counterweights, gearbox & accumulator</li>
 <li onclick="ck(this)"><span class="ck"></span>Emergency: oscillating RPM, overspeed, fixed RPM</li>
-<li onclick="ck(this)"><span class="ck"></span>Engine failure memory items & restarts</li>
+<li onclick="ck(this)"><span class="ck"></span>Engine failure memory items & restart procedures</li>
 </ul></div>
+<div class="card"><h3>About This System</h3>
+<p>The DA42 propeller system is <strong>tightly coupled with the engine, the gearbox, and the ECUs</strong>. This course focuses on the propeller and gearbox. If you're coming from a <strong>Cessna 172</strong> or similar single-engine fixed-pitch airplane, this will be your introduction to variable pitch, feathering propellers.</p></div>
 <div class="card"><h3>How This Course Works</h3>
-<p>Each module covers <strong>one concept</strong>. You'll get an <strong>analogy</strong> first to build intuition, then the technical detail, then a <strong>knowledge check</strong> to lock it in. Use the 🔊 <strong>Narrate</strong> button to hear each section read aloud.</p>
-<p style="margin-top:8px">This course is designed for learners who learn best with multiple approaches — reading, listening, visuals, and active recall.</p></div>
-<div class="img-wrap"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Diamond_DA42_Twin_Star_%28VH-YEW%29_at_Wagga_Wagga_Airport.jpg/1280px-Diamond_DA42_Twin_Star_%28VH-YEW%29_at_Wagga_Wagga_Airport.jpg" alt="DA42"><div class="cap">Diamond DA42 Twin Star — the aircraft you're learning about</div></div>`},
+<p>This course uses <strong>cumulative learning</strong>. Each module builds on the previous one. You <strong>must pass every quiz with 100% accuracy</strong> before advancing to the next module.</p>
+<p style="margin-top:8px">If you answer a question incorrectly, you'll see an explanation of <strong>why your answer was wrong</strong>, and you'll need to <strong>review the module and retry</strong>. This ensures you truly understand the material before moving on.</p>
+<p style="margin-top:8px">Use the &#x1f50a; <strong>Narrate</strong> button to hear each section read aloud.</p></div>
+<div class="img-wrap"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Diamond_DA42_Twin_Star_%28VH-YEW%29_at_Wagga_Wagga_Airport.jpg/1280px-Diamond_DA42_Twin_Star_%28VH-YEW%29_at_Wagga_Wagga_Airport.jpg" alt="DA42"><div class="cap">Diamond DA42 Twin Star &mdash; the aircraft you're learning about</div></div>
+<div class="sources"><p><strong>Source:</strong> <a class="source-link" href="https://www.youtube.com/watch?v=s3bWFLFgkwY" target="_blank">&#x1f3ac; DA42 Propeller System video by Max</a> &bull; <a class="source-link" href="https://www.diamondaircraft.com/en/flight-school-solution/aircraft/da42-vi/" target="_blank">Diamond Aircraft DA42</a></p></div>`},
 
-// ---- MODULE 2: What Is Pitch? ----
-{title:"What Is Propeller Pitch?",sub:"The angle of the blade — and why it changes everything",label:"CONCEPT",speak:"Propeller pitch is the angle of the blade relative to the plane of rotation. Think of it like scooping water with your hand. A flat hand slicing through water feels easy but moves little water. Cup your hand and you grab a lot of water but it takes more effort. That is pitch. A fine pitch blade takes a small bite of air at high RPM. A coarse pitch blade takes a big bite at lower RPM.",html:`
-<div class="analogy"><div class="label">Analogy — Scooping Water</div>
-<p>Hold your hand flat and drag it through water. Easy, right? Now cup your hand — you grab way more water, but it's harder. That's <strong>pitch</strong>.</p>
+// ---- MODULE 1: What Is Pitch? ----
+{title:"What Is Propeller Pitch?",sub:"The angle of the blade \u2014 and why it changes everything",label:"CONCEPT",speak:"Propeller pitch is the angle of the blade relative to the plane of rotation. Think of it like scooping water with your hand. A flat hand slicing through water feels easy but moves little water. Cup your hand and you grab a lot of water but it takes more effort. That is pitch. A fine pitch blade takes a small bite of air at high RPM. A coarse pitch blade takes a big bite at lower RPM. Fine pitch is like a low gear for takeoff, and coarse pitch is like a high gear for cruise.",html:`
+<div class="analogy"><div class="label">Analogy &mdash; Scooping Water</div>
+<p>Hold your hand flat and drag it through water. Easy, right? Now cup your hand &mdash; you grab way more water, but it's harder. That's <strong>pitch</strong>.</p>
 <p style="margin-top:8px"><strong>Flat hand</strong> = fine pitch = small bite, high RPM, great for takeoff.<br><strong>Cupped hand</strong> = coarse pitch = big bite, lower RPM, efficient for cruise.</p></div>
 <div class="card"><h3>Technical Definition</h3>
-<p><strong>Pitch</strong> is the angle between the blade's chord line and the plane of rotation. The DA42's pitch varies from about <strong>12° (fine)</strong> to <strong>90° (feathered)</strong>.</p></div>
-<div class="keyfact">💡 <strong>Fine pitch</strong> = small angle = small bite of air = high RPM.<br><strong>Coarse pitch</strong> = big angle = big bite of air = lower RPM.</div>
-<div class="quiz" id="q1"><div class="quiz-tag">✓ Knowledge Check</div>
+<p><strong>Pitch</strong> is the angle between the blade's chord line and the plane of rotation. The DA42's pitch varies from about <strong>12&deg; (fine)</strong> to <strong>90&deg; (feathered)</strong>.</p>
+<p style="margin-top:8px"><strong>Fine pitch</strong> = small angle = small bite of air = high RPM = maximum thrust for acceleration.<br><strong>Coarse pitch</strong> = big angle = big bite of air = lower RPM = efficient fuel burn at speed.</p></div>
+<div class="keyfact">&#x1f4a1; <strong>Remember:</strong> Fine pitch = small bite, high RPM (takeoff). Coarse pitch = big bite, lower RPM (cruise).</div>
+<div class="quiz" id="q1"><div class="quiz-tag">&#x2713; Knowledge Check 1</div>
 <p class="q">A propeller blade at fine pitch takes a _____ bite of air and spins at _____ RPM.</p>
 <div class="opts">
-<div class="opt" onclick="ans(this,'q1',0)"><span class="letter">A</span>Large bite, low RPM</div>
-<div class="opt" onclick="ans(this,'q1',1)"><span class="letter">B</span>Small bite, high RPM</div>
-<div class="opt" onclick="ans(this,'q1',0)"><span class="letter">C</span>Large bite, high RPM</div>
-</div><div class="feedback" id="q1f"></div></div>`},
+<div class="opt" data-letter="A" onclick="ans(this,'q1','A')"><span class="letter">A</span>Large bite, low RPM</div>
+<div class="opt" data-letter="B" onclick="ans(this,'q1','B')"><span class="letter">B</span>Small bite, high RPM</div>
+<div class="opt" data-letter="C" onclick="ans(this,'q1','C')"><span class="letter">C</span>Large bite, high RPM</div>
+</div><div class="feedback" id="q1f"></div></div>
+<div class="quiz" id="q2"><div class="quiz-tag">&#x2713; Knowledge Check 2</div>
+<p class="q">Coarse pitch (big blade angle) is most efficient during which phase of flight?</p>
+<div class="opts">
+<div class="opt" data-letter="A" onclick="ans(this,'q2','A')"><span class="letter">A</span>Takeoff &mdash; you need maximum thrust</div>
+<div class="opt" data-letter="B" onclick="ans(this,'q2','B')"><span class="letter">B</span>Cruise &mdash; big bite of air at efficient lower RPM</div>
+<div class="opt" data-letter="C" onclick="ans(this,'q2','C')"><span class="letter">C</span>Descent &mdash; you need to slow down</div>
+</div><div class="feedback" id="q2f"></div></div>
+<div class="sources"><p><strong>Source:</strong> <a class="source-link" href="https://www.youtube.com/watch?v=s3bWFLFgkwY&t=23s" target="_blank">&#x1f3ac; Video 0:23 &mdash; Pitch explanation</a></p></div>`},
 
-// ---- MODULE 3: Fixed vs Variable ----
-{title:"Fixed vs Variable Pitch",sub:"Why the DA42 uses variable pitch propellers",label:"CONCEPT",speak:"If you have ever ridden a bicycle, you understand fixed versus variable pitch. A fixed pitch propeller is like a bike stuck in one gear. In third gear, starting from a stop is exhausting. Cruising at ten miles per hour feels right. But trying to go twenty? You are pedaling furiously and barely accelerating. A variable pitch propeller is like having a full set of gears. First gear to start, third to climb, fifth to cruise. The DA42 has variable pitch so the blade angle adjusts for every phase of flight.",html:`
-<div class="analogy"><div class="label">Analogy — The Bicycle</div>
-<p>Imagine a bike with <strong>only one gear — third</strong>.</p>
-<p style="margin-top:6px">🚲 <strong>Starting from a stop:</strong> Brutal. You're pushing hard and barely moving.<br>
-🚲 <strong>At 10 mph:</strong> Feels perfect — this gear was made for this speed.<br>
-🚲 <strong>Going 20 mph:</strong> Your legs are spinning like crazy but you're barely going faster.</p>
-<p style="margin-top:8px">That's a <strong>fixed pitch</strong> propeller — great at one speed, terrible at the rest.</p>
+// ---- MODULE 2: Fixed vs Variable ----
+{title:"Fixed vs Variable Pitch",sub:"Why the DA42 uses variable pitch propellers",label:"CONCEPT",speak:"If you have ever ridden a bicycle, you understand fixed versus variable pitch. A fixed pitch propeller is like a bike stuck in third gear. Starting from a stop is exhausting. Cruising at ten miles per hour feels right. But trying to go twenty, you're pedaling furiously and barely accelerating. A variable pitch propeller is like having a full set of gears. First gear to start, third to climb, fifth to cruise. The DA42 has variable pitch feathering propellers so the blade angle adjusts for every phase of flight.",html:`
+<div class="analogy"><div class="label">Analogy &mdash; The Bicycle</div>
+<p>Imagine a bike with <strong>only one gear &mdash; third</strong>.</p>
+<p style="margin-top:6px">&#x1f6b2; <strong>Starting from a stop:</strong> Brutal. You're pushing hard and barely moving.<br>
+&#x1f6b2; <strong>At 10 mph:</strong> Feels perfect &mdash; this gear was made for this speed.<br>
+&#x1f6b2; <strong>Going 20 mph:</strong> Your legs are spinning like crazy but you're barely going faster.</p>
+<p style="margin-top:8px">That's a <strong>fixed pitch</strong> propeller &mdash; great at one speed, terrible at the rest.</p>
 <p style="margin-top:8px">Now imagine a <strong>21-speed bike</strong>. Low gear to start, shift up as you go. You always have the right gear. That's <strong>variable pitch</strong>.</p></div>
 <div class="card"><h3>Why Variable Pitch Matters</h3>
-<p><strong>Takeoff:</strong> Fine pitch (low gear) — small bite, high RPM, maximum thrust to accelerate.<br>
-<strong>Climb:</strong> Medium pitch — balancing RPM and thrust.<br>
-<strong>Cruise:</strong> Coarse pitch (high gear) — big bite, efficient fuel burn at lower RPM.</p></div>
-<div class="keyfact">💡 The DA42 has <strong>variable pitch, feathering propellers</strong>. The blade angle adjusts automatically for every phase of flight.</div>
-<div class="quiz" id="q2"><div class="quiz-tag">✓ Knowledge Check</div>
-<p class="q">A fixed pitch propeller is like a bicycle stuck in one gear. What is the main disadvantage?</p>
+<p><strong>Takeoff:</strong> Fine pitch (low gear) &mdash; small bite, high RPM, maximum thrust to accelerate.<br>
+<strong>Climb:</strong> Medium pitch &mdash; balancing RPM and thrust.<br>
+<strong>Cruise:</strong> Coarse pitch (high gear) &mdash; big bite, efficient fuel burn at lower RPM.</p>
+<p style="margin-top:8px">With variable pitch, the propeller is efficient across <strong>all phases of flight</strong>, not just one.</p></div>
+<div class="keyfact">&#x1f4a1; The DA42 has <strong>variable pitch, feathering propellers</strong>. The blade angle adjusts for every phase of flight.</div>
+<div class="quiz" id="q3"><div class="quiz-tag">&#x2713; Knowledge Check 1</div>
+<p class="q">What is the main disadvantage of a fixed pitch propeller?</p>
 <div class="opts">
-<div class="opt" onclick="ans(this,'q2',1)"><span class="letter">A</span>It's only efficient at one airspeed — poor performance everywhere else</div>
-<div class="opt" onclick="ans(this,'q2',0)"><span class="letter">B</span>It weighs more than a variable pitch propeller</div>
-<div class="opt" onclick="ans(this,'q2',0)"><span class="letter">C</span>It cannot generate thrust at high altitude</div>
-</div><div class="feedback" id="q2f"></div></div>`},
+<div class="opt" data-letter="A" onclick="ans(this,'q3','A')"><span class="letter">A</span>It's only efficient at one airspeed &mdash; poor performance everywhere else</div>
+<div class="opt" data-letter="B" onclick="ans(this,'q3','B')"><span class="letter">B</span>It weighs more than a variable pitch propeller</div>
+<div class="opt" data-letter="C" onclick="ans(this,'q3','C')"><span class="letter">C</span>It cannot generate thrust at high altitude</div>
+</div><div class="feedback" id="q3f"></div></div>
+<div class="quiz" id="q4"><div class="quiz-tag">&#x2713; Knowledge Check 2</div>
+<p class="q">What type of propeller does the DA42 have?</p>
+<div class="opts">
+<div class="opt" data-letter="A" onclick="ans(this,'q4','A')"><span class="letter">A</span>Fixed pitch</div>
+<div class="opt" data-letter="B" onclick="ans(this,'q4','B')"><span class="letter">B</span>Variable pitch (without feathering)</div>
+<div class="opt" data-letter="C" onclick="ans(this,'q4','C')"><span class="letter">C</span>Variable pitch, feathering</div>
+</div><div class="feedback" id="q4f"></div></div>
+<div class="sources"><p><strong>Source:</strong> <a class="source-link" href="https://www.youtube.com/watch?v=s3bWFLFgkwY&t=23s" target="_blank">&#x1f3ac; Video 0:23 &mdash; Fixed vs Variable pitch</a></p></div>`},
 
-// ---- MODULE 4: Feathering ----
-{title:"What Is Feathering?",sub:"The emergency position that saves your life",label:"CONCEPT",speak:"Feathering means turning the blade edge-on to the wind, like a knife cutting through the air. In an engine failure, a windmilling propeller creates enormous drag. Feathering eliminates that drag. Think of holding a playing card out a car window. Flat to the wind, it jerks your hand back. Turn it edge-on and it slices through. That is the difference between a windmilling prop and a feathered one.",html:`
-<div class="analogy"><div class="label">Analogy — Playing Card Out a Car Window</div>
-<p>Hold a <strong>playing card flat</strong> out a car window at 60 mph. The wind tears at it — massive drag.</p>
+// ---- MODULE 3: Feathering ----
+{title:"What Is Feathering?",sub:"The emergency position that could save your life",label:"CONCEPT",speak:"Feathering means turning the blade edge-on to the wind, like a knife cutting through the air. In an engine failure, a windmilling propeller creates enormous drag. Feathering eliminates that drag. Think of holding a playing card out a car window. Flat to the wind, it jerks your hand back. Turn it edge-on and it slices through. That is the difference between a windmilling prop and a feathered one. The feathered angle is approximately 90 degrees.",html:`
+<div class="analogy"><div class="label">Analogy &mdash; Playing Card Out a Car Window</div>
+<p>Hold a <strong>playing card flat</strong> out a car window at 60 mph. The wind tears at it &mdash; massive drag.</p>
 <p style="margin-top:6px">Now <strong>turn it edge-on</strong>. It slices through the air like nothing.</p>
 <p style="margin-top:6px">A <strong>windmilling prop</strong> = card flat = enormous drag pulling you toward the dead engine.<br>A <strong>feathered prop</strong> = card edge-on = almost no drag.</p></div>
-<div class="card"><h3>When Do We Feather?</h3>
-<p>Whenever an engine fails or must be shut down in flight. Feathering puts the blade at approximately <strong>90°</strong> — parallel to the oncoming airflow. This dramatically reduces drag and allows you to maintain control on the remaining engine.</p></div>
-<div class="warning">⚠️ <strong>Critical:</strong> Failure to feather an inoperative engine's propeller can make the aircraft uncontrollable. This is not optional — it's a survival action.</div>
-<div class="quiz" id="q3"><div class="quiz-tag">✓ Knowledge Check</div>
+<div class="card"><h3>When and Why We Feather</h3>
+<p>Whenever an engine fails or must be shut down in flight. Feathering puts the blade at approximately <strong>90&deg;</strong> &mdash; parallel to the oncoming airflow. This dramatically reduces drag and allows you to maintain control on the remaining engine.</p>
+<p style="margin-top:8px">Remember from the previous module: the DA42 has <strong>variable pitch, feathering</strong> propellers. Feathering is the extreme end of the pitch range.</p></div>
+<div class="warning">&#x26a0;&#xfe0f; <strong>Critical:</strong> Failure to feather an inoperative engine's propeller can make the aircraft uncontrollable. This is not optional &mdash; it's a survival action.</div>
+<div class="quiz" id="q5"><div class="quiz-tag">&#x2713; Knowledge Check 1</div>
 <p class="q">What does feathering a propeller do?</p>
 <div class="opts">
-<div class="opt" onclick="ans(this,'q3',0)"><span class="letter">A</span>Increases thrust on the failed engine</div>
-<div class="opt" onclick="ans(this,'q3',0)"><span class="letter">B</span>Locks the propeller from spinning</div>
-<div class="opt" onclick="ans(this,'q3',1)"><span class="letter">C</span>Aligns the blade edge-on to airflow, minimizing drag</div>
-</div><div class="feedback" id="q3f"></div></div>`},
+<div class="opt" data-letter="A" onclick="ans(this,'q5','A')"><span class="letter">A</span>Increases thrust on the failed engine</div>
+<div class="opt" data-letter="B" onclick="ans(this,'q5','B')"><span class="letter">B</span>Locks the propeller from spinning</div>
+<div class="opt" data-letter="C" onclick="ans(this,'q5','C')"><span class="letter">C</span>Aligns the blade edge-on to airflow, minimizing drag</div>
+</div><div class="feedback" id="q5f"></div></div>
+<div class="quiz" id="q6"><div class="quiz-tag">&#x2713; Knowledge Check 2</div>
+<p class="q">At approximately what angle is a feathered propeller blade?</p>
+<div class="opts">
+<div class="opt" data-letter="A" onclick="ans(this,'q6','A')"><span class="letter">A</span>45&deg;</div>
+<div class="opt" data-letter="B" onclick="ans(this,'q6','B')"><span class="letter">B</span>90&deg; &mdash; edge-on to airflow</div>
+<div class="opt" data-letter="C" onclick="ans(this,'q6','C')"><span class="letter">C</span>12&deg; &mdash; flat to rotation</div>
+</div><div class="feedback" id="q6f"></div></div>
+<div class="sources"><p><strong>Source:</strong> <a class="source-link" href="https://www.youtube.com/watch?v=s3bWFLFgkwY&t=99s" target="_blank">&#x1f3ac; Video 1:39 &mdash; Feathering</a></p></div>`},
 
-// ---- MODULE 5: FADEC ----
-{title:"FADEC — Your Automatic Transmission",sub:"How the DA42 eliminates manual RPM control",label:"SYSTEM",speak:"In most twin engine airplanes, the pilot uses blue levers to manually set RPM. The DA42 does not have blue levers. Instead it has FADEC — Full Authority Digital Engine Control. Think of driving an automatic transmission car. You press the gas pedal to a certain depth and the car figures out what gear to be in. Same thing here. You set the power lever to a percentage and the ECU calculates the correct RPM from a set point curve. At sixty percent power, the target is 1980 RPM.",html:`
-<div class="analogy"><div class="label">Analogy — Automatic vs Manual Car</div>
+// ---- MODULE 4: FADEC ----
+{title:"FADEC &mdash; Your Automatic Transmission",sub:"How the DA42 eliminates manual RPM control",label:"SYSTEM",speak:"In most twin engine airplanes, the pilot uses blue levers to manually set RPM. The DA42 does not have blue levers. Instead it has FADEC, Full Authority Digital Engine Control. Think of driving an automatic transmission car. You press the gas pedal to a certain depth and the car figures out what gear to be in. Same thing here. You set the power lever to a percentage and the ECU calculates the correct RPM from a set point curve. At sixty percent power, the target is 1980 RPM. The governor then adjusts blade pitch to hit that target.",html:`
+<div class="analogy"><div class="label">Analogy &mdash; Automatic vs Manual Car</div>
 <p>Most twins = <strong>manual transmission</strong>. The pilot picks the gear (RPM) with blue levers.</p>
 <p style="margin-top:6px">The DA42 = <strong>automatic transmission</strong>. You push the gas pedal (power lever) and the car (ECU) picks the perfect gear for you.</p></div>
 <div class="card"><h3>How FADEC Works</h3>
 <div class="flow">
 <div class="flow-box"><div class="fl-title">You Set</div><div class="fl-sub">Power lever %</div></div>
-<div class="flow-arrow">→</div>
-<div class="flow-box"><div class="fl-title">ECU Calculates</div><div class="fl-sub">Target RPM</div></div>
-<div class="flow-arrow">→</div>
-<div class="flow-box"><div class="fl-title">Governor Adjusts</div><div class="fl-sub">Blade pitch</div></div>
+<div class="flow-arrow">&rarr;</div>
+<div class="flow-box"><div class="fl-title">ECU Calculates</div><div class="fl-sub">Target RPM from set point curve</div></div>
+<div class="flow-arrow">&rarr;</div>
+<div class="flow-box"><div class="fl-title">Governor Adjusts</div><div class="fl-sub">Blade pitch to hit RPM</div></div>
 </div>
 <p style="margin-top:12px">Diamond publishes a <strong>propeller set point curve</strong>. At <strong>60% power</strong>, the target is <strong>1,980 RPM</strong>. The system adjusts blade pitch automatically to maintain that RPM.</p></div>
-<div class="keyfact">💡 <strong>No blue levers.</strong> The pilot only sets power lever position. The ECU + governor handle RPM automatically.</div>
-<div class="quiz" id="q4"><div class="quiz-tag">✓ Knowledge Check</div>
-<p class="q">In the DA42, who controls the RPM?</p>
+<div class="keyfact">&#x1f4a1; <strong>No blue levers.</strong> The pilot only sets power lever position. The ECU + governor handle RPM automatically via the propeller set point curve.</div>
+<div class="note">&#x1f4d6; <strong>Cumulative check:</strong> Remember from Module 2 that pitch changes let the prop be efficient at all speeds. FADEC automates <em>which</em> pitch to use &mdash; you don't have to think about it.</div>
+<div class="quiz" id="q7"><div class="quiz-tag">&#x2713; Knowledge Check 1</div>
+<p class="q">In the DA42, who controls the propeller RPM?</p>
 <div class="opts">
-<div class="opt" onclick="ans(this,'q4',0)"><span class="letter">A</span>The pilot, using blue RPM levers</div>
-<div class="opt" onclick="ans(this,'q4',1)"><span class="letter">B</span>The ECU, based on the power lever position</div>
-<div class="opt" onclick="ans(this,'q4',0)"><span class="letter">C</span>The copilot, using a separate RPM control</div>
-</div><div class="feedback" id="q4f"></div></div>`},
+<div class="opt" data-letter="A" onclick="ans(this,'q7','A')"><span class="letter">A</span>The pilot, using blue RPM levers</div>
+<div class="opt" data-letter="B" onclick="ans(this,'q7','B')"><span class="letter">B</span>The ECU, based on the power lever position and set point curve</div>
+<div class="opt" data-letter="C" onclick="ans(this,'q7','C')"><span class="letter">C</span>The propeller governor independently, without ECU input</div>
+</div><div class="feedback" id="q7f"></div></div>
+<div class="quiz" id="q8"><div class="quiz-tag">&#x2713; Knowledge Check 2</div>
+<p class="q">According to Diamond's propeller set point curve, what is the target RPM at 60% power?</p>
+<div class="opts">
+<div class="opt" data-letter="A" onclick="ans(this,'q8','A')"><span class="letter">A</span>1,800 RPM</div>
+<div class="opt" data-letter="B" onclick="ans(this,'q8','B')"><span class="letter">B</span>2,100 RPM</div>
+<div class="opt" data-letter="C" onclick="ans(this,'q8','C')"><span class="letter">C</span>1,980 RPM</div>
+</div><div class="feedback" id="q8f"></div></div>
+<div class="sources"><p><strong>Source:</strong> <a class="source-link" href="https://www.youtube.com/watch?v=s3bWFLFgkwY&t=114s" target="_blank">&#x1f3ac; Video 1:54 &mdash; FADEC & Set Point Curve</a></p></div>`},
 
-// ---- MODULE 6: MT Propeller ----
-{title:"The MT Propeller — Construction & Preflight",sub:"What it's made of and how to inspect it",label:"HARDWARE",speak:"The MT propeller is three bladed, made of wood composite with reinforced plastic coating. The leading edges are stainless steel for durability. There is a rubber strip for deice fluid. The spinner is aluminum. Important: push the prop blades to move the aircraft, never push the spinner. During preflight, run your hand along the leading edge to feel for nicks or damage. The AFM warns against high RPM on the ground because debris can damage the blades. Both engines rotate clockwise from the pilot's perspective, making this a conventional twin with the left engine as the critical engine.",html:`
+// ---- MODULE 5: MT Propeller ----
+{title:"MT Propeller &mdash; Construction & Preflight",sub:"What it's made of, how to inspect it, and ground precautions",label:"HARDWARE",speak:"The MT propeller is three-bladed, made of wood composite with reinforced plastic coating. The leading edges are stainless steel for durability. There is a rubber strip for de-ice fluid if equipped. The spinner is aluminum. Important: push the propeller blades to move the aircraft, never push the spinner. During preflight, run your hand along the leading edge to feel for nicks or damage. The AFM warns against high RPM on the ground because stones and debris can be sucked up and damage the leading edges.",html:`
 <div class="card"><h3>Construction</h3>
-<p>• <strong>3 blades</strong> — wood composite core with reinforced plastic coating<br>
-• <strong>Leading edges:</strong> stainless steel (durable against erosion)<br>
-• <strong>De-ice:</strong> rubber strip channels TKS fluid to the leading edges<br>
-• <strong>Spinner:</strong> aluminum — <strong>never push the spinner</strong> to move the aircraft</p></div>
+<p>&bull; <strong>3 blades</strong> &mdash; wood composite core with reinforced plastic coating<br>
+&bull; <strong>Leading edges:</strong> stainless steel (durable against erosion)<br>
+&bull; <strong>De-ice:</strong> rubber strip channels TKS fluid to the leading edges (if equipped)<br>
+&bull; <strong>Spinner:</strong> aluminum &mdash; <strong>never push the spinner</strong> to move the aircraft</p></div>
 <div class="analogy"><div class="label">Preflight Mindset</div>
-<p>Run your hand along each leading edge during preflight. Yes, a nick might cut you. But it is far better to <strong>find damage on the ground</strong> than to discover it in flight. Think of it as shaking hands with your propeller — you want to know it's healthy before you trust it with your life.</p></div>
-<div class="warning">⚠️ <strong>AFM Caution:</strong> Avoid high RPM on the ground. Stones and debris can be sucked up and damage the leading edges.</div>
-<div class="card"><h3>Conventional Twin</h3>
-<p>Both engines rotate <strong>clockwise</strong> (from the pilot's seat). Same engine, same direction = <strong>conventional twin</strong>.</p>
-<p style="margin-top:6px">This means the <strong>left engine is the critical engine</strong> — the one whose failure most affects controllability. Remember <strong>PAST</strong>: P-factor, Accelerated slipstream, Spiraling slipstream, Torque.</p></div>
-<div class="quiz" id="q5"><div class="quiz-tag">✓ Knowledge Check</div>
-<p class="q">Why is the left engine the critical engine on the DA42?</p>
+<p>Run your hand along each leading edge during preflight. Yes, a nick might cut you. But as Max says in the video: it is far better to <strong>find damage on the ground</strong> than to discover it in flight. Look for chips in the plastic coating or nicks in the stainless steel &mdash; even small damage matters.</p></div>
+<div class="warning">&#x26a0;&#xfe0f; <strong>AFM Caution:</strong> Avoid high RPM on the ground. Stones and debris can be sucked up and damage the leading edges.</div>
+<div class="quiz" id="q9"><div class="quiz-tag">&#x2713; Knowledge Check 1</div>
+<p class="q">What material are the MT propeller leading edges made of?</p>
 <div class="opts">
-<div class="opt" onclick="ans(this,'q5',1)"><span class="letter">A</span>Both propellers rotate clockwise — losing the left engine has the greatest adverse effect</div>
-<div class="opt" onclick="ans(this,'q5',0)"><span class="letter">B</span>The left engine produces more power</div>
-<div class="opt" onclick="ans(this,'q5',0)"><span class="letter">C</span>The propellers counter-rotate, and the left has more P-factor</div>
-</div><div class="feedback" id="q5f"></div></div>`},
+<div class="opt" data-letter="A" onclick="ans(this,'q9','A')"><span class="letter">A</span>Stainless steel</div>
+<div class="opt" data-letter="B" onclick="ans(this,'q9','B')"><span class="letter">B</span>Titanium</div>
+<div class="opt" data-letter="C" onclick="ans(this,'q9','C')"><span class="letter">C</span>Carbon fiber</div>
+</div><div class="feedback" id="q9f"></div></div>
+<div class="quiz" id="q10"><div class="quiz-tag">&#x2713; Knowledge Check 2</div>
+<p class="q">To move the DA42 on the ground by hand, you should push on the:</p>
+<div class="opts">
+<div class="opt" data-letter="A" onclick="ans(this,'q10','A')"><span class="letter">A</span>Spinner &mdash; it's the strongest part</div>
+<div class="opt" data-letter="B" onclick="ans(this,'q10','B')"><span class="letter">B</span>Propeller blades &mdash; never push the spinner</div>
+</div><div class="feedback" id="q10f"></div></div>
+<div class="quiz" id="q11"><div class="quiz-tag">&#x2713; Knowledge Check 3</div>
+<p class="q">Why does the AFM caution against high RPM on the ground?</p>
+<div class="opts">
+<div class="opt" data-letter="A" onclick="ans(this,'q11','A')"><span class="letter">A</span>Stones and debris can be sucked up and damage the leading edges</div>
+<div class="opt" data-letter="B" onclick="ans(this,'q11','B')"><span class="letter">B</span>The engine will overheat without forward airflow</div>
+<div class="opt" data-letter="C" onclick="ans(this,'q11','C')"><span class="letter">C</span>Excessive noise in the ramp area</div>
+</div><div class="feedback" id="q11f"></div></div>
+<div class="sources"><p><strong>Source:</strong> <a class="source-link" href="https://www.youtube.com/watch?v=s3bWFLFgkwY&t=162s" target="_blank">&#x1f3ac; Video 2:42 &mdash; MT Propeller</a> &bull; <a class="source-link" href="https://www.mt-propeller.com/propellers" target="_blank">MT Propeller Official</a></p></div>`},
 
-// ---- MODULE 7: Control System ----
-{title:"How Pitch Is Controlled",sub:"The brain, the muscle, and the backup systems",label:"SYSTEM",speak:"Think of the system as a body. The ECU is the brain — it knows the target RPM. The governor is the muscle — it pumps gearbox oil into the propeller hub. More oil pressure pushes blades to fine pitch for takeoff. Less oil pressure lets blades move to coarse pitch for cruise. No oil at all means feathered. Counterweights on each blade naturally push toward coarse or feathered, which is the safe direction. Low pitch stop pins prevent feathering below 1300 RPM. The gearbox derates engine speed by 1.69 to 1. And the RPM on your EIS is propeller RPM, not engine RPM.",html:`
-<div class="analogy"><div class="label">Analogy — Brain and Muscle</div>
-<p><strong>ECU = Brain.</strong> It knows what power you've set and calculates the target RPM.<br>
-<strong>Governor = Muscle.</strong> It physically pumps oil to move the blades to the right angle.</p></div>
+// ---- MODULE 6: Conventional Twin ----
+{title:"Conventional Twin & Critical Engine",sub:"Why rotation direction matters for safety",label:"CONCEPT",speak:"The DA42 is a conventional twin because both engines are the same type mounted the same way, and both propellers rotate clockwise from the pilot's perspective. This means the left engine is the critical engine. The critical engine is the one whose failure most adversely affects aircraft performance. This is determined by four factors using the acronym PAST: P-factor, Accelerated slipstream, Spiraling slipstream, and Torque.",html:`
+<div class="card"><h3>Conventional Twin Layout</h3>
+<p>Both DA42 engines rotate <strong>clockwise</strong> (from the pilot's seat). Same engine, same direction = <strong>conventional twin</strong>.</p>
+<p style="margin-top:8px">This is different from counter-rotating twins where each engine spins opposite directions (which eliminates the critical engine concept).</p></div>
+<div class="card"><h3>The Critical Engine</h3>
+<p>The <strong>left engine is the critical engine</strong> &mdash; the one whose failure most adversely affects controllability and performance.</p>
+<p style="margin-top:8px">Why? Because of <strong>PAST</strong>:</p>
+<p style="margin-top:6px"><strong>P</strong> &mdash; P-factor<br>
+<strong>A</strong> &mdash; Accelerated slipstream<br>
+<strong>S</strong> &mdash; Spiraling slipstream<br>
+<strong>T</strong> &mdash; Torque</p>
+<p style="margin-top:8px">These four asymmetric effects combine to make loss of the left engine the worst-case scenario on a conventional twin.</p></div>
+<div class="keyfact">&#x1f4a1; Both props rotate clockwise &rarr; conventional twin &rarr; <strong>left engine = critical engine</strong>. Remember: PAST.</div>
+<div class="quiz" id="q12"><div class="quiz-tag">&#x2713; Knowledge Check 1</div>
+<p class="q">From the pilot's perspective, which direction do both DA42 propellers rotate?</p>
+<div class="opts">
+<div class="opt" data-letter="A" onclick="ans(this,'q12','A')"><span class="letter">A</span>Clockwise</div>
+<div class="opt" data-letter="B" onclick="ans(this,'q12','B')"><span class="letter">B</span>Counter-clockwise</div>
+<div class="opt" data-letter="C" onclick="ans(this,'q12','C')"><span class="letter">C</span>They counter-rotate (opposite directions)</div>
+</div><div class="feedback" id="q12f"></div></div>
+<div class="quiz" id="q13"><div class="quiz-tag">&#x2713; Knowledge Check 2</div>
+<p class="q">Which is the critical engine on the DA42 and why?</p>
+<div class="opts">
+<div class="opt" data-letter="A" onclick="ans(this,'q13','A')"><span class="letter">A</span>Left engine &mdash; PAST factors cause worst yawing effect when it fails</div>
+<div class="opt" data-letter="B" onclick="ans(this,'q13','B')"><span class="letter">B</span>Right engine &mdash; it carries more load</div>
+<div class="opt" data-letter="C" onclick="ans(this,'q13','C')"><span class="letter">C</span>Neither &mdash; the DA42 has no critical engine</div>
+</div><div class="feedback" id="q13f"></div></div>
+<div class="sources"><p><strong>Source:</strong> <a class="source-link" href="https://www.youtube.com/watch?v=s3bWFLFgkwY&t=210s" target="_blank">&#x1f3ac; Video 3:30 &mdash; Conventional Twin</a></p></div>`},
+
+// ---- MODULE 7: Oil Pressure Control ----
+{title:"How Pitch Is Controlled",sub:"The brain, the muscle, and hydraulic oil",label:"SYSTEM",speak:"Think of the system as a body. The ECU is the brain. It knows the target RPM from the set point curve. The governor is the muscle. It pumps gearbox oil into the propeller hub. More oil pressure pushes blades to fine pitch for takeoff. Less oil pressure lets blades move to coarse pitch for cruise. No oil at all means feathered. This is critical: more oil equals fine pitch, less oil equals coarse, no oil equals feathered.",html:`
+<div class="analogy"><div class="label">Analogy &mdash; Brain and Muscle</div>
+<p><strong>ECU = Brain.</strong> It knows what power you've set and calculates the target RPM (from Module 5's set point curve).<br>
+<strong>Governor = Muscle.</strong> It physically pumps gearbox oil to move the blades to the right angle.</p></div>
 <div class="card"><h3>Oil Pressure Controls Everything</h3>
 <div class="flow">
-<div class="flow-box" style="border-color:var(--sky)"><div class="fl-title">⬆ More Oil</div><div class="fl-sub">Fine pitch → Takeoff</div></div>
-<div class="flow-box" style="border-color:var(--amber)"><div class="fl-title">⬇ Less Oil</div><div class="fl-sub">Coarse pitch → Cruise</div></div>
-<div class="flow-box" style="border-color:var(--red)"><div class="fl-title">🚫 No Oil</div><div class="fl-sub">Feathered → Engine out</div></div>
-</div></div>
-<div class="card"><h3>Safety Backup: Counterweights</h3>
-<p>Centrifugal force naturally pushes spinning blades toward <strong>flat (fine pitch)</strong> — the worst position in an engine failure (max drag).</p>
-<p style="margin-top:6px">To counteract this, each blade has a <strong>counterweight</strong> at its base that pushes toward <strong>coarse/feathered</strong> — the safe direction.</p></div>
-<div class="keyfact">💡 <strong>Low pitch stop pins</strong> prevent feathering below <strong>1,300 RPM</strong>. That's why the props don't fully feather when you shut down on the ground.</div>
-<div class="card"><h3>Gearbox Quick Facts</h3>
-<p>• Derates engine speed to prop speed: <strong>1.69 : 1</strong> ratio<br>
-• Governor uses <strong>gearbox oil</strong> (check through sight glass on preflight)<br>
-• Your EIS displays <strong>propeller RPM</strong>, not engine RPM</p></div>
-<div class="quiz" id="q6"><div class="quiz-tag">✓ Knowledge Check</div>
-<p class="q">What happens when oil pressure in the propeller hub increases?</p>
+<div class="flow-box" style="border-color:var(--sky)"><div class="fl-title">&#x2b06; More Oil</div><div class="fl-sub">Fine pitch &rarr; Takeoff</div></div>
+<div class="flow-box" style="border-color:var(--amber)"><div class="fl-title">&#x2b07; Less Oil</div><div class="fl-sub">Coarse pitch &rarr; Cruise</div></div>
+<div class="flow-box" style="border-color:var(--red)"><div class="fl-title">&#x1f6ab; No Oil</div><div class="fl-sub">Feathered &rarr; Engine out</div></div>
+</div>
+<p style="margin-top:12px">The governor uses <strong>gearbox oil</strong> to change pitch. It pumps oil into the propeller hub to move the blades. The amount of oil pressure determines the blade angle.</p></div>
+<div class="keyfact">&#x1f4a1; <strong>More oil = fine pitch (takeoff). Less oil = coarse pitch (cruise). No oil = feathered (engine out).</strong></div>
+<div class="note">&#x1f4d6; <strong>Cumulative link:</strong> Remember from Module 4 &mdash; feathering (Module 3) at ~90&deg; is what happens when oil pressure drops to zero. The same oil system that gives you fine pitch for takeoff gives you feathered for emergencies.</div>
+<div class="quiz" id="q14"><div class="quiz-tag">&#x2713; Knowledge Check 1</div>
+<p class="q">What happens when oil pressure in the propeller hub INCREASES?</p>
 <div class="opts">
-<div class="opt" onclick="ans(this,'q6',1)"><span class="letter">A</span>Blades go to fine pitch (takeoff setting)</div>
-<div class="opt" onclick="ans(this,'q6',0)"><span class="letter">B</span>Blades go to coarse pitch (cruise setting)</div>
-<div class="opt" onclick="ans(this,'q6',0)"><span class="letter">C</span>Blades feather</div>
-</div><div class="feedback" id="q6f"></div></div>
-<div class="quiz" id="q7"><div class="quiz-tag">✓ Knowledge Check</div>
-<p class="q">Why don't the propellers fully feather when you shut down on the ground?</p>
+<div class="opt" data-letter="A" onclick="ans(this,'q14','A')"><span class="letter">A</span>Blades go to fine pitch (takeoff setting)</div>
+<div class="opt" data-letter="B" onclick="ans(this,'q14','B')"><span class="letter">B</span>Blades go to coarse pitch (cruise setting)</div>
+<div class="opt" data-letter="C" onclick="ans(this,'q14','C')"><span class="letter">C</span>Blades feather</div>
+</div><div class="feedback" id="q14f"></div></div>
+<div class="quiz" id="q15"><div class="quiz-tag">&#x2713; Knowledge Check 2</div>
+<p class="q">What happens when oil pressure DECREASES?</p>
 <div class="opts">
-<div class="opt" onclick="ans(this,'q7',0)"><span class="letter">A</span>The counterweights prevent it</div>
-<div class="opt" onclick="ans(this,'q7',1)"><span class="letter">B</span>Low pitch stop pins engage below 1,300 RPM</div>
-<div class="opt" onclick="ans(this,'q7',0)"><span class="letter">C</span>The accumulator holds pressure</div>
-</div><div class="feedback" id="q7f"></div></div>`},
+<div class="opt" data-letter="A" onclick="ans(this,'q15','A')"><span class="letter">A</span>Blades go to fine pitch</div>
+<div class="opt" data-letter="B" onclick="ans(this,'q15','B')"><span class="letter">B</span>Blades go to coarse pitch (cruise setting)</div>
+<div class="opt" data-letter="C" onclick="ans(this,'q15','C')"><span class="letter">C</span>Blades feather</div>
+</div><div class="feedback" id="q15f"></div></div>
+<div class="quiz" id="q16"><div class="quiz-tag">&#x2713; Knowledge Check 3</div>
+<p class="q">What happens with NO oil pressure?</p>
+<div class="opts">
+<div class="opt" data-letter="A" onclick="ans(this,'q16','A')"><span class="letter">A</span>Blades go to fine pitch</div>
+<div class="opt" data-letter="B" onclick="ans(this,'q16','B')"><span class="letter">B</span>Blades go to coarse pitch</div>
+<div class="opt" data-letter="C" onclick="ans(this,'q16','C')"><span class="letter">C</span>Blades feather (approximately 90&deg;)</div>
+</div><div class="feedback" id="q16f"></div></div>
+<div class="sources"><p><strong>Source:</strong> <a class="source-link" href="https://www.youtube.com/watch?v=s3bWFLFgkwY&t=272s" target="_blank">&#x1f3ac; Video 4:32 &mdash; Propeller Control System</a></p></div>`},
 
-// ---- MODULE 8: Accumulator ----
-{title:"The Pressure Accumulator",sub:"How the prop feathers and unfeathers",label:"SYSTEM",speak:"The pressure accumulator, also called the unfeathering accumulator, stores pressurized gearbox oil in a nitrogen-charged cylinder. When you turn the engine master ON, the accumulator releases oil to push the prop out of feather. To feather, pull the power lever to idle first, then turn the engine master OFF. The electric governor valve opens, oil drains from the hub, counterweights push the blades to feathered, and the accumulator stores oil for next time. Order matters: idle first, then master off.",html:`
-<div class="analogy"><div class="label">Analogy — A Pressurized Fire Extinguisher</div>
+// ---- MODULE 8: Counterweights & Stop Pins ----
+{title:"Counterweights & Low Pitch Stop Pins",sub:"Safety backups built into every blade",label:"SYSTEM",speak:"If you just spin these propellers around, centrifugal force naturally pushes the blades toward fine pitch, a flat angle. That's the most dangerous position in an engine failure because it creates maximum drag. So each blade has counterweights at its base that push toward coarse or feathered pitch, which is the safe direction. Also, low pitch stop pins prevent the propeller from feathering below 1300 RPM. That's why the propellers don't fully feather when you shut down on the ground.",html:`
+<div class="card"><h3>The Problem: Centrifugal Force</h3>
+<p>When the propeller spins, centrifugal force naturally pushes the blades toward <strong>fine pitch (flat)</strong>. Think about it &mdash; a flat blade is most aerodynamic going around in a circle.</p>
+<p style="margin-top:8px">But fine pitch on a dead engine = <strong>maximum drag</strong> = the most dangerous situation. It's the opposite of feathered.</p></div>
+<div class="card"><h3>The Solution: Counterweights</h3>
+<p>Each blade has a <strong>counterweight at its base</strong> that opposes centrifugal force. These counterweights naturally push the blades toward <strong>coarse / feathered</strong> pitch &mdash; the safe direction.</p>
+<p style="margin-top:8px">This means if oil pressure is lost, the counterweights help push the blades to feathered, which is exactly what you want in an emergency.</p></div>
+<div class="card"><h3>Low Pitch Stop Pins</h3>
+<p><strong>Low pitch stop pins</strong> prevent the propeller from feathering below <strong>1,300 RPM</strong>.</p>
+<p style="margin-top:8px">This is why when you shut down on the ground, the propellers <strong>don't fully feather</strong> &mdash; the RPM drops below 1,300 and the stop pins engage.</p></div>
+<div class="keyfact">&#x1f4a1; Counterweights push toward feathered (safe). Stop pins prevent feathering below 1,300 RPM (ground operations).</div>
+<div class="quiz" id="q17"><div class="quiz-tag">&#x2713; Knowledge Check 1</div>
+<p class="q">Centrifugal force on a spinning propeller naturally pushes blades toward which position?</p>
+<div class="opts">
+<div class="opt" data-letter="A" onclick="ans(this,'q17','A')"><span class="letter">A</span>Fine pitch (flat) &mdash; the most dangerous position</div>
+<div class="opt" data-letter="B" onclick="ans(this,'q17','B')"><span class="letter">B</span>Coarse pitch &mdash; the cruise position</div>
+<div class="opt" data-letter="C" onclick="ans(this,'q17','C')"><span class="letter">C</span>Feathered &mdash; the safe position</div>
+</div><div class="feedback" id="q17f"></div></div>
+<div class="quiz" id="q18"><div class="quiz-tag">&#x2713; Knowledge Check 2</div>
+<p class="q">Below what RPM do the low pitch stop pins engage, preventing feathering?</p>
+<div class="opts">
+<div class="opt" data-letter="A" onclick="ans(this,'q18','A')"><span class="letter">A</span>1,000 RPM</div>
+<div class="opt" data-letter="B" onclick="ans(this,'q18','B')"><span class="letter">B</span>1,300 RPM</div>
+<div class="opt" data-letter="C" onclick="ans(this,'q18','C')"><span class="letter">C</span>1,600 RPM</div>
+</div><div class="feedback" id="q18f"></div></div>
+<div class="sources"><p><strong>Source:</strong> <a class="source-link" href="https://www.youtube.com/watch?v=s3bWFLFgkwY&t=328s" target="_blank">&#x1f3ac; Video 5:28 &mdash; Counterweights & Stop Pins</a></p></div>`},
+
+// ---- MODULE 9: Gearbox & Accumulator ----
+{title:"Gearbox & Pressure Accumulator",sub:"The gear reduction and the feather/unfeather system",label:"SYSTEM",speak:"The gearbox derates engine speed to propeller speed by a ratio of 1.69 to 1. The governor uses gearbox oil to change pitch. The RPM on your EIS is propeller RPM, not engine RPM. The pressure accumulator, also called the unfeathering accumulator, stores pressurized gearbox oil in a nitrogen-charged cylinder. When you turn the engine master ON, the accumulator releases oil to push the prop out of feather. To feather, pull the power lever to idle first, then turn engine master OFF. Order matters.",html:`
+<div class="card"><h3>Gearbox Quick Facts</h3>
+<p>&bull; Derates engine speed to prop speed: <strong>1.69 : 1</strong> ratio<br>
+&bull; Governor uses <strong>gearbox oil</strong> (check through sight glass on preflight)<br>
+&bull; Your EIS displays <strong>propeller RPM</strong>, not engine RPM</p></div>
+<div class="card"><h3>Pressure Accumulator (Unfeathering Accumulator)</h3>
+<p>Also known as the <strong>unfeathering accumulator</strong>, it stores a small quantity of pressurized gearbox oil in a <strong>nitrogen-charged metal cylinder</strong>. Its job is to push the propeller out of feather when you turn the engine master on.</p></div>
+<div class="analogy"><div class="label">Analogy &mdash; A Pressurized Fire Extinguisher</div>
 <p>The accumulator is like a small fire extinguisher pre-charged with nitrogen. Squeeze the handle (engine master ON) and it releases pressurized oil to push the prop out of feather. Release the handle (engine master OFF), and the system recharges for next time.</p></div>
 <div class="card"><h3>Feather / Unfeather Sequence</h3>
 <p><strong style="color:var(--green)">To UNFEATHER</strong> (engine master ON):</p>
-<ol class="steps"><li>Turn Engine Master ON</li><li>Accumulator releases pressurized oil into prop hub</li><li>Oil pressure pushes blades out of feather</li></ol>
+<ol class="steps"><li>Turn Engine Master <strong>ON</strong></li><li>Accumulator releases pressurized oil into prop hub</li><li>Oil pressure pushes blades out of feather</li></ol>
 <p style="margin-top:16px"><strong style="color:var(--red)">To FEATHER</strong> (shutting down):</p>
-<ol class="steps"><li>Pull power lever to <strong>IDLE</strong> first</li><li>Turn Engine Master <strong>OFF</strong></li><li>Electric governor valve opens → oil drains from hub</li><li>Counterweights push blades to feathered position</li><li>Accumulator closes and stores oil</li></ol></div>
-<div class="warning">⚠️ <strong>Order matters!</strong> Power lever to IDLE <strong>first</strong>, then Engine Master OFF. Get this backwards and the prop may not feather properly.</div>
-<div class="quiz" id="q8"><div class="quiz-tag">✓ Knowledge Check</div>
+<ol class="steps"><li>Pull power lever to <strong>IDLE</strong> first</li><li>Turn Engine Master <strong>OFF</strong></li><li>Electric governor valve opens &rarr; oil drains from hub</li><li>Counterweights push blades to feathered position</li><li>Accumulator closes and stores oil for next use</li></ol></div>
+<div class="warning">&#x26a0;&#xfe0f; <strong>Order matters!</strong> Power lever to IDLE <strong>first</strong>, then Engine Master OFF. Get this backwards and the prop may not feather properly.</div>
+<div class="quiz" id="q19"><div class="quiz-tag">&#x2713; Knowledge Check 1</div>
+<p class="q">What is the gearbox speed reduction ratio?</p>
+<div class="opts">
+<div class="opt" data-letter="A" onclick="ans(this,'q19','A')"><span class="letter">A</span>1.47 : 1</div>
+<div class="opt" data-letter="B" onclick="ans(this,'q19','B')"><span class="letter">B</span>1.69 : 1</div>
+<div class="opt" data-letter="C" onclick="ans(this,'q19','C')"><span class="letter">C</span>2.00 : 1</div>
+</div><div class="feedback" id="q19f"></div></div>
+<div class="quiz" id="q20"><div class="quiz-tag">&#x2713; Knowledge Check 2</div>
+<p class="q">The RPM displayed on your EIS is:</p>
+<div class="opts">
+<div class="opt" data-letter="A" onclick="ans(this,'q20','A')"><span class="letter">A</span>Propeller RPM (not engine RPM)</div>
+<div class="opt" data-letter="B" onclick="ans(this,'q20','B')"><span class="letter">B</span>Engine RPM (not propeller RPM)</div>
+</div><div class="feedback" id="q20f"></div></div>
+<div class="quiz" id="q21"><div class="quiz-tag">&#x2713; Knowledge Check 3</div>
 <p class="q">To feather the propeller during shutdown, the correct sequence is:</p>
 <div class="opts">
-<div class="opt" onclick="ans(this,'q8',0)"><span class="letter">A</span>Engine Master OFF, then power lever to idle</div>
-<div class="opt" onclick="ans(this,'q8',1)"><span class="letter">B</span>Power lever to IDLE first, then Engine Master OFF</div>
-<div class="opt" onclick="ans(this,'q8',0)"><span class="letter">C</span>Fuel selector OFF, then alternator OFF</div>
-</div><div class="feedback" id="q8f"></div></div>`},
+<div class="opt" data-letter="A" onclick="ans(this,'q21','A')"><span class="letter">A</span>Engine Master OFF first, then power lever to idle</div>
+<div class="opt" data-letter="B" onclick="ans(this,'q21','B')"><span class="letter">B</span>Power lever to IDLE first, then Engine Master OFF</div>
+<div class="opt" data-letter="C" onclick="ans(this,'q21','C')"><span class="letter">C</span>Fuel selector OFF, then alternator OFF</div>
+</div><div class="feedback" id="q21f"></div></div>
+<div class="sources"><p><strong>Source:</strong> <a class="source-link" href="https://www.youtube.com/watch?v=s3bWFLFgkwY&t=380s" target="_blank">&#x1f3ac; Video 6:20 &mdash; Gearbox</a> &bull; <a class="source-link" href="https://www.youtube.com/watch?v=s3bWFLFgkwY&t=400s" target="_blank">&#x1f3ac; Video 6:40 &mdash; Accumulator</a></p></div>`},
 
-// ---- MODULE 9: Emergency Procedures ----
-{title:"Emergency Procedures",sub:"Defective RPM, engine failure, and restarts",label:"EMERGENCY",speak:"Three propeller emergencies. Oscillating RPM: change power, check ECU failure, switch ECU, land. Propeller overspeed: maximum 2500 RPM for 20 seconds. Reduce power, check and switch ECU, land. Fixed RPM: same drill. For engine failure below 3000 feet, these are memory items. Power lever max. Maintain directional control. Airspeed to VSC. Gear up. Flaps up. Secure the engine. Identify dead foot dead engine. Verify by pulling throttle back. Fix by turning engine master off which feathers the prop. Secure alternator off, fuel pump off, fuel selector off.",html:`
-<div class="card" style="border-left:4px solid var(--red)"><h3>🔄 Oscillating RPM</h3>
-<ol class="steps"><li>Change power setting — RPM may stabilize at a different setting</li><li>Check for ECU failure indication (A or B)</li><li>Switch to the other ECU if failure detected</li><li>If unresolved → <strong>land at nearest suitable airfield</strong></li></ol></div>
-<div class="card" style="border-left:4px solid var(--red)"><h3>⚡ Propeller Overspeed</h3>
-<div class="warning">⚠️ <strong>Limit: 2,500 RPM maximum for 20 seconds</strong></div>
-<ol class="steps"><li>Reduce power immediately</li><li>Check for ECU failure</li><li>Switch ECU (A↔B)</li><li>If unresolved → <strong>land immediately</strong></li></ol></div>
-<div class="card" style="border-left:4px solid var(--red)"><h3>🔒 Fixed RPM (Won't Change With Power)</h3>
-<p>Follow the same checklist. If switching the ECU doesn't resolve it → <strong>terminate the flight</strong>.</p></div>
-<div class="section-divider"></div>
-<div class="card" style="border-left:4px solid var(--amber);background:var(--amber-bg)"><h3>💀 Engine Failure Below 3,000 ft — MEMORY ITEMS</h3>
-<ul class="checklist" id="mem">
-<li onclick="ck(this)"><span class="ck"></span><strong>Power lever — MAX</strong></li>
-<li onclick="ck(this)"><span class="ck"></span><strong>Maintain directional control</strong></li>
-<li onclick="ck(this)"><span class="ck"></span><strong>Airspeed — V<sub>SC</sub></strong></li>
-<li onclick="ck(this)"><span class="ck"></span><strong>Gear — UP</strong></li>
-<li onclick="ck(this)"><span class="ck"></span><strong>Flaps — UP</strong></li>
-<li onclick="ck(this)"><span class="ck"></span><strong>SECURE the engine</strong></li>
-</ul>
-<div class="keyfact" style="margin-top:14px">🦶 <strong>Identify:</strong> Dead foot = dead engine → <strong>Verify:</strong> Pull throttle back → <strong>Fix:</strong> Engine master OFF (feathers prop) → <strong>Secure:</strong> Alternator OFF, fuel pump OFF, fuel selector OFF</div></div>
-<div class="card"><h3>🔄 Restart With Starter</h3>
-<p><strong>Altitude:</strong> ≤18,000 ft (immediate) or ≤10,000 ft (within 2 min)<br><strong>Airspeed:</strong> Below <strong>100 KIAS</strong></p>
-<ol class="steps"><li>Power lever — IDLE</li><li>Fuel selector — ON</li><li>Alternate air — as required</li><li>Alternator — ON</li><li>Engine Master — ON (unfeathers prop)</li><li>Starter — ON</li><li>Check circuit breakers</li></ol></div>
-<div class="card"><h3>💨 Windmilling Restart</h3>
-<p><strong>Airspeed window: 125 – 145 KIAS</strong> (must be in this range)</p>
-<ol class="steps"><li>Power lever — IDLE</li><li>Fuel selector — ON</li><li>Alternate air — as required</li><li>Alternator — ON</li><li>Engine Master — ON → prop unfeathers and restarts by windmilling</li></ol></div>
-<div class="quiz" id="q9"><div class="quiz-tag">✓ Knowledge Check</div>
+// ---- MODULE 10: Emergency RPM ----
+{title:"Emergency: Defective RPM Regulating System",sub:"Oscillating RPM, propeller overspeed, and fixed RPM",label:"EMERGENCY",speak:"Three propeller emergencies. Oscillating RPM: change power first, the RPM may stabilize at a different setting. If not, check for ECU failure and switch the ECU. If unresolved, land at the nearest suitable airfield. Propeller overspeed: the limit is 2500 RPM maximum for 20 seconds. Reduce power immediately, check and switch ECU if needed, and land. Fixed RPM means the RPM won't change with power. Same drill: check ECU, switch ECU, and if unresolved, land and terminate the flight.",html:`
+<div class="card" style="border-left:4px solid var(--red)"><h3>&#x1f504; Oscillating RPM</h3>
+<ol class="steps"><li>Change power setting &mdash; RPM may stabilize at a different setting</li><li>Check for ECU failure indication (A or B)</li><li>Switch to the other ECU if failure detected</li><li>If unresolved &rarr; return ECU to AUTO and <strong>land at nearest suitable airfield</strong></li></ol></div>
+<div class="card" style="border-left:4px solid var(--red)"><h3>&#x26a1; Propeller Overspeed</h3>
+<div class="warning">&#x26a0;&#xfe0f; <strong>Limit: 2,500 RPM maximum for 20 seconds</strong> (AFM power plant limitation)</div>
+<ol class="steps"><li>Reduce power immediately</li><li>Check for ECU failure</li><li>Switch ECU (A&#x2194;B)</li><li>If unresolved &rarr; <strong>land immediately</strong></li></ol></div>
+<div class="card" style="border-left:4px solid var(--red)"><h3>&#x1f512; Fixed RPM (Won't Change With Power)</h3>
+<ol class="steps"><li>Check for ECU failure</li><li>Switch ECU (A&#x2194;B)</li><li>If unresolved &rarr; <strong>land at nearest suitable airfield, terminate the flight</strong></li></ol></div>
+<div class="keyfact">&#x1f4a1; All three RPM problems follow a similar pattern: <strong>adjust power &rarr; check ECU &rarr; switch ECU &rarr; land</strong>.</div>
+<div class="quiz" id="q22"><div class="quiz-tag">&#x2713; Knowledge Check 1</div>
+<p class="q">Your RPM is oscillating. What is the FIRST step?</p>
+<div class="opts">
+<div class="opt" data-letter="A" onclick="ans(this,'q22','A')"><span class="letter">A</span>Change the power setting &mdash; RPM may stabilize</div>
+<div class="opt" data-letter="B" onclick="ans(this,'q22','B')"><span class="letter">B</span>Switch the ECU immediately</div>
+<div class="opt" data-letter="C" onclick="ans(this,'q22','C')"><span class="letter">C</span>Land at the nearest airfield</div>
+</div><div class="feedback" id="q22f"></div></div>
+<div class="quiz" id="q23"><div class="quiz-tag">&#x2713; Knowledge Check 2</div>
 <p class="q">What is the maximum propeller overspeed RPM and duration?</p>
 <div class="opts">
-<div class="opt" onclick="ans(this,'q9',0)"><span class="letter">A</span>2,000 RPM for 30 seconds</div>
-<div class="opt" onclick="ans(this,'q9',1)"><span class="letter">B</span>2,500 RPM for 20 seconds</div>
-<div class="opt" onclick="ans(this,'q9',0)"><span class="letter">C</span>3,000 RPM for 10 seconds</div>
-</div><div class="feedback" id="q9f"></div></div>
-<div class="quiz" id="q10"><div class="quiz-tag">✓ Knowledge Check</div>
+<div class="opt" data-letter="A" onclick="ans(this,'q23','A')"><span class="letter">A</span>2,000 RPM for 30 seconds</div>
+<div class="opt" data-letter="B" onclick="ans(this,'q23','B')"><span class="letter">B</span>2,500 RPM for 20 seconds</div>
+<div class="opt" data-letter="C" onclick="ans(this,'q23','C')"><span class="letter">C</span>3,000 RPM for 10 seconds</div>
+</div><div class="feedback" id="q23f"></div></div>
+<div class="quiz" id="q24"><div class="quiz-tag">&#x2713; Knowledge Check 3</div>
+<p class="q">For all three RPM problems, if switching the ECU doesn't resolve the issue, you should:</p>
+<div class="opts">
+<div class="opt" data-letter="A" onclick="ans(this,'q24','A')"><span class="letter">A</span>Continue the flight and monitor the RPM</div>
+<div class="opt" data-letter="B" onclick="ans(this,'q24','B')"><span class="letter">B</span>Shut down the affected engine immediately</div>
+<div class="opt" data-letter="C" onclick="ans(this,'q24','C')"><span class="letter">C</span>Land at the nearest suitable airfield and terminate the flight</div>
+</div><div class="feedback" id="q24f"></div></div>
+<div class="sources"><p><strong>Source:</strong> <a class="source-link" href="https://www.youtube.com/watch?v=s3bWFLFgkwY&t=438s" target="_blank">&#x1f3ac; Video 7:18 &mdash; Emergency Procedures</a></p></div>`},
+
+// ---- MODULE 11: Engine Failure & Restarts ----
+{title:"Engine Failure & Restart Procedures",sub:"Memory items, Identify-Verify-Fix-Secure, and two restart methods",label:"EMERGENCY",speak:"For engine failure below 3000 feet or during a critical phase of flight, these are memory items. Power lever max. Maintain directional control. Airspeed to V S C. Gear up. Flaps up. Secure the engine. Use the pattern: Identify dead foot dead engine. Verify by pulling throttle back. Fix by turning engine master off which feathers the prop. Secure: alternator off, fuel pump off, fuel selector off. For restarts with the starter, be below 100 knots and either under 18000 feet for immediate or under 10000 feet within 2 minutes. For windmilling restart, you must be between 125 and 145 knots indicated.",html:`
+<div class="card"><h3>When These Apply</h3>
+<p>Below <strong>3,000 ft</strong> or during a <strong>critical phase of flight</strong>, there is no time to troubleshoot. The goal is to secure the engine, get it feathered to the most aerodynamic position, <strong>declare an emergency</strong>, and come back to land.</p></div>
+<div class="card" style="border-left:4px solid var(--amber);background:var(--amber-bg)"><h3>&#x1f480; Engine Failure &mdash; MEMORY ITEMS</h3>
+<ul class="checklist" id="mem">
+<li onclick="ck(this)"><span class="ck"></span><strong>Power lever &mdash; MAX</strong></li>
+<li onclick="ck(this)"><span class="ck"></span><strong>Maintain directional control</strong></li>
+<li onclick="ck(this)"><span class="ck"></span><strong>Airspeed &mdash; V<sub>SC</sub></strong></li>
+<li onclick="ck(this)"><span class="ck"></span><strong>Gear &mdash; UP</strong></li>
+<li onclick="ck(this)"><span class="ck"></span><strong>Flaps &mdash; UP</strong></li>
+<li onclick="ck(this)"><span class="ck"></span><strong>SECURE the engine</strong></li>
+</ul></div>
+<div class="keyfact" style="margin-top:14px">&#x1f9b6; <strong>Identify:</strong> Dead foot = dead engine &rarr; <strong>Verify:</strong> Pull throttle back &rarr; <strong>Fix:</strong> Engine master OFF (feathers prop) &rarr; <strong>Secure:</strong> Alternator OFF, fuel pump OFF, fuel selector OFF (past red safety guard)</div>
+<div class="note">&#x1f4d6; <strong>Cumulative link:</strong> Remember from Module 8 &mdash; turning Engine Master OFF removes oil pressure from the hub, and counterweights push blades to feathered. From Module 4 &mdash; feathered means ~90&deg;, minimal drag. Everything connects.</div>
+<div class="section-divider"></div>
+<div class="card"><h3>&#x1f504; Restart With Starter</h3>
+<p><strong>Altitude:</strong> &le;18,000 ft (immediate) or &le;10,000 ft (within 2 min)<br><strong>Airspeed:</strong> Below <strong>100 KIAS</strong> (preferably lower, to avoid stress on starter)</p>
+<ol class="steps"><li>Power lever &mdash; IDLE</li><li>Fuel selector &mdash; ON</li><li>Alternate air &mdash; as required</li><li>Alternator &mdash; ON</li><li>Engine Master &mdash; ON (unfeathers prop via accumulator)</li><li>Starter &mdash; ON</li><li>Check circuit breakers</li></ol></div>
+<div class="card"><h3>&#x1f4a8; Windmilling Restart</h3>
+<p><strong>Airspeed window: 125 &ndash; 145 KIAS</strong> (must be in this range)<br>
+<strong>Altitude:</strong> Same restrictions as starter restart</p>
+<ol class="steps"><li>Power lever &mdash; IDLE</li><li>Fuel selector &mdash; ON</li><li>Alternate air &mdash; as required</li><li>Alternator &mdash; ON</li><li>Engine Master &mdash; ON &rarr; prop unfeathers and restarts by windmilling</li></ol>
+<p style="margin-top:8px">Note: No starter needed. The airflow at 125&ndash;145 KIAS is enough to windmill the propeller back to life.</p></div>
+<div class="quiz" id="q25"><div class="quiz-tag">&#x2713; Knowledge Check 1</div>
+<p class="q">In the engine failure memory items, after "Gear UP" the next step is:</p>
+<div class="opts">
+<div class="opt" data-letter="A" onclick="ans(this,'q25','A')"><span class="letter">A</span>Secure the engine</div>
+<div class="opt" data-letter="B" onclick="ans(this,'q25','B')"><span class="letter">B</span>Flaps UP</div>
+<div class="opt" data-letter="C" onclick="ans(this,'q25','C')"><span class="letter">C</span>Alternator OFF</div>
+</div><div class="feedback" id="q25f"></div></div>
+<div class="quiz" id="q26"><div class="quiz-tag">&#x2713; Knowledge Check 2</div>
+<p class="q">In the Identify-Verify-Fix-Secure pattern, what does "Fix" mean?</p>
+<div class="opts">
+<div class="opt" data-letter="A" onclick="ans(this,'q26','A')"><span class="letter">A</span>Pull the throttle back on the dead engine</div>
+<div class="opt" data-letter="B" onclick="ans(this,'q26','B')"><span class="letter">B</span>Switch the ECU to the other channel</div>
+<div class="opt" data-letter="C" onclick="ans(this,'q26','C')"><span class="letter">C</span>Turn Engine Master OFF (which feathers the prop)</div>
+</div><div class="feedback" id="q26f"></div></div>
+<div class="quiz" id="q27"><div class="quiz-tag">&#x2713; Knowledge Check 3</div>
+<p class="q">For a restart with the starter, maximum airspeed should be:</p>
+<div class="opts">
+<div class="opt" data-letter="A" onclick="ans(this,'q27','A')"><span class="letter">A</span>Below 100 KIAS</div>
+<div class="opt" data-letter="B" onclick="ans(this,'q27','B')"><span class="letter">B</span>Below 125 KIAS</div>
+<div class="opt" data-letter="C" onclick="ans(this,'q27','C')"><span class="letter">C</span>Below 150 KIAS</div>
+</div><div class="feedback" id="q27f"></div></div>
+<div class="quiz" id="q28"><div class="quiz-tag">&#x2713; Knowledge Check 4</div>
 <p class="q">For a windmilling restart, airspeed must be between:</p>
 <div class="opts">
-<div class="opt" onclick="ans(this,'q10',0)"><span class="letter">A</span>80 – 100 KIAS</div>
-<div class="opt" onclick="ans(this,'q10',0)"><span class="letter">B</span>100 – 120 KIAS</div>
-<div class="opt" onclick="ans(this,'q10',1)"><span class="letter">C</span>125 – 145 KIAS</div>
-</div><div class="feedback" id="q10f"></div></div>
-<div class="section-divider"></div>
+<div class="opt" data-letter="A" onclick="ans(this,'q28','A')"><span class="letter">A</span>80 &ndash; 100 KIAS</div>
+<div class="opt" data-letter="B" onclick="ans(this,'q28','B')"><span class="letter">B</span>100 &ndash; 120 KIAS</div>
+<div class="opt" data-letter="C" onclick="ans(this,'q28','C')"><span class="letter">C</span>125 &ndash; 145 KIAS</div>
+</div><div class="feedback" id="q28f"></div></div>
+<div class="sources"><p><strong>Source:</strong> <a class="source-link" href="https://www.youtube.com/watch?v=s3bWFLFgkwY&t=532s" target="_blank">&#x1f3ac; Video 8:52 &mdash; Engine Failure</a> &bull; <a class="source-link" href="https://www.youtube.com/watch?v=s3bWFLFgkwY&t=604s" target="_blank">&#x1f3ac; Video 10:04 &mdash; Restarts</a></p></div>`},
+
+// ---- MODULE 12: Course Complete ----
+{title:"Course Complete",sub:"Congratulations!",label:"FINISH",speak:"Congratulations! You have completed the DA42 Propeller System course with a perfect score. You now understand pitch, feathering, FADEC, the oil pressure control system, emergency procedures, and restart methods. Keep reviewing and stay safe.",html:`
 <div class="card" style="text-align:center;border-color:var(--green)">
-<div style="font-size:48px;margin-bottom:12px">🎖️</div>
-<h3 style="color:var(--green);font-size:20px">Course Complete</h3>
-<p id="final" style="font-size:32px;font-weight:800;color:var(--navy);margin:12px 0">0 / 10</p>
-<p>Review any modules you want to revisit using the ← Previous button. Then go watch the <a href="https://www.youtube.com/watch?v=YjscP5juA5c" target="_blank" style="color:var(--sky)">original video</a> and review the Embry-Riddle propeller diagrams.</p></div>`}
+<div style="font-size:48px;margin-bottom:12px">&#x1f396;&#xfe0f;</div>
+<h3 style="color:var(--green);font-size:20px">Course Complete!</h3>
+<p id="final" style="font-size:32px;font-weight:800;color:var(--navy);margin:12px 0">28 / 28</p>
+<p style="color:var(--text2);font-size:14px">You passed every quiz with 100% accuracy.<br>You've mastered the DA42 propeller system from basic pitch concepts through emergency procedures.</p>
+<div style="margin-top:20px;text-align:left">
+<h3 style="margin-bottom:10px">Continue Learning</h3>
+<p>&bull; <a href="https://www.youtube.com/watch?v=s3bWFLFgkwY" target="_blank" style="color:var(--sky)">Watch the original video by Max</a> for visual reinforcement</p>
+<p>&bull; <a href="https://erau.edu" target="_blank" style="color:var(--sky)">Embry-Riddle propeller diagrams and animations</a> (highly recommended in the video)</p>
+<p>&bull; <a href="https://www.mt-propeller.com/propellers" target="_blank" style="color:var(--sky)">MT Propeller official site</a> for propeller specifications</p>
+<p>&bull; <a href="https://www.diamondaircraft.com/en/flight-school-solution/aircraft/da42-vi/" target="_blank" style="color:var(--sky)">Diamond Aircraft DA42 page</a></p>
+<p>&bull; Review the DA42 AFM (Aircraft Flight Manual) Propeller and Emergency sections</p>
+</div></div>`}
 ];
 
-let cur=0,score=0,total=0;const done=new Set();
+// ===== STATE =====
+let cur=0,score=0,total=0;
+const passed=new Set();
+
+// ===== RENDER =====
 function render(){
   const m=MODULES[cur];
   let h=`<div class="module"><div class="module-label">${m.label}</div><h2>${m.title}</h2><p class="subtitle">${m.sub}</p>${m.html}</div>`;
+  // Add quiz progress indicator if module has quizzes
+  const quizzes=MODULE_QUIZZES[cur]||[];
+  if(quizzes.length>0){
+    let dots='<div class="quiz-progress"><span class="qp-label">Quiz Progress:</span>';
+    quizzes.forEach(qid=>{
+      dots+=`<span class="qp-dot${passed.has(qid)?' done':''}" id="dot-${qid}"></span>`;
+    });
+    const allDone=quizzes.every(q=>passed.has(q));
+    if(allDone) dots+='<span style="font-size:12px;color:var(--green);font-weight:600;margin-left:6px">All passed!</span>';
+    else dots+=`<span style="font-size:12px;color:var(--text2);margin-left:6px">${quizzes.filter(q=>passed.has(q)).length}/${quizzes.length}</span>`;
+    dots+='</div>';
+    h=`<div class="module"><div class="module-label">${m.label}</div><h2>${m.title}</h2><p class="subtitle">${m.sub}</p>${dots}${m.html}</div>`;
+  }
+  // Add gate message if needed
+  if(quizzes.length>0 && !quizzes.every(q=>passed.has(q))){
+    h+=`<div class="gate-msg" id="gate"><div class="lock-icon">&#x1f512;</div>Pass all ${quizzes.length} quiz${quizzes.length>1?'zes':''} above with 100% to unlock the next module.</div>`;
+  }
   document.getElementById('main').innerHTML=h;
-  document.getElementById('nav-center').innerHTML=`Module <strong>${cur+1}</strong> of ${MODULES.length}`;
-  document.getElementById('bp').disabled=cur<=0;
-  document.getElementById('bn').disabled=cur>=MODULES.length-1;
+  updateNav();
   document.getElementById('progress-bar').style.width=(cur/(MODULES.length-1)*100)+'%';
   window.scrollTo({top:0,behavior:'smooth'});
 }
-function go(d){const n=cur+d;if(n>=0&&n<MODULES.length){cur=n;render();}}
-function ck(li){li.classList.toggle('done');li.querySelector('.ck').textContent=li.classList.contains('done')?'✓':'';}
-const ANSWERS={q1:'Fine pitch = small bite, high RPM. Like a flat hand in water — easy to move but grabs little.',q2:'Fixed pitch is optimized for one speed. At all other speeds, efficiency drops dramatically.',q3:'Feathered = blade edge-on to wind = minimum drag. Critical after engine failure.',q4:'FADEC means the ECU reads the power lever position and sets RPM via the governor. No pilot input on RPM.',q5:'Both props rotate clockwise. PAST factors (P-factor, Accelerated slipstream, Spiraling slipstream, Torque) cause the left engine failure to have the greatest adverse yawing effect.',q6:'More oil pressure pushes blades toward fine pitch — small bite, high RPM, used for takeoff.',q7:'Low pitch stop pins engage below 1,300 RPM, physically preventing the blades from feathering during ground shutdown.',q8:'IDLE first, then Master OFF. This sequence allows oil to drain from the hub so counterweights can push blades to feathered.',q9:'2,500 RPM max for 20 seconds — this is a power plant limitation from the AFM.',q10:'125–145 KIAS. Too slow and the prop won\'t windmill. Too fast and structural limits may be exceeded.'};
-function ans(el,qid,correct){
-  if(done.has(qid))return;done.add(qid);total++;
-  const fb=document.getElementById(qid+'f');
-  const opts=el.parentElement.querySelectorAll('.opt');
-  if(correct){score++;el.classList.add('correct');fb.className='feedback show pass';fb.innerHTML='✅ <strong>Correct!</strong> '+ANSWERS[qid];}
-  else{el.classList.add('wrong');opts.forEach(o=>{if(o.getAttribute('onclick').includes(',1)')){o.classList.add('correct');}});fb.className='feedback show fail';fb.innerHTML='❌ <strong>Not quite.</strong> '+ANSWERS[qid];}
-  opts.forEach(o=>o.style.pointerEvents='none');
-  document.getElementById('sc').textContent=score+' / '+total;
-  if(document.getElementById('final'))document.getElementById('final').textContent=score+' / 10';
+
+function updateNav(){
+  document.getElementById('nav-center').innerHTML=`Module <strong>${cur+1}</strong> of ${MODULES.length}`;
+  document.getElementById('bp').disabled=cur<=0;
+  const quizzes=MODULE_QUIZZES[cur]||[];
+  const allPassed=quizzes.length===0||quizzes.every(q=>passed.has(q));
+  document.getElementById('bn').disabled=cur>=MODULES.length-1||!allPassed;
 }
+
+function go(d){const n=cur+d;if(n>=0&&n<MODULES.length){const quizzes=MODULE_QUIZZES[cur]||[];const allPassed=quizzes.length===0||quizzes.every(q=>passed.has(q));if(d>0&&!allPassed)return;cur=n;render();}}
+
+function ck(li){li.classList.toggle('done');li.querySelector('.ck').textContent=li.classList.contains('done')?'\u2713':'';}
+
+function updateScore(){
+  document.getElementById('sc').textContent=score+' / '+total;
+  if(document.getElementById('final'))document.getElementById('final').textContent=score+' / 28';
+}
+
+// ===== QUIZ ENGINE =====
+function ans(el,qid,letter){
+  if(passed.has(qid))return;
+  const a=ANSWERS[qid];
+  const fb=document.getElementById(qid+'f');
+  const quiz=document.getElementById(qid);
+  const opts=quiz.querySelectorAll('.opt');
+  total++;
+
+  if(letter===a.correct){
+    // CORRECT
+    score++;
+    passed.add(qid);
+    el.classList.add('correct');
+    opts.forEach(o=>o.style.pointerEvents='none');
+    fb.className='feedback show pass';
+    fb.innerHTML=`<strong>Correct!</strong> ${a.explain}`;
+    // Update quiz progress dot
+    const dot=document.getElementById('dot-'+qid);
+    if(dot)dot.classList.add('done');
+    // Check if all module quizzes are now passed
+    const quizzes=MODULE_QUIZZES[cur]||[];
+    const allPassed=quizzes.every(q=>passed.has(q));
+    if(allPassed){
+      const gate=document.getElementById('gate');
+      if(gate)gate.innerHTML=`<div class="lock-icon" style="color:var(--green)">&#x2705;</div><strong style="color:var(--green)">All quizzes passed!</strong> You may now proceed to the next module.`;
+      // Update progress dots label
+      const qp=document.querySelector('.quiz-progress');
+      if(qp){
+        const lbl=qp.querySelector('span:last-child');
+        if(lbl){lbl.style.color='var(--green)';lbl.textContent='All passed!';}
+      }
+    } else {
+      // Update counter
+      const qp=document.querySelector('.quiz-progress');
+      if(qp){
+        const lbl=qp.querySelector('span:last-child');
+        if(lbl)lbl.textContent=quizzes.filter(q=>passed.has(q)).length+'/'+quizzes.length;
+      }
+    }
+    updateNav();
+    updateScore();
+  } else {
+    // WRONG
+    el.classList.add('wrong');
+    // Highlight the correct answer
+    opts.forEach(o=>{
+      if(o.dataset.letter===a.correct)o.classList.add('correct');
+      o.style.pointerEvents='none';
+    });
+    const wrongExplain=a.why_wrong[letter]||'';
+    fb.className='feedback show fail';
+    fb.innerHTML=`<strong>Incorrect.</strong> ${wrongExplain}<br><br><strong>The correct answer is ${a.correct}:</strong> ${a.explain}<br><br><button class="btn-retry" onclick="retryModule()">&#x1f504; Review Module &amp; Retry All Quizzes</button>`;
+    updateScore();
+  }
+}
+
+function retryModule(){
+  const quizzes=MODULE_QUIZZES[cur]||[];
+  quizzes.forEach(qid=>passed.delete(qid));
+  render();
+}
+
+// ===== TTS =====
 let speaking=false,audio=null;
 async function speak(){
   const t=MODULES[cur].speak;if(!t)return;
-  if(speaking&&audio){audio.pause();audio=null;speaking=false;document.getElementById('tts').classList.remove('on');document.getElementById('bs').textContent='🔊 Narrate';return;}
-  speaking=true;document.getElementById('tts').classList.add('on');document.getElementById('bs').textContent='⏹ Stop';
+  if(speaking&&audio){audio.pause();audio=null;speaking=false;document.getElementById('tts').classList.remove('on');document.getElementById('bs').textContent='\u{1f50a} Narrate';return;}
+  speaking=true;document.getElementById('tts').classList.add('on');document.getElementById('bs').textContent='\u23f9 Stop';
   try{
     const r=await fetch('http://localhost:8100/v1/audio/speech',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'chatterbox',voice:'kirk',input:t,response_format:'mp3'})});
     if(!r.ok)throw new Error('TTS error');
     const b=await r.blob(),u=URL.createObjectURL(b);audio=new Audio(u);
-    audio.onended=()=>{URL.revokeObjectURL(u);speaking=false;audio=null;document.getElementById('tts').classList.remove('on');document.getElementById('bs').textContent='🔊 Narrate';};
+    audio.onended=()=>{URL.revokeObjectURL(u);speaking=false;audio=null;document.getElementById('tts').classList.remove('on');document.getElementById('bs').textContent='\u{1f50a} Narrate';};
     await audio.play();
-  }catch(e){speaking=false;document.getElementById('tts').classList.remove('on');document.getElementById('bs').textContent='🔊 Narrate';const u=new SpeechSynthesisUtterance(t);u.rate=.9;u.pitch=.8;u.onend=()=>{document.getElementById('bs').textContent='🔊 Narrate';};speechSynthesis.speak(u);document.getElementById('bs').textContent='⏹ Stop';}
+  }catch(e){speaking=false;document.getElementById('tts').classList.remove('on');document.getElementById('bs').textContent='\u{1f50a} Narrate';const u=new SpeechSynthesisUtterance(t);u.rate=.9;u.pitch=.8;u.onend=()=>{speaking=false;document.getElementById('bs').textContent='\u{1f50a} Narrate';};speechSynthesis.speak(u);document.getElementById('bs').textContent='\u23f9 Stop';}
 }
+
+// ===== KEYBOARD NAV =====
 document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')go(1);if(e.key==='ArrowLeft')go(-1);if(e.key==='s'||e.key==='S')speak();});
 render();
 </script>
